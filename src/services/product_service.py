@@ -226,6 +226,7 @@ def get_products(
                     )
                 )
 
+            parsed_specs = parse_specs(prow["specs_json"])
             prod = Product(
                 id=prow["id"],
                 sku=prow["sku"],
@@ -233,10 +234,13 @@ def get_products(
                 brand=prow["brand"],
                 category=prow["category"],
                 description=prow["description"] or "",
-                specs=parse_specs(prow["specs_json"]),
+                specs=parsed_specs,
                 image_url=prow["image_url"] or "",
                 created_at=str(prow["created_at"]),
                 is_active=bool(prow["is_active"]) if "is_active" in prow.keys() and prow["is_active"] is not None else True,
+                official_url=(parsed_specs.get("Product URL") or None),
+                official_source=(parsed_specs.get("Source") or None),
+                official_evidence=(parsed_specs.get("Evidence") or None),
                 offers=offers,
             )
             products.append(prod)
@@ -359,6 +363,8 @@ def get_product_by_id(product_id: int, custom_path: Optional[str] = None) -> Opt
                 )
             )
 
+        parsed_specs = parse_specs(prow["specs_json"])
+
         return Product(
             id=prow["id"],
             sku=prow["sku"],
@@ -366,10 +372,13 @@ def get_product_by_id(product_id: int, custom_path: Optional[str] = None) -> Opt
             brand=prow["brand"],
             category=prow["category"],
             description=prow["description"] or "",
-            specs=parse_specs(prow["specs_json"]),
+            specs=parsed_specs,
             image_url=prow["image_url"] or "",
             created_at=str(prow["created_at"]),
             is_active=bool(prow["is_active"]) if "is_active" in prow.keys() and prow["is_active"] is not None else True,
+            official_url=(parsed_specs.get("Product URL") or None),
+            official_source=(parsed_specs.get("Source") or None),
+            official_evidence=(parsed_specs.get("Evidence") or None),
             offers=offers,
         )
 

@@ -124,6 +124,12 @@ class Product:
     image_source_name: Optional[str] = None
     image_status: str = "placeholder"
     image_last_checked: Optional[str] = None
+    # Phase 15: the manufacturer's own product page, recorded in the curated
+    # catalogue specifications together with its source and evidence. It is a
+    # brand page, not a retailer offer, and it is presented as such.
+    official_url: Optional[str] = None
+    official_source: Optional[str] = None
+    official_evidence: Optional[str] = None
     offers: list[Offer] = field(default_factory=list)
 
     @property

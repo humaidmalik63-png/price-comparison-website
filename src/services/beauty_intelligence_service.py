@@ -815,6 +815,32 @@ Rules:
             matched_ingredients = []
             for concern in concerns:
                 concern_lower = concern.lower()
+
+                # 1. The curated product specification. Every product in the
+                #    catalogue carries the concerns its formulation is
+                #    declared for ("Skin Concerns" on 79 of 100 products) and
+                #    the skin types it suits ("Skin Type" on 92). This is
+                #    deterministic catalogue data, so it is consulted first.
+                specs = {}
+                try:
+                    specs = json.loads(prod["specs_json"] or "{}")
+                except Exception:
+                    specs = {}
+
+                declared_concerns = specs.get("Skin Concerns") or ""
+                declared_types = specs.get("Skin Type") or ""
+                if isinstance(declared_concerns, list):
+                    declared_concerns = ", ".join(str(c) for c in declared_concerns)
+                if isinstance(declared_types, list):
+                    declared_types = ", ".join(str(c) for c in declared_types)
+
+                matched_declaration = None
+                if declared_concerns and concern_lower in str(declared_concerns).lower():
+                    matched_declaration = f"Declared in the catalogue for {concern.lower()}"
+                elif declared_types and concern_lower in str(declared_types).lower():
+                    matched_declaration = f"Listed for {concern.lower()} skin types"
+
+                # 2. The ingredient analysis (model or heuristic).
                 for ing in analysis.ingredients:
                     ing_name = ing.name if hasattr(ing, "name") else (ing.get("name", "") if isinstance(ing, dict) else "")
                     ing_benefits = ing.benefits if hasattr(ing, "benefits") else (ing.get("benefits", []) if isinstance(ing, dict) else [])
@@ -825,10 +851,27 @@ Rules:
                         any(concern_lower in c.lower() for c in ing_concerns)):
                         matched_ingredients.append(ing_name)
                         break
+
+                if matched_declaration:
+                    matched_ingredients.insert(0, matched_declaration)
             
             if matched_ingredients:
                 suitability = min(0.9, 0.5 + len(matched_ingredients) * 0.15)
-                explanation = f"Contains {', '.join(matched_ingredients)} which address {', '.join(set([ing.split()[0] for ing in matched_ingredients]))}"
+                # Build a readable explanation. Catalogue declarations and
+                # ingredient matches are described differently, because they
+                # are different kinds of evidence.
+                declarations = [m for m in matched_ingredients if m.startswith(("Declared", "Listed"))]
+                ingredients = [m for m in matched_ingredients if m not in declarations]
+
+                reason_parts = []
+                if declarations:
+                    reason_parts.append("; ".join(dict.fromkeys(declarations)))
+                if ingredients:
+                    reason_parts.append(
+                        f"Contains {', '.join(dict.fromkeys(ingredients))}, "
+                        f"which addresses {', '.join(sorted(set(i.split()[0] for i in ingredients)))}"
+                    )
+                explanation = " - ".join(reason_parts)
                 
                 matches.append(SkinConcernMatch(
                     concern=", ".join(concerns),

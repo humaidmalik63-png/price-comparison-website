@@ -127,7 +127,8 @@ export interface Product {
   dataSource?: string;
   dataStatus?: 'catalog_verified' | 'partially_verified' | 'demo' | 'verified_retailer';
   evidenceType?: string;
-  officialUrl?: string; // e.g. "50 ml", "30 ml", "3.8 g"
+  officialUrl?: string; // the manufacturer's own product page, recorded
+  // in the curated catalogue specifications (a brand page, not a retailer offer)
   price: number; // Lowest current price in INR
   originalPrice?: number; // MRP
   rating?: number;

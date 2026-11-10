@@ -55,6 +55,11 @@ class ProductListItemSchema(BaseModel):
     available_offer_count: int = 0
     specs: dict[str, Any] = Field(default_factory=dict)
     is_active: bool = True
+    # Phase 15: the manufacturer's own product page (with its recorded source
+    # and evidence). Distinct from a retailer offer.
+    official_url: Optional[str] = None
+    official_source: Optional[str] = None
+    official_evidence: Optional[str] = None
     image_source_url: Optional[str] = None
     image_source_name: Optional[str] = None
     image_status: str = "placeholder"

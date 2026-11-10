@@ -580,6 +580,12 @@ def _serialize_product_item(product: Product) -> ProductListItemSchema:
 
         is_active=getattr(product, "is_active", True),
 
+        official_url=getattr(product, "official_url", None),
+
+        official_source=getattr(product, "official_source", None),
+
+        official_evidence=getattr(product, "official_evidence", None),
+
     )
 
 

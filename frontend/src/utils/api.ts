@@ -1199,7 +1199,7 @@ export async function matchSkinConcerns(
     } else {
       payload = concernsOrPayload;
     }
-    const res = await fetchWithTimeout(`${API_BASE_URL}/api/beauty/match-concerns`, {
+    const res = await fetchWithTimeout(`${API_BASE_URL}/api/beauty/match-skin-concerns`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify(payload),
@@ -1247,7 +1247,7 @@ export async function generateBeautyRoutine(
       existing_products: options.existing_products,
       budget_range: options.budget_range,
     };
-    const res = await fetchWithTimeout(`${API_BASE_URL}/api/beauty/generate-routine`, {
+    const res = await fetchWithTimeout(`${API_BASE_URL}/api/beauty/generate-routine/${encodeURIComponent(routineType)}`, {
       method: 'POST',
       headers: getAuthHeaders(),
       body: JSON.stringify(payload),

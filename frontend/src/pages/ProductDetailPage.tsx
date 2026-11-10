@@ -400,6 +400,34 @@ export const ProductDetailPage: React.FC = () => {
             <span>Retailer Transparency & Market Trends</span>
           </div>
 
+          {/* Phase 15: the manufacturer's own product page.
+              This is a brand page recorded in the curated catalogue, NOT a
+              retailer offer. It is shown so a shopper has a genuine place to
+              read the specification, clearly separated from the retailer
+              price comparison below. */}
+          {product.officialUrl && (
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-rose-100 bg-ivory-50 px-4 py-3">
+              <div className="min-w-0">
+                <p className="text-xs font-bold uppercase tracking-wider text-espresso-500">
+                  Official product page
+                </p>
+                <p className="mt-1 text-xs text-espresso-600">
+                  The manufacturer&apos;s own page for this product. Retailer
+                  prices below are catalogue data until a live retailer feed is
+                  connected.
+                </p>
+              </div>
+              <a
+                href={product.officialUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 rounded-xl border border-espresso-200 bg-white px-4 py-2 text-xs font-semibold tracking-wide text-espresso-800 transition-colors hover:border-espresso-400"
+              >
+                View on the official {product.brand} site
+              </a>
+            </div>
+          )}
+
           {/* Automatic Multi-Retailer Live Price Comparison */}
           <LiveRetailerPriceComparison
             productId={numericProductId}
