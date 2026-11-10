@@ -12,7 +12,11 @@ CREATE TABLE IF NOT EXISTS products (
     description TEXT,
     specs_json TEXT,
     image_url TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    source_type TEXT DEFAULT 'demo' CHECK(source_type IN ('demo', 'catalog_verified', 'manufacturer_verified')),
+    data_status TEXT DEFAULT 'pending_review' CHECK(data_status IN ('pending_review', 'catalog_verified', 'manufacturer_verified')),
+    is_active INTEGER DEFAULT 1 CHECK(is_active IN (0, 1)),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS stores (
@@ -68,6 +72,56 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status TEXT DEFAULT 'active' CHECK(status IN ('active', 'suspended', 'deactivated'))
 );
+
+-- Phase 16: Retail Price Observations Table
+CREATE TABLE IF NOT EXISTS retail_price_observation (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id INTEGER NOT NULL,
+    retailer TEXT NOT NULL,
+    product_url TEXT NOT NULL,
+    observed_price REAL NOT NULL CHECK(observed_price > 0),
+    observed_mrp REAL,
+    size_volume TEXT,
+    shade TEXT,
+    formulation TEXT,
+    observation_type TEXT NOT NULL CHECK(observation_type IN ('scheduled', 'manual', 'user_report')),
+    observation_status TEXT NOT NULL DEFAULT 'live' CHECK(observation_status IN ('live', 'expired', 'superseded', 'flagged')),
+    verified_by_admin INTEGER DEFAULT 0 CHECK(verified_by_admin IN (0, 1)),
+    verified_price REAL,
+    verification_notes TEXT,
+    verification_status TEXT DEFAULT 'pending' CHECK(verification_status IN ('pending', 'review_required', 'verified')),
+    admin_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    evidence_notes TEXT,
+    evidence_reference TEXT,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY (admin_user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- Indexes for price observations performance
+CREATE INDEX IF NOT EXISTS idx_observations_product ON retail_price_observation(product_id);
+CREATE INDEX IF NOT EXISTS idx_observations_retailer ON retail_price_observation(retailer);
+CREATE INDEX IF NOT EXISTS idx_observations_status ON retail_price_observation(observation_status);
+CREATE INDEX IF NOT EXISTS idx_observations_type ON retail_price_observation(observation_type);
+CREATE INDEX IF NOT EXISTS idx_observations_verification ON retail_price_observation(verification_status);
+
+-- Phase 16: OBF Product Verification Table
+CREATE TABLE IF NOT EXISTS obf_product_verification (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id INTEGER NOT NULL,
+    action TEXT NOT NULL CHECK(action IN ('approved', 'rejected', 'needs_review')),
+    admin_user_id INTEGER NOT NULL,
+    evidence_notes TEXT NOT NULL,
+    previous_data_status TEXT NOT NULL,
+    new_data_status TEXT NOT NULL,
+    reviewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY (admin_user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_obf_product ON obf_product_verification(product_id);
+CREATE INDEX IF NOT EXISTS idx_obf_admin ON obf_product_verification(admin_user_id);
 
 CREATE TABLE IF NOT EXISTS wishlist (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

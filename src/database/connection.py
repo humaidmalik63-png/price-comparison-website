@@ -378,6 +378,146 @@ def migrate_db(custom_path: str | None = None) -> None:
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_routine_items_routine ON user_routine_items(routine_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_routine_items_step ON user_routine_items(routine_id, step_number)")
 
+        # 13. Phase 16: Retail Price Observation table migration
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS retail_price_observation (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                product_id INTEGER NOT NULL,
+                retailer TEXT NOT NULL,
+                product_url TEXT NOT NULL,
+                observed_price REAL NOT NULL CHECK(observed_price > 0),
+                observed_mrp REAL,
+                size_volume TEXT,
+                shade TEXT,
+                formulation TEXT,
+                observation_type TEXT NOT NULL CHECK(observation_type IN ('scheduled', 'manual', 'user_report')),
+                observation_status TEXT NOT NULL DEFAULT 'live' CHECK(observation_status IN ('live', 'expired', 'superseded', 'flagged')),
+                verified_by_admin INTEGER DEFAULT 0 CHECK(verified_by_admin IN (0, 1)),
+                verified_price REAL,
+                verification_notes TEXT,
+                verification_status TEXT DEFAULT 'pending' CHECK(verification_status IN ('pending', 'review_required', 'verified')),
+                admin_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                evidence_notes TEXT,
+                evidence_reference TEXT,
+                FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+                FOREIGN KEY (admin_user_id) REFERENCES users(id) ON DELETE SET NULL
+            )
+            """
+        )
+
+        # Create indexes for observations table with idempotency check
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='index' AND name='idx_observations_product'")
+        if not cursor.fetchone():
+            cursor.execute("CREATE INDEX idx_observations_product ON retail_price_observation(product_id)")
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='index' AND name='idx_observations_retailer'")
+        if not cursor.fetchone():
+            cursor.execute("CREATE INDEX idx_observations_retailer ON retail_price_observation(retailer)")
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='index' AND name='idx_observations_status'")
+        if not cursor.fetchone():
+            cursor.execute("CREATE INDEX idx_observations_status ON retail_price_observation(observation_status)")
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='index' AND name='idx_observations_verification'")
+        if not cursor.fetchone():
+            cursor.execute("CREATE INDEX idx_observations_verification ON retail_price_observation(verification_status)")
+
+        # 14. Phase 16: OBF Product Verification table migration
+        cursor.execute(
+            """
+            CREATE TABLE IF NOT EXISTS obf_product_verification (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                product_id INTEGER NOT NULL,
+                action TEXT NOT NULL CHECK(action IN ('approved', 'rejected', 'needs_review')),
+                admin_user_id INTEGER NOT NULL,
+                evidence_notes TEXT NOT NULL,
+                previous_data_status TEXT NOT NULL,
+                new_data_status TEXT NOT NULL,
+                reviewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+                FOREIGN KEY (admin_user_id) REFERENCES users(id) ON DELETE CASCADE
+            )
+            """
+        )
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_obf_product ON obf_product_verification(product_id)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_obf_admin ON obf_product_verification(admin_user_id)")
+
+        # 15. Phase 16: Add columns to products table if missing
+        cursor.execute("PRAGMA table_info(products)")
+        product_cols = {row["name"] for row in cursor.fetchall()}
+        if "data_status" not in product_cols:
+            cursor.execute("ALTER TABLE products ADD COLUMN data_status TEXT DEFAULT 'pending_review'")
+        if "source_type" not in product_cols:
+            cursor.execute("ALTER TABLE products ADD COLUMN source_type TEXT DEFAULT 'demo'")
+        if "is_active" not in product_cols:
+            cursor.execute("ALTER TABLE products ADD COLUMN is_active INTEGER DEFAULT 1")
+        if "updated_at" not in product_cols:
+            cursor.execute("ALTER TABLE products ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+
+        # 16. Phase 16: Evidence columns for retail_price_observation (idempotent migration)
+        cursor.execute("PRAGMA table_info(retail_price_observation)")
+        observation_cols = {row["name"] for row in cursor.fetchall()}
+        if "evidence_notes" not in observation_cols:
+            cursor.execute("ALTER TABLE retail_price_observation ADD COLUMN evidence_notes TEXT")
+        if "evidence_reference" not in observation_cols:
+            cursor.execute("ALTER TABLE retail_price_observation ADD COLUMN evidence_reference TEXT")
+
+        # 17. Phase 16.2: Remove UNIQUE(product_id, retailer) constraint on retail_price_observation
+        #     SQLite cannot DROP a column-level UNIQUE constraint without recreating the table.
+        #     Check whether the auto-index still exists; if so, rebuild without the constraint.
+        cursor.execute(
+            "SELECT name FROM sqlite_master WHERE type='index' AND tbl_name='retail_price_observation'"
+        )
+        existing_indexes = {row["name"] for row in cursor.fetchall()}
+        needs_rebuild = any(idx.startswith("sqlite_autoindex_") for idx in existing_indexes)
+        if needs_rebuild:
+            rows_data = cursor.execute("SELECT * FROM retail_price_observation").fetchall()
+            col_desc = cursor.description
+            col_names = [row["name"] for row in col_desc]
+            cursor.execute("DROP TABLE IF EXISTS retail_price_observation_temp")
+            cols_sql = ", ".join(
+                [
+                    "id INTEGER PRIMARY KEY AUTOINCREMENT",
+                    "product_id INTEGER NOT NULL",
+                    "retailer TEXT NOT NULL",
+                    "product_url TEXT NOT NULL",
+                    "observed_price REAL NOT NULL CHECK(observed_price > 0)",
+                    "observed_mrp REAL",
+                    "size_volume TEXT",
+                    "shade TEXT",
+                    "formulation TEXT",
+                    "observation_type TEXT NOT NULL CHECK(observation_type IN ('scheduled', 'manual', 'user_report'))",
+                    "observation_status TEXT NOT NULL DEFAULT 'live' CHECK(observation_status IN ('live', 'expired', 'superseded', 'flagged'))",
+                    "verified_by_admin INTEGER DEFAULT 0 CHECK(verified_by_admin IN (0, 1))",
+                    "verified_price REAL",
+                    "verification_notes TEXT",
+                    "verification_status TEXT DEFAULT 'pending' CHECK(verification_status IN ('pending', 'review_required', 'verified'))",
+                    "admin_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL",
+                    "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+                    "evidence_notes TEXT",
+                    "evidence_reference TEXT",
+                    "FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE",
+                    "FOREIGN KEY (admin_user_id) REFERENCES users(id) ON DELETE SET NULL",
+                ]
+            )
+            cursor.execute(f"CREATE TABLE retail_price_observation_temp ({cols_sql})")
+            if rows_data:
+                placeholders = ", ".join(["?"] * len(col_names))
+                col_list = ", ".join(col_names)
+                cursor.executemany(
+                    f"INSERT INTO retail_price_observation_temp ({col_list}) VALUES ({placeholders})",
+                    rows_data,
+                )
+            cursor.execute("DROP TABLE retail_price_observation")
+            cursor.execute("ALTER TABLE retail_price_observation_temp RENAME TO retail_price_observation")
+            # Recreate named indexes (auto-indexes no longer needed without UNIQUE constraint)
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_observations_product ON retail_price_observation(product_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_observations_retailer ON retail_price_observation(retailer)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_observations_status ON retail_price_observation(observation_status)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_observations_type ON retail_price_observation(observation_type)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_observations_verification ON retail_price_observation(verification_status)")
+
 
 def init_db(custom_path: str | None = None) -> None:
     """Initialize database tables using schema.sql and apply migrations."""

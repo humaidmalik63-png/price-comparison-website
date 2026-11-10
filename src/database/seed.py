@@ -463,6 +463,84 @@ DEMO_PRODUCTS = [
 ]
 
 
+# Phase 16.2 Stage 2: OBF Product Verification Products
+# These products have source_type='catalog_verified', data_status='catalog_verified', is_active=1
+# for testing the OBF (Offline/Black Friday) verification workflow.
+DEMO_OBF_PRODUCTS = [
+    {
+        "sku": "OBF-SUN-PREP-30",
+        "title": "Pharmacis Sunscreen SPF 50+ Gel Cream",
+        "brand": "Pharmacis",
+        "category": "Sunscreens",
+        "description": "Dermatologist-tested broad-spectrum sunscreen with hyaluronic acid and vitamin E.",
+        "specs": {
+            "Product Type": "Gel Cream Sunscreen",
+            "Net Quantity": "30 ml",
+            "SPF": "50+",
+            "Key Ingredients": "Hyaluronic Acid, Vitamin E, Zinc Oxide",
+            "Skin Type": "All Skin Types",
+        },
+        "image_url": "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80",
+    },
+    {
+        "sku": "OBF-SER-MIN-30",
+        "title": "Minimalist 10% Niacinamide Serum",
+        "brand": "Minimalist",
+        "category": "Serums",
+        "description": "Clinical-strength niacinamide serum for blemish control and skin smoothing.",
+        "specs": {
+            "Product Type": "Face Serum",
+            "Net Quantity": "30 ml",
+            "Key Ingredients": "Niacinamide 10%, Zinc PCA, Aloe Vera",
+            "Skin Type": "Blemish-Prone, Oily",
+        },
+        "image_url": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80",
+    },
+    {
+        "sku": "OBF-LIP-KAY-35",
+        "title": "Kay Beauty Matte Lipstick - Reconstruct",
+        "brand": "Kay Beauty",
+        "category": "Lipsticks",
+        "description": "Comfortable ultra-matte bullet lipstick for everyday wear.",
+        "specs": {
+            "Product Type": "Bullet Lipstick",
+            "Net Quantity": "3.5 g",
+            "Shade": "Reconstruct",
+            "Finish": "Velvet Matte",
+        },
+        "image_url": "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80",
+    },
+    {
+        "sku": "OBF-FND-MAY-30",
+        "title": "Maybelline Fit Me Matte Liquid Foundation - 128 Warm Nude",
+        "brand": "Maybelline",
+        "category": "Foundations",
+        "description": "Lightweight liquid foundation with pore-blurring micro-powders.",
+        "specs": {
+            "Product Type": "Liquid Foundation",
+            "Net Quantity": "30 ml",
+            "Shade": "128 Warm Nude",
+            "Finish": "Natural Matte",
+        },
+        "image_url": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80",
+    },
+    {
+        "sku": "OBF-MAS-COVER-7",
+        "title": "Maybelline Lash Sensational Sky High Mascara - Very Black",
+        "brand": "Maybelline",
+        "category": "Mascaras",
+        "description": "Waterproof mascara with Flex Tower brush for limitless length.",
+        "specs": {
+            "Product Type": "Waterproof Mascara",
+            "Net Quantity": "7.2 ml",
+            "Shade": "Very Black",
+            "Key Ingredients": "Bamboo Extract, Lash Extending Fibers",
+        },
+        "image_url": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=80",
+    },
+]
+
+
 def generate_history_points(current_price: float, trend_type: str, days: int = 90) -> list[tuple[str, float]]:
     """
     Generate realistic historical price records up to today.
@@ -622,7 +700,50 @@ def seed_database(custom_path: str | None = None, force: bool = False, seed_demo
                         (offer_id, hist_price, currency, "demo_seed", "demo", recorded_at),
                     )
 
-    # 3. Seed Demo Member Account for Academic Viva / Evaluation
+    # 4. Seed OBF Products for Phase 16.2 Stage 2 testing
+    # OBF products have source_type='catalog_verified' and are for offline/black friday verification
+    for prod in DEMO_OBF_PRODUCTS:
+        cursor.execute("SELECT id FROM products WHERE sku = ?", (prod["sku"],))
+        existing = cursor.fetchone()
+        if existing:
+            # Update to correct OBF verified status
+            cursor.execute(
+                "UPDATE products SET source_type='catalog_verified', data_status='catalog_verified', is_active=1 WHERE id = ?",
+                (existing["id"],),
+            )
+        else:
+            specs = prod["specs"]
+            cursor.execute(
+                """
+                INSERT INTO products (sku, title, brand, category, description, specs_json, image_url, source_type, data_status, is_active)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'catalog_verified', 'catalog_verified', 1)
+                """,
+                (
+                    prod["sku"],
+                    prod["title"],
+                    prod["brand"],
+                    prod["category"],
+                    prod["description"],
+                    json.dumps(specs),
+                    prod["image_url"],
+                ),
+            )
+
+    # Add offers for OBF products at Nykaa
+    cursor.execute("SELECT id, sku FROM products WHERE source_type='catalog_verified' AND data_status='catalog_verified' AND is_active=1")
+    for row in cursor.fetchall():
+        cursor.execute("SELECT id FROM offers WHERE product_id = ?", (row["id"],))
+        if not cursor.fetchone():
+            store_id = 6  # Nykaa store
+            cursor.execute(
+                """
+                INSERT INTO offers (product_id, store_id, current_price, original_price, shipping_cost, currency, availability, variant_name, condition, offer_url)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (row["id"], store_id, 899.0, 1199.0, 0.0, "INR", "In Stock", "Standard", "Brand New", f"https://nykaa.com/product/{row['sku'].lower()}"),
+            )
+
+    # 5. Seed Demo Member Account for Academic Viva / Evaluation
     if seed_demo_user:
         from src.services.auth_service import register_user, get_user_by_email
         from src.services.wishlist_service import add_to_wishlist

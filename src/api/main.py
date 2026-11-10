@@ -7,7 +7,8 @@ database models and service layers. Keeps Streamlit fully operational.
 import logging
 import os
 from typing import Any, Optional
-from fastapi import FastAPI, HTTPException, Query, Depends, Response, status
+from fastapi import FastAPI, HTTPException, Query, Depends, Response, status, Body
+from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from src.config import APP_NAME, APP_VERSION
 from src.database.connection import get_connection
@@ -932,4 +933,118 @@ def api_get_recommendations(
         medical_disclaimer=res.medical_disclaimer,
         disclaimer=res.medical_disclaimer,
     )
+
+
+# =====================================================================
+# Phase 16.2 Stage 3.1: Admin Manual Price Entry Endpoint
+# =====================================================================
+
+from src.services.price_collection_engine import record_manual_price_observation
+
+
+class ManualPriceEntryRequest(BaseModel):
+    """Request schema for manual price entry."""
+    product_id: int
+    retailer: str
+    product_url: str
+    observed_price: float
+    observed_mrp: Optional[float] = None
+    size_volume: Optional[str] = None
+    shade: Optional[str] = None
+    formulation: Optional[str] = None
+    evidence_notes: Optional[str] = None
+    evidence_reference: Optional[str] = None
+
+
+class ManualPriceEntryResponse(BaseModel):
+    """Response schema for manual price entry."""
+    id: int
+    product_id: int
+    retailer: str
+    product_url: str
+    observed_price: float
+    observed_mrp: Optional[float] = None
+    size_volume: Optional[str] = None
+    shade: Optional[str] = None
+    formulation: Optional[str] = None
+    observation_type: str
+    observation_status: str
+    verified_by_admin: bool
+    verified_price: Optional[float] = None
+    verification_status: str
+    admin_user_id: Optional[int] = None
+    created_at: str
+    evidence_notes: Optional[str] = None
+    evidence_reference: Optional[str] = None
+    admin_user: Optional[UserSchema] = None
+
+
+@app.post("/api/admin/price-observations/manual", response_model=ManualPriceEntryResponse)
+def manual_price_entry(
+    req: ManualPriceEntryRequest = Body(...),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Manual Retailer Price Entry endpoint (Stage 3.1).
+
+    Allows authenticated admins to enter actual retailer prices when
+    automated collection is restricted.
+
+    Requirements:
+    - Product ID must exist
+    - Retailer must be supported (nykaa, tira, purplle, amazon, myntra)
+    - Price must be positive
+    - URL must be a product page (not homepage)
+    - Evidence notes are recorded for audit
+
+    Validation rejects:
+    - Homepage URLs (only product pages allowed)
+    - Negative or zero prices
+    - Unknown retailers
+    """
+    # Create a user-like object for the service
+    class AdminUser:
+        id = current_user.id
+        email = current_user.email
+
+    try:
+        obs = record_manual_price_observation(
+            product_id=req.product_id,
+            retailer=req.retailer,
+            product_url=req.product_url,
+            observed_price=req.observed_price,
+            observed_mrp=req.observed_mrp,
+            size_volume=req.size_volume,
+            shade=req.shade,
+            formulation=req.formulation,
+            evidence_notes=req.evidence_notes,
+            evidence_reference=req.evidence_reference,
+            admin_user=AdminUser(),
+        )
+
+        return ManualPriceEntryResponse(
+            id=obs["id"],
+            product_id=obs["product_id"],
+            retailer=obs["retailer"],
+            product_url=obs["product_url"],
+            observed_price=obs["observed_price"],
+            observed_mrp=obs.get("observed_mrp"),
+            size_volume=obs.get("size_volume"),
+            shade=obs.get("shade"),
+            formulation=obs.get("formulation"),
+            observation_type=obs["observation_type"],
+            observation_status=obs["observation_status"],
+            verified_by_admin=obs["verified_by_admin"],
+            verified_price=obs.get("verified_price"),
+            verification_status=obs["verification_status"],
+            admin_user_id=obs.get("admin_user_id"),
+            created_at=obs["created_at"],
+            evidence_notes=obs.get("evidence_notes"),
+            evidence_reference=obs.get("evidence_reference"),
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Manual price entry failed: {e}")
+        raise HTTPException(status_code=500, detail="Failed to record manual price observation")
 
