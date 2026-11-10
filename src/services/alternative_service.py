@@ -33,6 +33,11 @@ class AlternativeRecommendation:
     cost_per_unit_savings_pct: Optional[float] = None
     unit_name: Optional[str] = None
     cost_per_unit_label: str = ""
+    # Phase 14 Stage F: distinguish an approximate alternative from a
+    # near-identical dupe, and record the size comparison explicitly.
+    match_type: str = "close_alternative"  # 'exact_dupe' | 'close_alternative'
+    size_comparison: str = ""
+    caveats: list[str] = field(default_factory=list)
 
 
 def _extract_ingredient_set(product: Product) -> set[str]:
@@ -175,6 +180,52 @@ def get_cheapest_alternatives(
             )
             cpu_label = f"₹{alt_cpu:.2f}/{unit_name} vs ₹{orig_cpu:.2f}/{unit_name}"
 
+        # Phase 14 Stage F: size comparison and dupe classification.
+        size_comparison = ""
+        caveats: list[str] = []
+
+        if t_val and c_val and t_val > 0 and c_val > 0 and t_unit == c_unit:
+            size_comparison = (
+                f"{target_qty_str} vs {cand_qty_str} ({unit_name}) - "
+                f"price normalised per {unit_name}"
+            )
+            if abs(t_val - c_val) > 0.001:
+                caveats.append(
+                    f"Different pack size: {target_qty_str} vs {cand_qty_str}. "
+                    "Compare the per-unit price, not the sticker price."
+                )
+        else:
+            size_comparison = f"{target_qty_str or 'size not stated'} vs {cand_qty_str or 'size not stated'}"
+            caveats.append(
+                "Pack size could not be compared - the per-unit price is not "
+                "comparable for this pair."
+            )
+
+        # An "exact dupe" requires the same formulation type, a comparable
+        # pack size and a strong active-ingredient overlap. Without all three
+        # the pair is described as an approximation, never as identical.
+        ingredient_overlap = (
+            len(target_ingredients.intersection(cand_ingredients))
+            / max(1, len(target_ingredients))
+        )
+        same_type = bool(target_type) and bool(cand_type) and (
+            target_type in cand_type or cand_type in target_type
+        )
+        comparable_size = bool(t_val and c_val and t_unit == c_unit and abs(t_val - c_val) <= 0.001)
+
+        if same_type and comparable_size and ingredient_overlap >= 0.5:
+            match_type = "exact_dupe"
+            caveats.append(
+                "Dupe classification is based on formulation, pack size and "
+                "shared active ingredients - it is not a clinical equivalence claim."
+            )
+        else:
+            match_type = "close_alternative"
+            caveats.append(
+                "This is an approximate alternative, not an identical product. "
+                "Formulation, pack size and actives differ."
+            )
+
         recommendations.append(
             AlternativeRecommendation(
                 original_product=product,
@@ -184,6 +235,9 @@ def get_cheapest_alternatives(
                 shared_ingredients=shared_ings,
                 matching_attributes=matching_attrs,
                 similarity_explanation=explanation,
+                match_type=match_type,
+                size_comparison=size_comparison,
+                caveats=caveats,
                 cost_per_unit_comparison=cost_unit_comp,
                 original_cost_per_unit=orig_cpu,
                 alternative_cost_per_unit=alt_cpu,

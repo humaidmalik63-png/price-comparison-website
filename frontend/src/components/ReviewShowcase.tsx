@@ -29,10 +29,11 @@ export const ReviewShowcase: React.FC = () => {
               Multi-Platform Community Consensus
             </span>
             <h2 className="font-editorial text-3xl sm:text-5xl font-bold text-espresso-800 tracking-tight">
-              Real Shopper Reviews
+              Cross-Platform Review Experience
             </h2>
             <p className="text-espresso-600 text-sm sm:text-base mt-2 max-w-xl">
-              Cross-referenced ratings aggregated from authentic verified buyers across top Indian beauty retailers.
+              A demonstration of how retailer-attributed reviews are presented side by side. No retailer review feed is
+              connected in this build, so every card below is marked as sample content rather than a real customer review.
             </p>
           </div>
 
@@ -58,7 +59,10 @@ export const ReviewShowcase: React.FC = () => {
         <div className="mb-6 flex items-center space-x-2 text-xs text-espresso-500 bg-white/70 p-3 rounded-xl border border-rose-100">
           <AlertCircle className="w-4 h-4 text-champagne-600 shrink-0" />
           <span>
-            <strong>DEMO CONTENT:</strong> Sample curated customer reviews for academic prototype showcase. Retailer logos and marks remain property of their respective owners.
+            <strong>DEMO CONTENT &mdash; NOT REAL CUSTOMER REVIEWS:</strong> The names, ratings and comments below are
+            illustrative sample content written for this academic prototype. They are not testimonials collected from
+            shoppers and no retailer has supplied them. Verified retailer reviews appear here only after they are imported
+            with supporting evidence. Retailer logos and marks remain property of their respective owners.
           </span>
         </div>
 
@@ -108,12 +112,20 @@ export const ReviewShowcase: React.FC = () => {
                   <span className="text-[11px] text-espresso-400">{rev.date}</span>
                 </div>
 
-                {rev.verifiedBuyer && (
+                {rev.dataStatus === 'demo' ? (
+                  <span
+                    className="flex items-center space-x-1 text-champagne-700 font-medium text-[11px]"
+                    title="Sample content, not a real customer review"
+                  >
+                    <AlertCircle className="w-3.5 h-3.5" />
+                    <span>Sample content</span>
+                  </span>
+                ) : rev.verifiedBuyer ? (
                   <span className="flex items-center space-x-1 text-sage-600 font-medium text-[11px]">
                     <ShieldCheck className="w-3.5 h-3.5" />
                     <span>Verified Buyer</span>
                   </span>
-                )}
+                ) : null}
               </div>
             </motion.div>
           ))}

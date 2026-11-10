@@ -32,6 +32,11 @@ class OfferSchema(BaseModel):
     total_cost: Optional[float] = None
     source_type: str = "demo"
     last_checked: Optional[str] = None
+    # Phase 14 Stage D: link provenance. `purchase_url` is only populated when
+    # the link has been verified to resolve to this exact product.
+    link_status: str = "demo_not_verified"
+    purchase_url: Optional[str] = None
+    link_checked_at: Optional[str] = None
 
 
 class ProductListItemSchema(BaseModel):
@@ -580,6 +585,12 @@ class AlternativeProductSchema(BaseModel):
     suitability_score: float
     explanation: str
     price_verified: bool = False
+    # Phase 14 Stage F: an approximate alternative is never presented as an
+    # identical dupe. The classification is computed deterministically from
+    # formulation, pack size and shared active ingredients.
+    match_type: str = "close_alternative"
+    size_comparison: str = ""
+    caveats: list[str] = []
 
 
 class AlternativeFinderResponse(BaseModel):

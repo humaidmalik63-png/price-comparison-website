@@ -482,6 +482,16 @@ def _serialize_offer(offer: Offer) -> OfferSchema:
 
     """Map Offer dataclass to schema."""
 
+    # Phase 14 Stage D: a purchase link is only exposed when it has been
+    # verified to resolve to this exact product. The seeded demo catalogue
+    # carries synthetic SKU-shaped URLs (for example
+    # nykaa.com/product/BEAUTY-DOTKEY-SUN-50) that do not exist on the
+    # retailer site; presenting them as purchase links would send shoppers to
+    # a broken page. Unverified links are reported as unavailable instead.
+    link_status = getattr(offer, "link_status", "demo_not_verified") or "demo_not_verified"
+    raw_url = getattr(offer, "offer_url", "") or ""
+    purchase_url = raw_url if (link_status == "verified" and raw_url) else None
+
     return OfferSchema(
 
         id=offer.id,
@@ -510,7 +520,7 @@ def _serialize_offer(offer: Offer) -> OfferSchema:
 
         condition=offer.condition,
 
-        offer_url=offer.offer_url,
+        offer_url=raw_url,
 
         coupon_code=getattr(offer, "coupon_code", None),
 
@@ -521,6 +531,12 @@ def _serialize_offer(offer: Offer) -> OfferSchema:
         source_type=getattr(offer, "source_type", "demo"),
 
         last_checked=offer.last_checked,
+
+        link_status=link_status,
+
+        purchase_url=purchase_url,
+
+        link_checked_at=getattr(offer, "link_checked_at", None),
 
     )
 
@@ -3545,7 +3561,33 @@ async def find_alternatives(
 
     )
 
-    return AlternativeFinderResponse.model_validate(result)
+    response = AlternativeFinderResponse.model_validate(result)
+
+    # Phase 14 Stage F: merge the deterministic dupe classification into the
+    # AI-produced alternatives. The classification is computed from the
+    # catalogue (formulation, pack size, shared active ingredients) and never
+    # from the language model, so it cannot drift or invent a claim.
+    try:
+        from src.services.alternative_service import get_cheapest_alternatives
+        from src.services.product_service import get_product_by_id
+
+        original = get_product_by_id(product_id)
+        if original is not None:
+            deterministic = {
+                alt.alternative_product.id: alt
+                for alt in get_cheapest_alternatives(original, max_results=10)
+            }
+            for item in response.alternatives:
+                alt_id = item.alternative_product_id or item.product_id
+                match = deterministic.get(alt_id) if alt_id else None
+                if match is not None:
+                    item.match_type = match.match_type
+                    item.size_comparison = match.size_comparison
+                    item.caveats = list(match.caveats)
+    except Exception:  # pragma: no cover - never fail the request on enrichment
+        logger.warning("Could not enrich alternatives with the deterministic classification")
+
+    return response
 
 
 
@@ -3703,6 +3745,90 @@ async def clear_beauty_cache(
 
 # =====================================================================
 
+
+
+@app.get("/api/products/{slug_or_id}/reviews")
+def api_get_product_reviews(
+    slug_or_id: str,
+    platform: Optional[str] = Query(None, description="Filter by retailer platform"),
+    min_rating: Optional[float] = Query(None, description="Minimum normalised rating (0-5)"),
+    sort_by: str = Query("recent", description="'recent', 'highest_rated' or 'lowest_rated'"),
+) -> dict[str, Any]:
+    """Return retailer-attributed reviews for a product.
+
+    Phase 14 Stage F: reviews are served from the database with their
+    platform attribution and their ``data_status`` intact, so the interface
+    can distinguish a manually curated review from retailer-verified one and
+    from demo content. When no review evidence has been imported the endpoint
+    returns an explicit empty state instead of substituting sample reviews.
+    """
+    from src.services.review_service import get_product_reviews
+
+    prod = None
+    if slug_or_id.isdigit():
+        prod = get_product_by_id(int(slug_or_id))
+    if not prod:
+        prod = get_product_by_slug(slug_or_id)
+    if not prod or not getattr(prod, "is_active", True):
+        raise HTTPException(
+            status_code=404,
+            detail=f"Product '{slug_or_id}' not found in catalog.",
+        )
+
+    reviews = get_product_reviews(
+        product_id=prod.id,
+        platform=platform,
+        min_rating=min_rating,
+        sort_by=sort_by,
+    )
+
+    serialized = [
+        {
+            "id": r.id,
+            "platform": r.platform,
+            "reviewer_name": r.reviewer_name,
+            "rating": r.rating,
+            "rating_scale": r.rating_scale,
+            "title": r.title,
+            "comment": r.comment,
+            "review_date": r.review_date,
+            "verified_buyer": r.verified_buyer,
+            "skin_type": r.skin_type,
+            "source_url": r.source_url,
+            "data_status": r.data_status,
+        }
+        for r in reviews
+    ]
+
+    by_status: dict[str, int] = {}
+    for item in serialized:
+        by_status[item["data_status"] or "unknown"] = (
+            by_status.get(item["data_status"] or "unknown", 0) + 1
+        )
+
+    return {
+        "status": "ok",
+        "product_id": prod.id,
+        "product_title": prod.title,
+        "reviews": serialized,
+        "count": len(serialized),
+        "by_data_status": by_status,
+        "attribution_notice": (
+            "Reviews are shown with the retailer platform they were collected "
+            "from. Only reviews marked 'verified_retailer' or "
+            "'manually_curated' were imported with supporting evidence; "
+            "'demo' entries are illustrative sample content."
+        ),
+        "empty_state": (
+            None
+            if serialized
+            else (
+                "No retailer review feed is connected for this product yet, and "
+                "no review evidence has been imported. Sample reviews are not "
+                "substituted for real ones."
+            )
+        ),
+    }
 
 
 @app.get("/api/products/{slug_or_id}/price-history", response_model=ProductPriceAnalyticsResponseSchema)

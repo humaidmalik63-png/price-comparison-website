@@ -166,7 +166,7 @@ def get_products(
                 SELECT 
                     o.id, o.product_id, o.store_id, o.current_price, o.original_price,
                     o.shipping_cost, o.currency, o.availability, o.variant_name, o.condition,
-                    o.offer_url, o.last_checked,
+                    o.offer_url, o.last_checked, o.link_status, o.link_checked_at,
                     s.name as store_name, s.rating as store_rating
                 FROM offers o
                 JOIN stores s ON o.store_id = s.id
@@ -220,6 +220,8 @@ def get_products(
                         condition=orow["condition"] or "Brand New",
                         offer_url=orow["offer_url"] or "",
                         last_checked=str(orow["last_checked"]),
+                        link_status=(orow["link_status"] if "link_status" in orow.keys() and orow["link_status"] else "demo_not_verified"),
+                        link_checked_at=(str(orow["link_checked_at"]) if "link_checked_at" in orow.keys() and orow["link_checked_at"] else None),
                         price_history=price_history,
                     )
                 )
@@ -298,7 +300,7 @@ def get_product_by_id(product_id: int, custom_path: Optional[str] = None) -> Opt
             SELECT 
                 o.id, o.product_id, o.store_id, o.current_price, o.original_price,
                 o.shipping_cost, o.currency, o.availability, o.variant_name, o.condition,
-                o.offer_url, o.last_checked,
+                o.offer_url, o.last_checked, o.link_status, o.link_checked_at,
                 s.name as store_name, s.rating as store_rating
             FROM offers o
             JOIN stores s ON o.store_id = s.id
@@ -351,6 +353,8 @@ def get_product_by_id(product_id: int, custom_path: Optional[str] = None) -> Opt
                     condition=orow["condition"] or "Brand New",
                     offer_url=orow["offer_url"] or "",
                     last_checked=str(orow["last_checked"]),
+                    link_status=(orow["link_status"] if "link_status" in orow.keys() and orow["link_status"] else "demo_not_verified"),
+                    link_checked_at=(str(orow["link_checked_at"]) if "link_checked_at" in orow.keys() and orow["link_checked_at"] else None),
                     price_history=price_history,
                 )
             )

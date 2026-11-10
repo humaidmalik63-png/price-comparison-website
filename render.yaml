@@ -37,3 +37,33 @@ services:
         sync: false
       - key: RATE_LIMIT_PER_MINUTE
         value: "120"
+
+  # 2. Scheduled maintenance worker (Phase 14 Stage E)
+  #    Runs one maintenance cycle and exits, which is exactly the contract a
+  #    cron scheduler expects:
+  #      * price refresh for tracked / watched products (authorised sources
+  #        only - it never invents a price),
+  #      * watchlist / price-tracking alert evaluation,
+  #      * expired deal cleanup.
+  #
+  #    The schedule below runs every 30 minutes. Change "schedule" to suit
+  #    the operational requirement. The worker needs the same DATABASE_URL as
+  #    the web service.
+  - type: cron
+    name: pricewise-scheduler-staging
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    schedule: "*/30 * * * *"
+    region: frankfurt
+    envVars:
+      - key: ENVIRONMENT
+        value: staging
+      - key: DATABASE_URL
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: AUTH_SECRET_KEY
+        sync: false
+    command: python -m src.workers.scheduler --once

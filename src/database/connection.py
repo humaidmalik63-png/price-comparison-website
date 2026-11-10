@@ -169,6 +169,15 @@ def get_connection(custom_path: str | None = None) -> Generator[Any, None, None]
             conn.close()
 
 
+def _table_exists(cursor, table_name: str) -> bool:
+    """Return True when a table is present in the current connection."""
+    cursor.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name = ?",
+        (table_name,),
+    )
+    return cursor.fetchone() is not None
+
+
 def _migrate_sqlite_schema(custom_path: str | None = None) -> None:
     """Apply idempotent SQLite schema migrations.
 
@@ -229,6 +238,25 @@ def _migrate_sqlite_schema(custom_path: str | None = None) -> None:
         if cursor.fetchone():
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_products_brand ON products(brand)")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_products_is_active ON products(is_active)")
+
+        # 3b. Phase 14 Stage D: purchase-link provenance on offers.
+        # Additive and idempotent. The default marks a link as unverified, so
+        # the seeded demo catalogue can never be presented as a set of real
+        # retailer purchase links.
+        cursor.execute("PRAGMA table_info(offers)")
+        existing_offer_cols = {row["name"] for row in cursor.fetchall()}
+        if existing_offer_cols:
+            if "link_status" not in existing_offer_cols:
+                cursor.execute(
+                    "ALTER TABLE offers ADD COLUMN link_status TEXT DEFAULT 'demo_not_verified'"
+                )
+            if "link_checked_at" not in existing_offer_cols:
+                cursor.execute("ALTER TABLE offers ADD COLUMN link_checked_at TIMESTAMP")
+        if _table_exists(cursor, "offers"):
+            cursor.execute(
+                "UPDATE offers SET link_status = 'demo_not_verified' "
+                "WHERE link_status IS NULL OR link_status = ''"
+            )
 
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='price_history'")
         if cursor.fetchone():
@@ -838,6 +866,14 @@ def _migrate_postgres_schema() -> None:
         #    non-privileged value, so a migration can never grant rights.
         cursor.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE")
         cursor.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS token_version INTEGER DEFAULT 0")
+
+        # 5. Phase 14 Stage D: purchase-link provenance on offers. The
+        #    default marks a link as unverified; it is only set to 'verified'
+        #    by an explicit, evidence-backed verification step.
+        cursor.execute(
+            "ALTER TABLE offers ADD COLUMN IF NOT EXISTS link_status TEXT DEFAULT 'demo_not_verified'"
+        )
+        cursor.execute("ALTER TABLE offers ADD COLUMN IF NOT EXISTS link_checked_at TIMESTAMP")
 
         # 4. Report (never create) a missing relational schema. The portable
         #    DDL is SQLite-specific, so provisioning stays an explicit,

@@ -47,6 +47,12 @@ class Offer:
     coupon_discount: float = 0.0
     coupon_code: Optional[str] = None
     source_type: str = "demo"  # 'verified_live', 'partner_feed', 'cached', 'manually_curated', 'demo', 'unavailable'
+    # Phase 14 Stage D: whether the purchase link points at a real, checked
+    # product page. Demo catalogue rows carry synthetic SKU-shaped URLs that
+    # do not resolve on the retailer site, so they are never presented as a
+    # purchase link.
+    link_status: str = "demo_not_verified"  # 'verified', 'demo_not_verified', 'unavailable'
+    link_checked_at: Optional[str] = None
 
     @property
     def currency_symbol(self) -> str:
