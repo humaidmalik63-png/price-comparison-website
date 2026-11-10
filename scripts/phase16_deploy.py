@@ -201,6 +201,36 @@ def run_git(*args: str) -> Tuple[int, str]:
 
 
 # ---------------------------------------------------------------------------
+# Credential file
+# ---------------------------------------------------------------------------
+CREDENTIAL_FILE = Path(
+    os.environ.get("PRICEWISE_DEPLOY_ENV", str(Path.home() / ".pricewise-deploy.env"))
+)
+
+
+def load_credential_file() -> Optional[Path]:
+    """Load deployment credentials from ``~/.pricewise-deploy.env`` if present.
+
+    The file holds ``KEY=value`` lines and lives **outside** the repository,
+    so a token can never be committed. Values already present in the
+    environment win, so an explicit export always overrides the file.
+    """
+    if not CREDENTIAL_FILE.exists():
+        return None
+    for raw_line in CREDENTIAL_FILE.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        value = value.strip().strip("'").strip('"')
+        if key and value and not os.environ.get(key):
+            os.environ[key] = value
+    log(f"credential file : {CREDENTIAL_FILE} (loaded; values never displayed)")
+    return CREDENTIAL_FILE
+
+
+# ---------------------------------------------------------------------------
 # 1. Neon
 # ---------------------------------------------------------------------------
 def neon_host(database_url: str) -> str:
@@ -609,6 +639,7 @@ def main(argv=None) -> int:
         log("dry run: nothing will be changed")
         return 0
 
+    load_credential_file()
     credentials = preflight(require_credentials=True)
     database_url = credentials["DATABASE_URL"]
     api_key = credentials["RENDER_API_KEY"]
