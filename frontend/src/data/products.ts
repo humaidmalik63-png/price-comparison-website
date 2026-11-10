@@ -49,11 +49,11 @@ export const PRODUCTS_DATA: Product[] = [
     dealExpiresAt: '15 Nov 2026',
     verifiedMatchLabel: 'Lowest among available verified offers',
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 465, originalPrice: 595, shippingFee: 0, couponCode: 'NYKBEAUTY10', couponDiscount: 46, couponTerms: '10% off beauty orders', totalCost: 419, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true, sourceType: 'demo', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
-      { storeId: 'tira', storeName: 'Tira', price: 495, originalPrice: 595, shippingFee: 0, deliveryDays: '2-4 Days', inStock: true, purchaseUrl: 'https://www.tirabeauty.com', sourceType: 'demo', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
-      { storeId: 'purplle', storeName: 'Purplle', price: 489, originalPrice: 595, shippingFee: 49, couponCode: 'PURPLLE50', couponDiscount: 50, couponTerms: 'Flat ₹50 off on orders', totalCost: 488, deliveryDays: '3-5 Days', inStock: true, purchaseUrl: 'https://www.purplle.com', sourceType: 'partner_feed', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
-      { storeId: 'amazon', storeName: 'Amazon India', price: 475, originalPrice: 595, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: 'https://www.amazon.in', sourceType: 'demo', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
-      { storeId: 'myntra', storeName: 'Myntra', price: 499, originalPrice: 595, shippingFee: null, isShippingDisclosed: false, deliveryDays: '3-4 Days', inStock: true, purchaseUrl: 'https://www.myntra.com', sourceType: 'demo', lastUpdated: '1 Nov 2026', matchClassification: 'possible_match' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 465, originalPrice: 595, shippingFee: 0, totalCost: 419, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true, sourceType: 'demo', linkStatus: 'demo_not_verified', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
+      { storeId: 'tira', storeName: 'Tira', price: 495, originalPrice: 595, shippingFee: 0, deliveryDays: '2-4 Days', inStock: true, purchaseUrl: '', sourceType: 'demo', linkStatus: 'demo_not_verified', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
+      { storeId: 'purplle', storeName: 'Purplle', price: 489, originalPrice: 595, shippingFee: 49, totalCost: 488, deliveryDays: '3-5 Days', inStock: true, purchaseUrl: '', sourceType: 'demo', linkStatus: 'demo_not_verified', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 475, originalPrice: 595, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: '', sourceType: 'demo', linkStatus: 'demo_not_verified', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
+      { storeId: 'myntra', storeName: 'Myntra', price: 499, originalPrice: 595, shippingFee: null, isShippingDisclosed: false, deliveryDays: '3-4 Days', inStock: true, purchaseUrl: '', sourceType: 'demo', linkStatus: 'demo_not_verified', lastUpdated: '1 Nov 2026', matchClassification: 'possible_match' },
     ],
     platformRatings: [
       { platform: 'Nykaa', averageRating: 4.8, reviewCount: 1420, ratingScale: 5, dataSource: 'Retailer Feed (Demo)', productUrl: 'https://www.nykaa.com', lastUpdated: '28 Oct 2026', isAvailable: true },
@@ -171,9 +171,9 @@ export const PRODUCTS_DATA: Product[] = [
     isTrending: true,
     isBestDeal: false,
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 449, originalPrice: 499, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true },
-      { storeId: 'amazon', storeName: 'Amazon India', price: 469, originalPrice: 499, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: 'https://www.amazon.in' },
-      { storeId: 'purplle', storeName: 'Purplle', price: 479, originalPrice: 499, shippingFee: 49, deliveryDays: '3-4 Days', inStock: true, purchaseUrl: 'https://www.purplle.com' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 449, originalPrice: 499, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 469, originalPrice: 499, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: '' },
+      { storeId: 'purplle', storeName: 'Purplle', price: 479, originalPrice: 499, shippingFee: 49, deliveryDays: '3-4 Days', inStock: true, purchaseUrl: '' },
     ],
   },
 
@@ -214,9 +214,9 @@ export const PRODUCTS_DATA: Product[] = [
     dealExpiresAt: '20 Nov 2026',
     verifiedMatchLabel: 'Lowest among available verified offers',
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 569, originalPrice: 599, shippingFee: 0, couponCode: 'NYKBEAUTY10', couponDiscount: 50, couponTerms: '10% off beauty orders', totalCost: 519, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true, sourceType: 'demo', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
-      { storeId: 'tira', storeName: 'Tira', price: 585, originalPrice: 599, shippingFee: 0, deliveryDays: '2-4 Days', inStock: true, purchaseUrl: 'https://www.tirabeauty.com', sourceType: 'demo', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
-      { storeId: 'amazon', storeName: 'Amazon India', price: 569, originalPrice: 599, shippingFee: 0, deliveryDays: 'Same Day', inStock: true, purchaseUrl: 'https://www.amazon.in', isLowestPrice: true, sourceType: 'demo', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 569, originalPrice: 599, shippingFee: 0, totalCost: 519, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true, sourceType: 'demo', linkStatus: 'demo_not_verified', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
+      { storeId: 'tira', storeName: 'Tira', price: 585, originalPrice: 599, shippingFee: 0, deliveryDays: '2-4 Days', inStock: true, purchaseUrl: '', sourceType: 'demo', linkStatus: 'demo_not_verified', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 569, originalPrice: 599, shippingFee: 0, deliveryDays: 'Same Day', inStock: true, purchaseUrl: '', isLowestPrice: true, sourceType: 'demo', linkStatus: 'demo_not_verified', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
     ],
   },
   {
@@ -253,9 +253,9 @@ export const PRODUCTS_DATA: Product[] = [
     dealExpiresAt: '18 Nov 2026',
     verifiedMatchLabel: 'Lowest among available verified offers',
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 1250, originalPrice: 1450, shippingFee: 0, couponCode: 'NYKBEAUTY10', couponDiscount: 100, couponTerms: '10% off beauty orders', totalCost: 1150, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true, sourceType: 'demo', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
-      { storeId: 'tira', storeName: 'Tira', price: 1290, originalPrice: 1450, shippingFee: 0, couponCode: 'TIRA100', couponDiscount: 100, couponTerms: '₹100 off on ₹999+', totalCost: 1190, deliveryDays: '1-3 Days', inStock: true, purchaseUrl: 'https://www.tirabeauty.com', sourceType: 'demo', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
-      { storeId: 'amazon', storeName: 'Amazon India', price: 1320, originalPrice: 1450, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: 'https://www.amazon.in', sourceType: 'demo', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 1250, originalPrice: 1450, shippingFee: 0, totalCost: 1150, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true, sourceType: 'demo', linkStatus: 'demo_not_verified', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
+      { storeId: 'tira', storeName: 'Tira', price: 1290, originalPrice: 1450, shippingFee: 0, totalCost: 1190, deliveryDays: '1-3 Days', inStock: true, purchaseUrl: '', sourceType: 'demo', linkStatus: 'demo_not_verified', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 1320, originalPrice: 1450, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: '', sourceType: 'demo', linkStatus: 'demo_not_verified', lastUpdated: '1 Nov 2026', matchClassification: 'verified_match', isShippingDisclosed: true },
     ],
   },
   {
@@ -288,8 +288,8 @@ export const PRODUCTS_DATA: Product[] = [
     isTrending: false,
     isBestDeal: false,
     storeOffers: [
-      { storeId: 'tira', storeName: 'Tira', price: 3195, originalPrice: 3195, shippingFee: 0, deliveryDays: '1-2 Days', inStock: true, purchaseUrl: 'https://www.tirabeauty.com', isLowestPrice: true },
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 3195, originalPrice: 3195, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true },
+      { storeId: 'tira', storeName: 'Tira', price: 3195, originalPrice: 3195, shippingFee: 0, deliveryDays: '1-2 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 3195, originalPrice: 3195, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
     ],
     dupeId: 'dupe-03',
   },
@@ -345,9 +345,9 @@ export const PRODUCTS_DATA: Product[] = [
       { date: '2026-10-30', price: 385, store: 'Nykaa', variant: '100 g' },
     ],
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 385, originalPrice: 495, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true },
-      { storeId: 'purplle', storeName: 'Purplle', price: 399, originalPrice: 495, shippingFee: 49, deliveryDays: '3-5 Days', inStock: true, purchaseUrl: 'https://www.purplle.com' },
-      { storeId: 'amazon', storeName: 'Amazon India', price: 410, originalPrice: 495, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: 'https://www.amazon.in' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 385, originalPrice: 495, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'purplle', storeName: 'Purplle', price: 399, originalPrice: 495, shippingFee: 49, deliveryDays: '3-5 Days', inStock: true, purchaseUrl: '' },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 410, originalPrice: 495, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: '' },
     ],
     platformRatings: [
       { platform: 'Nykaa', averageRating: 4.8, reviewCount: 1150, ratingScale: 5, dataSource: 'Retailer Feed (Demo)', productUrl: 'https://www.nykaa.com', lastUpdated: '28 Oct 2026', isAvailable: true },
@@ -449,8 +449,8 @@ export const PRODUCTS_DATA: Product[] = [
     isTrending: false,
     isBestDeal: false,
     storeOffers: [
-      { storeId: 'tira', storeName: 'Tira', price: 5475, originalPrice: 5475, shippingFee: 0, deliveryDays: '1-2 Days', inStock: true, purchaseUrl: 'https://www.tirabeauty.com', isLowestPrice: true },
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 5475, originalPrice: 5475, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true },
+      { storeId: 'tira', storeName: 'Tira', price: 5475, originalPrice: 5475, shippingFee: 0, deliveryDays: '1-2 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 5475, originalPrice: 5475, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
     ],
     dupeId: 'dupe-03',
   },
@@ -485,9 +485,9 @@ export const PRODUCTS_DATA: Product[] = [
     isBestDeal: true,
     dealTag: '₹250 Savings • Luxury Pick',
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 2950, originalPrice: 3200, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true },
-      { storeId: 'tira', storeName: 'Tira', price: 2990, originalPrice: 3200, shippingFee: 0, deliveryDays: '1-3 Days', inStock: true, purchaseUrl: 'https://www.tirabeauty.com' },
-      { storeId: 'myntra', storeName: 'Myntra', price: 3100, originalPrice: 3200, shippingFee: 0, deliveryDays: '2-4 Days', inStock: true, purchaseUrl: 'https://www.myntra.com' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 2950, originalPrice: 3200, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'tira', storeName: 'Tira', price: 2990, originalPrice: 3200, shippingFee: 0, deliveryDays: '1-3 Days', inStock: true, purchaseUrl: '' },
+      { storeId: 'myntra', storeName: 'Myntra', price: 3100, originalPrice: 3200, shippingFee: 0, deliveryDays: '2-4 Days', inStock: true, purchaseUrl: '' },
     ],
   },
 
@@ -525,9 +525,9 @@ export const PRODUCTS_DATA: Product[] = [
     isBestDeal: true,
     dealTag: '#1 Dermatologist Recommended',
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 335, originalPrice: 399, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true },
-      { storeId: 'amazon', storeName: 'Amazon India', price: 335, originalPrice: 399, shippingFee: 0, deliveryDays: 'Same Day', inStock: true, purchaseUrl: 'https://www.amazon.in', isLowestPrice: true },
-      { storeId: 'purplle', storeName: 'Purplle', price: 350, originalPrice: 399, shippingFee: 49, deliveryDays: '3-4 Days', inStock: true, purchaseUrl: 'https://www.purplle.com' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 335, originalPrice: 399, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 335, originalPrice: 399, shippingFee: 0, deliveryDays: 'Same Day', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'purplle', storeName: 'Purplle', price: 350, originalPrice: 399, shippingFee: 49, deliveryDays: '3-4 Days', inStock: true, purchaseUrl: '' },
     ],
   },
   {
@@ -560,8 +560,8 @@ export const PRODUCTS_DATA: Product[] = [
     isTrending: false,
     isBestDeal: false,
     storeOffers: [
-      { storeId: 'amazon', storeName: 'Amazon India', price: 580, originalPrice: 650, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: 'https://www.amazon.in', isLowestPrice: true },
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 595, originalPrice: 650, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com' },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 580, originalPrice: 650, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 595, originalPrice: 650, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '' },
     ],
   },
 
@@ -599,9 +599,9 @@ export const PRODUCTS_DATA: Product[] = [
     isBestDeal: true,
     dealTag: '19% OFF • Vegan Bestseller',
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 340, originalPrice: 420, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true },
-      { storeId: 'purplle', storeName: 'Purplle', price: 345, originalPrice: 420, shippingFee: 49, deliveryDays: '3-4 Days', inStock: true, purchaseUrl: 'https://www.purplle.com' },
-      { storeId: 'amazon', storeName: 'Amazon India', price: 360, originalPrice: 420, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: 'https://www.amazon.in' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 340, originalPrice: 420, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'purplle', storeName: 'Purplle', price: 345, originalPrice: 420, shippingFee: 49, deliveryDays: '3-4 Days', inStock: true, purchaseUrl: '' },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 360, originalPrice: 420, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: '' },
     ],
   },
   {
@@ -634,8 +634,8 @@ export const PRODUCTS_DATA: Product[] = [
     isTrending: true,
     isBestDeal: false,
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 1290, originalPrice: 1420, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true },
-      { storeId: 'tira', storeName: 'Tira', price: 1320, originalPrice: 1420, shippingFee: 0, deliveryDays: '1-3 Days', inStock: true, purchaseUrl: 'https://www.tirabeauty.com' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 1290, originalPrice: 1420, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'tira', storeName: 'Tira', price: 1320, originalPrice: 1420, shippingFee: 0, deliveryDays: '1-3 Days', inStock: true, purchaseUrl: '' },
     ],
     dupeId: 'dupe-02',
   },
@@ -674,10 +674,10 @@ export const PRODUCTS_DATA: Product[] = [
     isBestDeal: true,
     dealTag: '21% OFF • #1 Indian Foundation',
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 549, originalPrice: 699, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true },
-      { storeId: 'amazon', storeName: 'Amazon India', price: 549, originalPrice: 699, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: 'https://www.amazon.in', isLowestPrice: true },
-      { storeId: 'myntra', storeName: 'Myntra', price: 579, originalPrice: 699, shippingFee: 0, deliveryDays: '2-4 Days', inStock: true, purchaseUrl: 'https://www.myntra.com' },
-      { storeId: 'purplle', storeName: 'Purplle', price: 569, originalPrice: 699, shippingFee: 49, deliveryDays: '3-4 Days', inStock: true, purchaseUrl: 'https://www.purplle.com' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 549, originalPrice: 699, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 549, originalPrice: 699, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'myntra', storeName: 'Myntra', price: 579, originalPrice: 699, shippingFee: 0, deliveryDays: '2-4 Days', inStock: true, purchaseUrl: '' },
+      { storeId: 'purplle', storeName: 'Purplle', price: 569, originalPrice: 699, shippingFee: 49, deliveryDays: '3-4 Days', inStock: true, purchaseUrl: '' },
     ],
   },
   {
@@ -710,8 +710,8 @@ export const PRODUCTS_DATA: Product[] = [
     isTrending: false,
     isBestDeal: false,
     storeOffers: [
-      { storeId: 'tira', storeName: 'Tira', price: 3600, originalPrice: 3900, shippingFee: 0, deliveryDays: '1-2 Days', inStock: true, purchaseUrl: 'https://www.tirabeauty.com', isLowestPrice: true },
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 3650, originalPrice: 3900, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com' },
+      { storeId: 'tira', storeName: 'Tira', price: 3600, originalPrice: 3900, shippingFee: 0, deliveryDays: '1-2 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 3650, originalPrice: 3900, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '' },
     ],
     dupeId: 'dupe-04',
   },
@@ -745,8 +745,8 @@ export const PRODUCTS_DATA: Product[] = [
     isTrending: true,
     isBestDeal: false,
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 4300, originalPrice: 4300, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true },
-      { storeId: 'tira', storeName: 'Tira', price: 4300, originalPrice: 4300, shippingFee: 0, deliveryDays: '1-3 Days', inStock: true, purchaseUrl: 'https://www.tirabeauty.com', isLowestPrice: true },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 4300, originalPrice: 4300, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'tira', storeName: 'Tira', price: 4300, originalPrice: 4300, shippingFee: 0, deliveryDays: '1-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
     ],
     dupeId: 'dupe-05',
   },
@@ -781,9 +781,9 @@ export const PRODUCTS_DATA: Product[] = [
     isBestDeal: true,
     dealTag: '25% OFF • #1 Cult Concealer',
     storeOffers: [
-      { storeId: 'amazon', storeName: 'Amazon India', price: 599, originalPrice: 799, shippingFee: 0, deliveryDays: 'Same Day', inStock: true, purchaseUrl: 'https://www.amazon.in', isLowestPrice: true },
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 629, originalPrice: 799, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com' },
-      { storeId: 'myntra', storeName: 'Myntra', price: 639, originalPrice: 799, shippingFee: 0, deliveryDays: '2-4 Days', inStock: true, purchaseUrl: 'https://www.myntra.com' },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 599, originalPrice: 799, shippingFee: 0, deliveryDays: 'Same Day', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 629, originalPrice: 799, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '' },
+      { storeId: 'myntra', storeName: 'Myntra', price: 639, originalPrice: 799, shippingFee: 0, deliveryDays: '2-4 Days', inStock: true, purchaseUrl: '' },
     ],
   },
 
@@ -821,8 +821,8 @@ export const PRODUCTS_DATA: Product[] = [
     isBestDeal: true,
     dealTag: '20% OFF • Katrina Kaif Signature',
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 799, originalPrice: 999, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true },
-      { storeId: 'tira', storeName: 'Tira', price: 849, originalPrice: 999, shippingFee: 0, deliveryDays: '1-3 Days', inStock: true, purchaseUrl: 'https://www.tirabeauty.com' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 799, originalPrice: 999, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'tira', storeName: 'Tira', price: 849, originalPrice: 999, shippingFee: 0, deliveryDays: '1-3 Days', inStock: true, purchaseUrl: '' },
     ],
   },
   {
@@ -855,8 +855,8 @@ export const PRODUCTS_DATA: Product[] = [
     isTrending: true,
     isBestDeal: false,
     storeOffers: [
-      { storeId: 'tira', storeName: 'Tira', price: 2400, originalPrice: 2400, shippingFee: 0, deliveryDays: '1-2 Days', inStock: true, purchaseUrl: 'https://www.tirabeauty.com', isLowestPrice: true },
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 2400, originalPrice: 2400, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true },
+      { storeId: 'tira', storeName: 'Tira', price: 2400, originalPrice: 2400, shippingFee: 0, deliveryDays: '1-2 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 2400, originalPrice: 2400, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
     ],
     dupeId: 'dupe-06',
   },
@@ -891,9 +891,9 @@ export const PRODUCTS_DATA: Product[] = [
     isBestDeal: true,
     dealTag: '27% OFF • Best Value Blush',
     storeOffers: [
-      { storeId: 'purplle', storeName: 'Purplle', price: 329, originalPrice: 449, shippingFee: 49, deliveryDays: '3-5 Days', inStock: true, purchaseUrl: 'https://www.purplle.com', isLowestPrice: true },
-      { storeId: 'amazon', storeName: 'Amazon India', price: 349, originalPrice: 449, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: 'https://www.amazon.in' },
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 360, originalPrice: 449, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com' },
+      { storeId: 'purplle', storeName: 'Purplle', price: 329, originalPrice: 449, shippingFee: 49, deliveryDays: '3-5 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 349, originalPrice: 449, shippingFee: 0, deliveryDays: '1 Day', inStock: true, purchaseUrl: '' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 360, originalPrice: 449, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '' },
     ],
   },
   {
@@ -927,8 +927,8 @@ export const PRODUCTS_DATA: Product[] = [
     isBestDeal: true,
     dealTag: '10% OFF • Luxury Eyeshadow Icon',
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 2650, originalPrice: 2950, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true },
-      { storeId: 'tira', storeName: 'Tira', price: 2750, originalPrice: 2950, shippingFee: 0, deliveryDays: '1-3 Days', inStock: true, purchaseUrl: 'https://www.tirabeauty.com' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 2650, originalPrice: 2950, shippingFee: 0, deliveryDays: '2-3 Days', inStock: true, purchaseUrl: '', isLowestPrice: true },
+      { storeId: 'tira', storeName: 'Tira', price: 2750, originalPrice: 2950, shippingFee: 0, deliveryDays: '1-3 Days', inStock: true, purchaseUrl: '' },
     ],
   },
   {
@@ -964,9 +964,9 @@ export const PRODUCTS_DATA: Product[] = [
     dealScore: 92,
     dealTag: '14% OFF • Sensitive Skin Favorite',
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 385, originalPrice: 450, shippingFee: 0, couponCode: 'SIMPLE10', couponDiscount: 20, totalCost: 365, deliveryDays: '2-3 Days', inStock: true, stockStatus: 'In Stock', purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true, lastUpdated: '10 mins ago' },
-      { storeId: 'amazon', storeName: 'Amazon India', price: 399, originalPrice: 450, shippingFee: 0, totalCost: 399, deliveryDays: '1 Day', inStock: true, stockStatus: 'In Stock', purchaseUrl: 'https://www.amazon.in', lastUpdated: '25 mins ago' },
-      { storeId: 'purplle', storeName: 'Purplle', price: 410, originalPrice: 450, shippingFee: 49, totalCost: 459, deliveryDays: '3-5 Days', inStock: true, stockStatus: 'In Stock', purchaseUrl: 'https://www.purplle.com', lastUpdated: '1 hour ago' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 385, originalPrice: 450, shippingFee: 0, totalCost: 365, deliveryDays: '2-3 Days', inStock: true, stockStatus: 'In Stock', purchaseUrl: '', isLowestPrice: true, lastUpdated: '10 mins ago' },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 399, originalPrice: 450, shippingFee: 0, totalCost: 399, deliveryDays: '1 Day', inStock: true, stockStatus: 'In Stock', purchaseUrl: '', lastUpdated: '25 mins ago' },
+      { storeId: 'purplle', storeName: 'Purplle', price: 410, originalPrice: 450, shippingFee: 49, totalCost: 459, deliveryDays: '3-5 Days', inStock: true, stockStatus: 'In Stock', purchaseUrl: '', lastUpdated: '1 hour ago' },
     ],
   },
   {
@@ -1001,9 +1001,9 @@ export const PRODUCTS_DATA: Product[] = [
     dealScore: 88,
     dealTag: '5% OFF • Science-Backed Bond Repair',
     storeOffers: [
-      { storeId: 'amazon', storeName: 'Amazon India', price: 569, originalPrice: 599, shippingFee: 0, totalCost: 569, deliveryDays: '1 Day', inStock: true, stockStatus: 'In Stock', purchaseUrl: 'https://www.amazon.in', isLowestPrice: true, lastUpdated: '15 mins ago' },
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 599, originalPrice: 599, shippingFee: 0, totalCost: 599, deliveryDays: '2-3 Days', inStock: true, stockStatus: 'In Stock', purchaseUrl: 'https://www.nykaa.com', lastUpdated: '30 mins ago' },
-      { storeId: 'purplle', storeName: 'Purplle', price: 599, originalPrice: 599, shippingFee: 49, totalCost: 648, deliveryDays: '3-4 Days', inStock: true, stockStatus: 'In Stock', purchaseUrl: 'https://www.purplle.com', lastUpdated: '2 hours ago' },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 569, originalPrice: 599, shippingFee: 0, totalCost: 569, deliveryDays: '1 Day', inStock: true, stockStatus: 'In Stock', purchaseUrl: '', isLowestPrice: true, lastUpdated: '15 mins ago' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 599, originalPrice: 599, shippingFee: 0, totalCost: 599, deliveryDays: '2-3 Days', inStock: true, stockStatus: 'In Stock', purchaseUrl: '', lastUpdated: '30 mins ago' },
+      { storeId: 'purplle', storeName: 'Purplle', price: 599, originalPrice: 599, shippingFee: 49, totalCost: 648, deliveryDays: '3-4 Days', inStock: true, stockStatus: 'In Stock', purchaseUrl: '', lastUpdated: '2 hours ago' },
     ],
   },
   {
@@ -1039,9 +1039,9 @@ export const PRODUCTS_DATA: Product[] = [
     dealScore: 94,
     dealTag: '20% OFF • Bestseller for Smooth Skin',
     storeOffers: [
-      { storeId: 'nykaa', storeName: 'Nykaa', price: 399, originalPrice: 499, shippingFee: 0, couponCode: 'PLAY10', couponDiscount: 20, totalCost: 379, deliveryDays: '2-3 Days', inStock: true, stockStatus: 'In Stock', purchaseUrl: 'https://www.nykaa.com', isLowestPrice: true, lastUpdated: '5 mins ago' },
-      { storeId: 'amazon', storeName: 'Amazon India', price: 419, originalPrice: 499, shippingFee: 0, totalCost: 419, deliveryDays: '1 Day', inStock: true, stockStatus: 'In Stock', purchaseUrl: 'https://www.amazon.in', lastUpdated: '40 mins ago' },
-      { storeId: 'purplle', storeName: 'Purplle', price: 429, originalPrice: 499, shippingFee: 49, totalCost: 478, deliveryDays: '3-5 Days', inStock: true, stockStatus: 'In Stock', purchaseUrl: 'https://www.purplle.com', lastUpdated: '1 hour ago' },
+      { storeId: 'nykaa', storeName: 'Nykaa', price: 399, originalPrice: 499, shippingFee: 0, totalCost: 379, deliveryDays: '2-3 Days', inStock: true, stockStatus: 'In Stock', purchaseUrl: '', isLowestPrice: true, lastUpdated: '5 mins ago' },
+      { storeId: 'amazon', storeName: 'Amazon India', price: 419, originalPrice: 499, shippingFee: 0, totalCost: 419, deliveryDays: '1 Day', inStock: true, stockStatus: 'In Stock', purchaseUrl: '', lastUpdated: '40 mins ago' },
+      { storeId: 'purplle', storeName: 'Purplle', price: 429, originalPrice: 499, shippingFee: 49, totalCost: 478, deliveryDays: '3-5 Days', inStock: true, stockStatus: 'In Stock', purchaseUrl: '', lastUpdated: '1 hour ago' },
     ],
   },
 
@@ -1092,7 +1092,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-minimalist-sun-40/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1104,7 +1104,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-minimalist-sun-40',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1116,7 +1116,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-minimalist-sun-40',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1128,7 +1128,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MINIMALIST-SUN-40',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1140,7 +1140,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-minimalist-sun-40/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -1192,7 +1192,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-aqual-glow-sun-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1204,7 +1204,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-aqual-glow-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1216,7 +1216,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-aqual-glow-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1228,7 +1228,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-AQUAL-GLOW-SUN-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1240,7 +1240,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-aqual-glow-sun-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -1292,7 +1292,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-drsheths-ceramide-sun-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1304,7 +1304,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-drsheths-ceramide-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1316,7 +1316,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-drsheths-ceramide-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1328,7 +1328,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DRSHETHS-CERAMIDE-SUN-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1340,7 +1340,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-drsheths-ceramide-sun-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -1392,7 +1392,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-neutrogena-sheer-sun-88/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1404,7 +1404,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-neutrogena-sheer-sun-88',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1416,7 +1416,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-neutrogena-sheer-sun-88',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1428,7 +1428,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-NEUTROGENA-SHEER-SUN-88',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1440,7 +1440,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-neutrogena-sheer-sun-88/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -1492,7 +1492,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-foxtale-glow-sun-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1504,7 +1504,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-foxtale-glow-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1516,7 +1516,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-foxtale-glow-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1528,7 +1528,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-FOXTALE-GLOW-SUN-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1540,7 +1540,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-foxtale-glow-sun-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -1592,7 +1592,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-conscious-sundrink-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1604,7 +1604,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-conscious-sundrink-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1616,7 +1616,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-conscious-sundrink-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1628,7 +1628,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-CONSCIOUS-SUNDRINK-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1640,7 +1640,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-conscious-sundrink-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -1692,7 +1692,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-dotkey-cica-sun-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1704,7 +1704,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-dotkey-cica-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1716,7 +1716,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-dotkey-cica-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1728,7 +1728,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DOTKEY-CICA-SUN-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1740,7 +1740,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-dotkey-cica-sun-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -1792,7 +1792,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-plum-rice-sun-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1804,7 +1804,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-plum-rice-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1816,7 +1816,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-plum-rice-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1828,7 +1828,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-PLUM-RICE-SUN-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1840,7 +1840,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-plum-rice-sun-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -1892,7 +1892,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-dermaco-zinc-sun-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1904,7 +1904,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-dermaco-zinc-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1916,7 +1916,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-dermaco-zinc-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -1928,7 +1928,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DERMACO-ZINC-SUN-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -1940,7 +1940,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-dermaco-zinc-sun-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -1992,7 +1992,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-minimalist-multi-sun-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2004,7 +2004,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-minimalist-multi-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2016,7 +2016,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-minimalist-multi-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2028,7 +2028,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MINIMALIST-MULTI-SUN-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2040,7 +2040,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-minimalist-multi-sun-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -2092,7 +2092,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-aqual-rad-sun-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2104,7 +2104,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-aqual-rad-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2116,7 +2116,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-aqual-rad-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2128,7 +2128,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-AQUAL-RAD-SUN-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2140,7 +2140,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-aqual-rad-sun-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -2192,7 +2192,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-reequil-omcfree-sun-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2204,7 +2204,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-reequil-omcfree-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2216,7 +2216,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-reequil-omcfree-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2228,7 +2228,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-REEQUIL-OMCFREE-SUN-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2240,7 +2240,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-reequil-omcfree-sun-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -2292,7 +2292,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-cetaphil-lightgel-sun-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2304,7 +2304,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-cetaphil-lightgel-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2316,7 +2316,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-cetaphil-lightgel-sun-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2328,7 +2328,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-CETAPHIL-LIGHTGEL-SUN-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2340,7 +2340,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-cetaphil-lightgel-sun-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -2392,7 +2392,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-minimalist-salicylic-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2404,7 +2404,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-minimalist-salicylic-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2416,7 +2416,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-minimalist-salicylic-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2428,7 +2428,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MINIMALIST-SALICYLIC-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2440,7 +2440,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-minimalist-salicylic-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -2492,7 +2492,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-minimalist-vitc-16-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2504,7 +2504,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-minimalist-vitc-16-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2516,7 +2516,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-minimalist-vitc-16-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2528,7 +2528,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MINIMALIST-VITC-16-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2540,7 +2540,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-minimalist-vitc-16-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -2592,7 +2592,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-dermaco-kojic-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2604,7 +2604,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-dermaco-kojic-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2616,7 +2616,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-dermaco-kojic-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2628,7 +2628,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DERMACO-KOJIC-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2640,7 +2640,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-dermaco-kojic-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -2692,7 +2692,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-dermaco-vitc-10-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2704,7 +2704,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-dermaco-vitc-10-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2716,7 +2716,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-dermaco-vitc-10-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2728,7 +2728,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DERMACO-VITC-10-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2740,7 +2740,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-dermaco-vitc-10-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -2792,7 +2792,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-loreal-hyaluronic-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2804,7 +2804,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-loreal-hyaluronic-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2816,7 +2816,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-loreal-hyaluronic-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2828,7 +2828,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-LOREAL-HYALURONIC-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2840,7 +2840,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-loreal-hyaluronic-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -2892,7 +2892,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-dotkey-niacin-10-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2904,7 +2904,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-dotkey-niacin-10-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2916,7 +2916,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-dotkey-niacin-10-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -2928,7 +2928,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DOTKEY-NIACIN-10-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -2940,7 +2940,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-dotkey-niacin-10-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -2992,7 +2992,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-foxtale-vitc-15-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3004,7 +3004,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-foxtale-vitc-15-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3016,7 +3016,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-foxtale-vitc-15-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3028,7 +3028,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-FOXTALE-VITC-15-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3040,7 +3040,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-foxtale-vitc-15-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -3092,7 +3092,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-deconstruct-clearing-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3104,7 +3104,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-deconstruct-clearing-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3116,7 +3116,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-deconstruct-clearing-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3128,7 +3128,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DECONSTRUCT-CLEARING-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3140,7 +3140,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-deconstruct-clearing-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -3192,7 +3192,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-plum-niacin-2-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3204,7 +3204,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-plum-niacin-2-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3216,7 +3216,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-plum-niacin-2-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3228,7 +3228,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-PLUM-NIACIN-2-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3240,7 +3240,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-plum-niacin-2-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -3292,7 +3292,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-conscious-trubiom-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3304,7 +3304,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-conscious-trubiom-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3316,7 +3316,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-conscious-trubiom-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3328,7 +3328,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-CONSCIOUS-TRUBIOM-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3340,7 +3340,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-conscious-trubiom-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -3392,7 +3392,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-drsheths-centella-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3404,7 +3404,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-drsheths-centella-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3416,7 +3416,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-drsheths-centella-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3428,7 +3428,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DRSHETHS-CENTELLA-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3440,7 +3440,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-drsheths-centella-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -3492,7 +3492,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-minimalist-retinol-03-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3504,7 +3504,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-minimalist-retinol-03-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3516,7 +3516,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-minimalist-retinol-03-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3528,7 +3528,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MINIMALIST-RETINOL-03-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3540,7 +3540,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-minimalist-retinol-03-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -3592,7 +3592,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-ordinary-niacinamide-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3604,7 +3604,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-ordinary-niacinamide-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3616,7 +3616,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-ordinary-niacinamide-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3628,7 +3628,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-ORDINARY-NIACINAMIDE-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3640,7 +3640,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-ordinary-niacinamide-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -3692,7 +3692,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-dotkey-vitc-20-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3704,7 +3704,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-dotkey-vitc-20-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3716,7 +3716,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-dotkey-vitc-20-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3728,7 +3728,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DOTKEY-VITC-20-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3740,7 +3740,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-dotkey-vitc-20-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -3792,7 +3792,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-dermaco-salicylic-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3804,7 +3804,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-dermaco-salicylic-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3816,7 +3816,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-dermaco-salicylic-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3828,7 +3828,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DERMACO-SALICYLIC-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3840,7 +3840,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-dermaco-salicylic-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -3892,7 +3892,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-minimalist-marula-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3904,7 +3904,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-minimalist-marula-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3916,7 +3916,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-minimalist-marula-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -3928,7 +3928,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MINIMALIST-MARULA-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -3940,7 +3940,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-minimalist-marula-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -3992,7 +3992,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-minimalist-sepicalm-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4004,7 +4004,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-minimalist-sepicalm-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4016,7 +4016,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-minimalist-sepicalm-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4028,7 +4028,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MINIMALIST-SEPICALM-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4040,7 +4040,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-minimalist-sepicalm-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -4092,7 +4092,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-neutrogena-hydroboost-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4104,7 +4104,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-neutrogena-hydroboost-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4116,7 +4116,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-neutrogena-hydroboost-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4128,7 +4128,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-NEUTROGENA-HYDROBOOST-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4140,7 +4140,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-neutrogena-hydroboost-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -4192,7 +4192,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-plum-greentea-moist-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4204,7 +4204,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-plum-greentea-moist-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4216,7 +4216,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-plum-greentea-moist-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4228,7 +4228,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-PLUM-GREENTEA-MOIST-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4240,7 +4240,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-plum-greentea-moist-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -4292,7 +4292,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-cetaphil-moist-cream-100/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4304,7 +4304,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-cetaphil-moist-cream-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4316,7 +4316,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-cetaphil-moist-cream-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4328,7 +4328,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-CETAPHIL-MOIST-CREAM-100',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4340,7 +4340,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-cetaphil-moist-cream-100/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -4392,7 +4392,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-bioderma-atoderm-baume-75/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4404,7 +4404,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-bioderma-atoderm-baume-75',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4416,7 +4416,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-bioderma-atoderm-baume-75',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4428,7 +4428,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-BIODERMA-ATODERM-BAUME-75',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4440,7 +4440,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-bioderma-atoderm-baume-75/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -4492,7 +4492,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-formularx-barrier-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4504,7 +4504,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-formularx-barrier-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4516,7 +4516,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-formularx-barrier-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4528,7 +4528,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-FORMULARX-BARRIER-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4540,7 +4540,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-formularx-barrier-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -4592,7 +4592,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-drsheths-haldi-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4604,7 +4604,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-drsheths-haldi-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4616,7 +4616,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-drsheths-haldi-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4628,7 +4628,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DRSHETHS-HALDI-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4640,7 +4640,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-drsheths-haldi-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -4692,7 +4692,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-dotkey-probiotic-gel-60/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4704,7 +4704,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-dotkey-probiotic-gel-60',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4716,7 +4716,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-dotkey-probiotic-gel-60',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4728,7 +4728,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DOTKEY-PROBIOTIC-GEL-60',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4740,7 +4740,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-dotkey-probiotic-gel-60/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -4792,7 +4792,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-dermaco-ceramide-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4804,7 +4804,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-dermaco-ceramide-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4816,7 +4816,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-dermaco-ceramide-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4828,7 +4828,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DERMACO-CERAMIDE-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4840,7 +4840,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-dermaco-ceramide-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -4892,7 +4892,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-aqual-jello-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4904,7 +4904,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-aqual-jello-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4916,7 +4916,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-aqual-jello-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -4928,7 +4928,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-AQUAL-JELLO-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -4940,7 +4940,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-aqual-jello-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -4992,7 +4992,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-foxtale-supercream-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5004,7 +5004,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-foxtale-supercream-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5016,7 +5016,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-foxtale-supercream-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5028,7 +5028,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-FOXTALE-SUPERCREAM-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5040,7 +5040,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-foxtale-supercream-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -5092,7 +5092,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-conscious-indulge-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5104,7 +5104,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-conscious-indulge-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5116,7 +5116,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-conscious-indulge-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5128,7 +5128,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-CONSCIOUS-INDULGE-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5140,7 +5140,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-conscious-indulge-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -5192,7 +5192,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-minimalist-salicylic-cleanser-100/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5204,7 +5204,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-minimalist-salicylic-cleanser-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5216,7 +5216,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-minimalist-salicylic-cleanser-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5228,7 +5228,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MINIMALIST-SALICYLIC-CLEANSER-100',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5240,7 +5240,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-minimalist-salicylic-cleanser-100/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -5292,7 +5292,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-minimalist-oat-cleanser-100/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5304,7 +5304,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-minimalist-oat-cleanser-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5316,7 +5316,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-minimalist-oat-cleanser-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5328,7 +5328,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MINIMALIST-OAT-CLEANSER-100',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5340,7 +5340,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-minimalist-oat-cleanser-100/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -5392,7 +5392,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-dermaco-salicylic-wash-100/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5404,7 +5404,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-dermaco-salicylic-wash-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5416,7 +5416,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-dermaco-salicylic-wash-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5428,7 +5428,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DERMACO-SALICYLIC-WASH-100',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5440,7 +5440,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-dermaco-salicylic-wash-100/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -5492,7 +5492,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-dotkey-barrier-cleanser-100/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5504,7 +5504,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-dotkey-barrier-cleanser-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5516,7 +5516,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-dotkey-barrier-cleanser-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5528,7 +5528,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DOTKEY-BARRIER-CLEANSER-100',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5540,7 +5540,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-dotkey-barrier-cleanser-100/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -5592,7 +5592,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-plum-greentea-wash-100/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5604,7 +5604,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-plum-greentea-wash-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5616,7 +5616,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-plum-greentea-wash-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5628,7 +5628,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-PLUM-GREENTEA-WASH-100',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5640,7 +5640,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-plum-greentea-wash-100/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -5692,7 +5692,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-simple-refresh-wash-150/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5704,7 +5704,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-simple-refresh-wash-150',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5716,7 +5716,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-simple-refresh-wash-150',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5728,7 +5728,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-SIMPLE-REFRESH-WASH-150',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5740,7 +5740,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-simple-refresh-wash-150/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -5792,7 +5792,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-bioderma-sensibio-h2o-100/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5804,7 +5804,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-bioderma-sensibio-h2o-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5816,7 +5816,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-bioderma-sensibio-h2o-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5828,7 +5828,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-BIODERMA-SENSIBIO-H2O-100',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5840,7 +5840,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-bioderma-sensibio-h2o-100/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -5892,7 +5892,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-cetaphil-daily-cleanser-125/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5904,7 +5904,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-cetaphil-daily-cleanser-125',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5916,7 +5916,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-cetaphil-daily-cleanser-125',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -5928,7 +5928,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-CETAPHIL-DAILY-CLEANSER-125',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -5940,7 +5940,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-cetaphil-daily-cleanser-125/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -5992,7 +5992,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-cerave-hydrating-cleanser-236/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6004,7 +6004,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-cerave-hydrating-cleanser-236',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6016,7 +6016,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-cerave-hydrating-cleanser-236',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6028,7 +6028,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-CERAVE-HYDRATING-CLEANSER-236',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6040,7 +6040,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-cerave-hydrating-cleanser-236/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -6092,7 +6092,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-drsheths-oil-cleanser-100/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6104,7 +6104,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-drsheths-oil-cleanser-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6116,7 +6116,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-drsheths-oil-cleanser-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6128,7 +6128,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-DRSHETHS-OIL-CLEANSER-100',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6140,7 +6140,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-drsheths-oil-cleanser-100/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -6192,7 +6192,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-foxtale-duet-cleanser-100/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6204,7 +6204,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-foxtale-duet-cleanser-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6216,7 +6216,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-foxtale-duet-cleanser-100',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6228,7 +6228,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-FOXTALE-DUET-CLEANSER-100',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6240,7 +6240,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-foxtale-duet-cleanser-100/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -6292,7 +6292,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-loreal-truematch-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6304,7 +6304,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-loreal-truematch-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6316,7 +6316,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-loreal-truematch-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6328,7 +6328,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-LOREAL-TRUEMATCH-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6340,7 +6340,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-loreal-truematch-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -6392,7 +6392,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-maybelline-superstay-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6404,7 +6404,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-maybelline-superstay-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6416,7 +6416,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-maybelline-superstay-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6428,7 +6428,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MAYBELLINE-SUPERSTAY-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6440,7 +6440,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-maybelline-superstay-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -6492,7 +6492,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-mac-studiofix-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6504,7 +6504,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-mac-studiofix-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6516,7 +6516,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-mac-studiofix-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6528,7 +6528,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MAC-STUDIOFIX-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6540,7 +6540,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-mac-studiofix-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -6592,7 +6592,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-kaybeauty-hydrating-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6604,7 +6604,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-kaybeauty-hydrating-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6616,7 +6616,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-kaybeauty-hydrating-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6628,7 +6628,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-KAYBEAUTY-HYDRATING-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6640,7 +6640,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-kaybeauty-hydrating-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -6692,7 +6692,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-lakme-9to5-foundation-25/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6704,7 +6704,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-lakme-9to5-foundation-25',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6716,7 +6716,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-lakme-9to5-foundation-25',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6728,7 +6728,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-LAKME-9TO5-FOUNDATION-25',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6740,7 +6740,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-lakme-9to5-foundation-25/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -6792,7 +6792,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-sugar-aceofface-12/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6804,7 +6804,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-sugar-aceofface-12',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6816,7 +6816,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-sugar-aceofface-12',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6828,7 +6828,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-SUGAR-ACEOFFACE-12',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6840,7 +6840,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-sugar-aceofface-12/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -6892,7 +6892,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-colorbar-24hrs-25/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6904,7 +6904,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-colorbar-24hrs-25',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6916,7 +6916,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-colorbar-24hrs-25',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -6928,7 +6928,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-COLORBAR-24HRS-25',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -6940,7 +6940,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-colorbar-24hrs-25/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -6992,7 +6992,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-nykaa-alldaymatte-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7004,7 +7004,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-nykaa-alldaymatte-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7016,7 +7016,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-nykaa-alldaymatte-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7028,7 +7028,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-NYKAA-ALLDAYMATTE-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7040,7 +7040,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-nykaa-alldaymatte-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -7092,7 +7092,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-swiss-highcover-50/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7104,7 +7104,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-swiss-highcover-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7116,7 +7116,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-swiss-highcover-50',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7128,7 +7128,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-SWISS-HIGHCOVER-50',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7140,7 +7140,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-swiss-highcover-50/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -7192,7 +7192,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-plum-softblend-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7204,7 +7204,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-plum-softblend-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7216,7 +7216,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-plum-softblend-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7228,7 +7228,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-PLUM-SOFTBLEND-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7240,7 +7240,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-plum-softblend-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -7292,7 +7292,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-clinique-evenbetter-30/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7304,7 +7304,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-clinique-evenbetter-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7316,7 +7316,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-clinique-evenbetter-30',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7328,7 +7328,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-CLINIQUE-EVENBETTER-30',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7340,7 +7340,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-clinique-evenbetter-30/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -7392,7 +7392,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-maybelline-matteink-pioneer-5/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7404,7 +7404,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-maybelline-matteink-pioneer-5',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7416,7 +7416,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-maybelline-matteink-pioneer-5',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7428,7 +7428,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MAYBELLINE-MATTEINK-PIONEER-5',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7440,7 +7440,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-maybelline-matteink-pioneer-5/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -7492,7 +7492,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-mac-powderkiss-chili-3/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7504,7 +7504,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-mac-powderkiss-chili-3',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7516,7 +7516,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-mac-powderkiss-chili-3',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7528,7 +7528,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MAC-POWDERKISS-CHILI-3',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7540,7 +7540,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-mac-powderkiss-chili-3/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -7592,7 +7592,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-kaybeauty-drama-rollon-38/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7604,7 +7604,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-kaybeauty-drama-rollon-38',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7616,7 +7616,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-kaybeauty-drama-rollon-38',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7628,7 +7628,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-KAYBEAUTY-DRAMA-ROLLON-38',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7640,7 +7640,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-kaybeauty-drama-rollon-38/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -7692,7 +7692,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-nykaa-ultramatte-diana-38/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7704,7 +7704,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-nykaa-ultramatte-diana-38',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7716,7 +7716,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-nykaa-ultramatte-diana-38',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7728,7 +7728,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-NYKAA-ULTRAMATTE-DIANA-38',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7740,7 +7740,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-nykaa-ultramatte-diana-38/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -7792,7 +7792,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-sugar-matteashell-scarlett-28/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7804,7 +7804,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-sugar-matteashell-scarlett-28',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7816,7 +7816,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-sugar-matteashell-scarlett-28',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7828,7 +7828,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-SUGAR-MATTEASHELL-SCARLETT-28',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7840,7 +7840,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-sugar-matteashell-scarlett-28/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -7892,7 +7892,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-plum-matteheaven-pink-45/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7904,7 +7904,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-plum-matteheaven-pink-45',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7916,7 +7916,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-plum-matteheaven-pink-45',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -7928,7 +7928,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-PLUM-MATTEHEAVEN-PINK-45',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -7940,7 +7940,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-plum-matteheaven-pink-45/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -7992,7 +7992,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-colorbar-velvetmatte-bare-42/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8004,7 +8004,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-colorbar-velvetmatte-bare-42',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8016,7 +8016,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-colorbar-velvetmatte-bare-42',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8028,7 +8028,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-COLORBAR-VELVETMATTE-BARE-42',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8040,7 +8040,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-colorbar-velvetmatte-bare-42/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -8092,7 +8092,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-lakme-forevermatte-redcarpet-56/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8104,7 +8104,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-lakme-forevermatte-redcarpet-56',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8116,7 +8116,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-lakme-forevermatte-redcarpet-56',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8128,7 +8128,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-LAKME-FOREVERMATTE-REDCARPET-56',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8140,7 +8140,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-lakme-forevermatte-redcarpet-56/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -8192,7 +8192,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-maybelline-creamymatte-spice-39/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8204,7 +8204,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-maybelline-creamymatte-spice-39',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8216,7 +8216,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-maybelline-creamymatte-spice-39',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8228,7 +8228,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MAYBELLINE-CREAMYMATTE-SPICE-39',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8240,7 +8240,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-maybelline-creamymatte-spice-39/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -8292,7 +8292,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-maybelline-agerewind-light-6/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8304,7 +8304,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-maybelline-agerewind-light-6',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8316,7 +8316,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-maybelline-agerewind-light-6',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8328,7 +8328,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MAYBELLINE-AGEREWIND-LIGHT-6',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8340,7 +8340,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-maybelline-agerewind-light-6/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -8392,7 +8392,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-loreal-infallible-concealer-10/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8404,7 +8404,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-loreal-infallible-concealer-10',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8416,7 +8416,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-loreal-infallible-concealer-10',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8428,7 +8428,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-LOREAL-INFALLIBLE-CONCEALER-10',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8440,7 +8440,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-loreal-infallible-concealer-10/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -8492,7 +8492,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-kaybeauty-hd-concealer-5/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8504,7 +8504,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-kaybeauty-hd-concealer-5',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8516,7 +8516,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-kaybeauty-hd-concealer-5',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8528,7 +8528,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-KAYBEAUTY-HD-CONCEALER-5',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8540,7 +8540,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-kaybeauty-hd-concealer-5/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -8592,7 +8592,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-mac-studiofix-concealer-7/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8604,7 +8604,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-mac-studiofix-concealer-7',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8616,7 +8616,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-mac-studiofix-concealer-7',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8628,7 +8628,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-MAC-STUDIOFIX-CONCEALER-7',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8640,7 +8640,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-mac-studiofix-concealer-7/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],
@@ -8692,7 +8692,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.nykaa.com/beauty-swiss-concealer-02-56/p/1001',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8704,7 +8704,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.tirabeauty.com/product/beauty-swiss-concealer-02-56',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8716,7 +8716,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.purplle.com/product/beauty-swiss-concealer-02-56',
+        purchaseUrl: '',
         isLowestPrice: false,
       },
       {
@@ -8728,7 +8728,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.amazon.in/dp/BEAUTY-SWISS-CONCEALER-02-56',
+        purchaseUrl: '',
         isLowestPrice: true,
       },
       {
@@ -8740,7 +8740,7 @@ export const PRODUCTS_DATA: Product[] = [
         deliveryDays: '2-4 Days',
         inStock: true,
         stockStatus: 'In Stock',
-        purchaseUrl: 'https://www.myntra.com/beauty-swiss-concealer-02-56/buy',
+        purchaseUrl: '',
         isLowestPrice: false,
       }
     ],

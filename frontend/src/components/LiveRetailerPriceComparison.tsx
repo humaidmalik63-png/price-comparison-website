@@ -223,7 +223,9 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
       const listedPrice = sourceMatch?.current_price ?? compOffer?.listedPrice ?? local?.price;
       const mrp = sourceMatch?.original_price ?? compOffer?.mrp ?? local?.originalPrice;
       const discountPct = mrp && listedPrice && mrp > listedPrice ? Math.round(((mrp - listedPrice) / mrp) * 100) : 0;
-      const purchaseUrl = sourceMatch?.product_url ?? compOffer?.purchaseUrl ?? local?.purchaseUrl ?? `https://www.${cleanKey}.com`;
+      // Phase 14 Stage D: a retailer homepage is not a purchase link. The link
+      // is only used when a source actually provided a product URL.
+      const purchaseUrl = sourceMatch?.product_url ?? compOffer?.purchaseUrl ?? local?.purchaseUrl ?? '';
 
       return {
         retailerName: name,
@@ -561,16 +563,25 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
                   </div>
                 )}
 
-                {/* Direct Retailer Link */}
-                <a
-                  href={offer.purchaseUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2.5 rounded-xl text-xs font-bold tracking-wide transition-all shadow-xs flex items-center space-x-1.5 shrink-0 bg-espresso-900 hover:bg-espresso-950 text-ivory"
-                >
-                  <span>Visit {offer.retailerName}</span>
-                  <ExternalLink className="w-3 h-3 ml-0.5" />
-                </a>
+                {/* Direct Retailer Link - only rendered when a verified product URL exists */}
+                {offer.purchaseUrl ? (
+                  <a
+                    href={offer.purchaseUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2.5 rounded-xl text-xs font-bold tracking-wide transition-all shadow-xs flex items-center space-x-1.5 shrink-0 bg-espresso-900 hover:bg-espresso-950 text-ivory"
+                  >
+                    <span>Visit {offer.retailerName}</span>
+                    <ExternalLink className="w-3 h-3 ml-0.5" />
+                  </a>
+                ) : (
+                  <div
+                    className="px-4 py-2.5 rounded-xl text-xs font-bold tracking-wide flex items-center space-x-1.5 shrink-0 bg-ivory-200 text-espresso-500 border border-rose-100"
+                    title="No authorised retailer feed is connected, so no live product link is available"
+                  >
+                    <span>Live link unavailable</span>
+                  </div>
+                )}
               </div>
             </div>
           );

@@ -299,16 +299,25 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                           </div>
                         </div>
 
-                        {/* Configurable Purchase CTA */}
-                        <a
-                          href={offer.purchaseUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-4 py-2.5 rounded-xl bg-espresso-800 hover:bg-espresso-950 text-ivory text-xs font-semibold tracking-wide transition-all shadow-xs flex items-center space-x-1 shrink-0"
-                        >
-                          <span>Buy Now (Demo)</span>
-                          <ExternalLink className="w-3 h-3 ml-1" />
-                        </a>
+                        {/* Purchase CTA - only rendered for a verified product link */}
+                        {offer.purchaseUrl ? (
+                          <a
+                            href={offer.purchaseUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-4 py-2.5 rounded-xl bg-espresso-800 hover:bg-espresso-950 text-ivory text-xs font-semibold tracking-wide transition-all shadow-xs flex items-center space-x-1 shrink-0"
+                          >
+                            <span>Buy Now</span>
+                            <ExternalLink className="w-3 h-3 ml-1" />
+                          </a>
+                        ) : (
+                          <span
+                            className="px-4 py-2.5 rounded-xl bg-ivory-200 text-espresso-500 border border-rose-100 text-xs font-semibold tracking-wide flex items-center space-x-1 shrink-0"
+                            title="No authorised retailer feed is connected, so no live product link is available"
+                          >
+                            Live link unavailable
+                          </span>
+                        )}
                       </div>
                     </div>
                   );

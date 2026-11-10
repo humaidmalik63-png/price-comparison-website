@@ -33,9 +33,10 @@ export interface RetailerOffer {
   originalPrice?: number;
   shippingFee: number | null; // 0 for free, null if unknown/not disclosed
   isShippingDisclosed?: boolean; // false if retailer doesn't disclose shipping beforehand
-  couponDiscount?: number; // verified coupon/discount amount in INR
-  couponCode?: string; // verified coupon code (e.g. "NYKBEAUTY10")
-  couponTerms?: string; // terms for coupon (e.g. "10% off up to ₹50")
+  couponDiscount?: number; // discount in INR, only set when the coupon has
+  // been validated against a recorded source - never an invented code
+  couponCode?: string; // coupon code, only present when validated
+  couponTerms?: string; // terms for the validated coupon
   totalCost?: number | null; // price + shipping - coupon (when shipping is known)
   deliveryDays: string;
   inStock: boolean;
@@ -46,6 +47,10 @@ export interface RetailerOffer {
   sourceType?: 'verified_live' | 'partner_feed' | 'cached' | 'manually_curated' | 'demo' | 'unavailable';
   dealExpiresAt?: string; // ISO date string or human readable
   matchClassification?: 'verified_match' | 'possible_match' | 'incompatible_mismatch';
+  // Phase 14 Stage D: link provenance. A purchase link is only shown when it
+  // has been verified to resolve to this exact product.
+  linkStatus?: 'verified' | 'demo_not_verified' | 'unavailable';
+  linkCheckedAt?: string;
 }
 
 export interface ReviewItem {
@@ -128,6 +133,12 @@ export interface Product {
   rating?: number;
   reviewCount?: number;
   image: string;
+  // Phase 14 Stage C: image provenance. 'placeholder' means no authentic
+  // packaging photograph has been verified for this product yet.
+  imageStatus?: 'verified_exact' | 'permission_review' | 'unverified' | 'placeholder';
+  imageSourceName?: string;
+  imageSourceUrl?: string;
+  imageLastChecked?: string;
   description: string;
   skinType?: string; // For skincare (e.g. "Oily, Combination, Acne-Prone")
   finish?: string; // For makeup (e.g. "Matte, Luminous, Dewy")

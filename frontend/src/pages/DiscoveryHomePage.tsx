@@ -197,7 +197,7 @@ export const DiscoveryHomePage: React.FC<DiscoveryHomePageProps> = ({
               Product Discovery & Price Comparison
             </h2>
             <p className="text-espresso-600 text-xs sm:text-sm mt-1">
-              Showing {filteredProducts.length} authentic beauty products with multi-store comparison across Nykaa, Tira, Amazon, Purplle, and Myntra.
+              Showing {filteredProducts.length} curated beauty products with multi-store comparison across Nykaa, Tira, Amazon, Purplle, and Myntra.
             </p>
           </div>
 
