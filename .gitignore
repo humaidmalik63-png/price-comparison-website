@@ -59,3 +59,6 @@ playwright_audit_results.json
 retailer_audit_results.json
 .neon
 node_modules/
+
+# Local verification build (not part of the project)
+frontend/dist-local/
