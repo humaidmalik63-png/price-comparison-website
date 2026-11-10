@@ -55,6 +55,11 @@ export interface BackendOffer {
   variant_name?: string;
   condition: string;
   offer_url: string;
+  // Phase 15: purchase_url is only populated for a link that was verified to
+  // resolve to this exact product. offer_url may still hold a synthetic
+  // SKU-shaped path and must never be used as a clickable link.
+  purchase_url?: string | null;
+  link_status?: string;
   coupon_code?: string;
   coupon_discount?: number;
   total_cost?: number;
@@ -151,7 +156,10 @@ function mapBackendOfferToFrontend(offer: BackendOffer): RetailerOffer {
     deliveryDays: '2-4 Days',
     inStock: offer.availability.toLowerCase().includes('stock'),
     stockStatus: offer.availability.toLowerCase().includes('stock') ? 'In Stock' : 'Out of Stock',
-    purchaseUrl: offer.offer_url,
+    // Phase 15: only a verified purchase link is usable. The raw offer_url
+    // may point at a synthetic SKU-shaped path that does not exist on the
+    // retailer site, so it must never become a clickable link.
+    purchaseUrl: offer.purchase_url ?? '',
     sourceType: (offer.source_type as RetailerOffer['sourceType']) || 'demo',
     lastUpdated: offer.last_checked ? new Date(offer.last_checked).toLocaleDateString('en-GB') : undefined,
     matchClassification: 'verified_match',

@@ -174,6 +174,13 @@ def test_price_comparison_never_exposes_an_unverified_purchase_link(client):
                 "an unverified offer exposed a purchase link: "
                 f"{offer.get('purchase_url')}"
             )
+            # The raw offer_url must not be published either: the client reads
+            # that field, and it can hold a synthetic SKU-shaped path that does
+            # not exist on the retailer site.
+            assert offer.get("offer_url") in (None, ""), (
+                "an unverified offer published a raw retailer URL: "
+                f"{offer.get('offer_url')}"
+            )
         # Demo pricing must never be labelled as live.
         assert offer["source_type"] in ("demo", "verified_live", "partner_feed", "cached", "manually_curated", "unavailable")
 

@@ -520,7 +520,10 @@ def _serialize_offer(offer: Offer) -> OfferSchema:
 
         condition=offer.condition,
 
-        offer_url=raw_url,
+        # The unverified URL is not published: the frontend reads
+        # offer_url, so publishing the synthetic SKU-shaped path here would
+        # still put a broken purchase link in front of a shopper.
+        offer_url=purchase_url or "",
 
         coupon_code=getattr(offer, "coupon_code", None),
 
