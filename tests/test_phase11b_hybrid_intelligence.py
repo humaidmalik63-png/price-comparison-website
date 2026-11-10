@@ -333,6 +333,48 @@ class TestProductMatchingSevenTiers:
 # =============================================================================
 
 class TestPriceVerificationService:
+    @pytest.fixture(autouse=True)
+    def _provision_users(self):
+        """Create the users this class needs instead of assuming user id 1.
+
+        These tests previously hardcoded ``user_id=1`` / ``uploaded_by=1`` and
+        only passed when another test module had already created that user in
+        the shared database. Provisioning the fixtures here makes the class
+        self-contained and order-independent.
+        """
+        from src.services.auth_service import get_user_by_email, register_user
+
+        created: dict[str, int] = {}
+        for label, email in (
+            ("customer", "phase11b_customer@example.com"),
+            ("admin", "phase11b_admin@example.com"),
+        ):
+            ok, _msg, user = register_user(
+                email=email,
+                password="Phase11bPass!",
+                display_name=f"Phase 11B {label.title()}",
+            )
+            if not ok:
+                # The fixture runs once per test; reuse the account created
+                # by an earlier test in this class instead of failing.
+                user = get_user_by_email(email)
+            assert user is not None, f"could not provision the {label} fixture user"
+            created[label] = user.id
+
+        # A product that exists in the catalogue and is visible to customers.
+        with get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT id FROM products WHERE is_active = 1 ORDER BY id LIMIT 1"
+            )
+            row = cursor.fetchone()
+        created["product_id"] = int(row["id"]) if row else 1
+
+        self.customer_id = created["customer"]
+        self.admin_id = created["admin"]
+        self.product_id = created["product_id"]
+        yield
+
     def test_deterministic_validation_guardrails(self):
         # Selling price <= 0 rejected
         valid, reason = validate_price_observation_data(
@@ -368,14 +410,14 @@ class TestPriceVerificationService:
         assert reason is None
 
     def test_evidence_reference_recording_and_retrieval(self):
-        # Use existing test user (id=1)
+        # Use the customer fixture provisioned for this test (no hardcoded id)
         evidence_id = record_evidence_reference(
             reference_type="manual_verification",
             reference_id=9999,
             evidence_url="/api/verification/evidence/proof_test_123.png",
             evidence_type="screenshot",
             description="Nykaa product page screenshot verification",
-            uploaded_by=1,
+            uploaded_by=self.customer_id,
         )
         assert evidence_id > 0
 
@@ -385,9 +427,9 @@ class TestPriceVerificationService:
 
     def test_admin_approval_and_rejection_workflow(self):
         admin_user = User(
-            id=1,
+            id=self.admin_id,
             display_name="Alex Demo",
-            email="demo@pricewise.ai",
+            email="phase11b_admin@example.com",
             password_hash="test",
             created_at="2026-11-09",
             status="active",
@@ -401,8 +443,9 @@ class TestPriceVerificationService:
                 INSERT INTO manual_verification_requests (
                     user_id, product_id, retailer, product_url, user_submitted_price,
                     size_volume, notes, status, submitted_at
-                ) VALUES (1, 1, 'Nykaa', 'https://www.nykaa.com/test-pdp', 549.0, '30ml', 'Test promo', 'pending', CURRENT_TIMESTAMP)
-                """
+                ) VALUES (?, ?, 'Nykaa', 'https://www.nykaa.com/test-pdp', 549.0, '30ml', 'Test promo', 'pending', CURRENT_TIMESTAMP)
+                """,
+                (self.customer_id, self.product_id),
             )
             req_id = cursor.lastrowid
 
