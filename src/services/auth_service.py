@@ -152,6 +152,8 @@ def register_user(
             password_hash=pwd_hash,
             created_at=now_str,
             status="active",
+            is_admin=False,
+            token_version=0,
         )
 
     return True, "Account registered successfully.", user
@@ -177,7 +179,7 @@ def authenticate_user(
         cursor = conn.cursor()
         cursor.execute(
             """
-            SELECT id, display_name, email, password_hash, created_at, status
+            SELECT id, display_name, email, password_hash, created_at, status, is_admin, token_version
             FROM users
             WHERE email = ?
             """,
@@ -203,6 +205,8 @@ def authenticate_user(
             password_hash=stored_hash,
             created_at=str(row["created_at"]),
             status=str(row["status"]),
+            is_admin=bool(row["is_admin"]),
+            token_version=int(row["token_version"] or 0),
         )
 
     return True, "Authentication successful.", user
@@ -218,7 +222,7 @@ def get_user_by_id(
     with get_connection(custom_path) as conn:
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT id, display_name, email, password_hash, created_at, status FROM users WHERE id = ?",
+            "SELECT id, display_name, email, password_hash, created_at, status, is_admin, token_version FROM users WHERE id = ?",
             (user_id,),
         )
         row = cursor.fetchone()
@@ -232,6 +236,8 @@ def get_user_by_id(
             password_hash=str(row["password_hash"]),
             created_at=str(row["created_at"]),
             status=str(row["status"]),
+            is_admin=bool(row["is_admin"]),
+            token_version=int(row["token_version"] or 0),
         )
 
 
@@ -249,7 +255,7 @@ def get_user_by_email(
     with get_connection(custom_path) as conn:
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT id, display_name, email, password_hash, created_at, status FROM users WHERE email = ?",
+            "SELECT id, display_name, email, password_hash, created_at, status, is_admin, token_version FROM users WHERE email = ?",
             (clean_email,),
         )
         row = cursor.fetchone()
@@ -263,6 +269,8 @@ def get_user_by_email(
             password_hash=str(row["password_hash"]),
             created_at=str(row["created_at"]),
             status=str(row["status"]),
+            is_admin=bool(row["is_admin"]),
+            token_version=int(row["token_version"] or 0),
         )
 
 
@@ -316,7 +324,7 @@ def change_password(
     with get_connection(custom_path) as conn:
         cursor = conn.cursor()
         cursor.execute(
-            "UPDATE users SET password_hash = ? WHERE id = ?",
+            "UPDATE users SET password_hash = ?, token_version = token_version + 1 WHERE id = ?",
             (new_hash, user_id),
         )
 
@@ -373,10 +381,15 @@ def generate_session_token(
     user_id: int,
     email: str,
     expires_in_seconds: int = DEFAULT_SESSION_DURATION_SECONDS,
+    token_version: int = 0,
 ) -> str:
     """
     Generate an HMAC-SHA256 signed session token for authenticated user.
     Token format: base64url(payload).base64url(signature)
+
+    ``token_version`` is embedded in the payload. Incrementing the stored
+    value invalidates every previously issued token (used when credentials
+    change).
     """
     now = int(time.time())
     payload = {
@@ -384,6 +397,7 @@ def generate_session_token(
         "email": normalize_email(email),
         "iat": now,
         "exp": now + expires_in_seconds,
+        "ver": int(token_version or 0),
     }
     payload_bytes = json.dumps(payload, separators=(",", ":"), sort_keys=True).encode("utf-8")
     payload_b64 = _base64url_encode(payload_bytes)
@@ -457,6 +471,11 @@ def get_authenticated_user_from_token(
 
     user = get_user_by_id(user_id, custom_path=custom_path)
     if not user or not user.is_active:
+        return None
+
+    # Phase 14 Stage B: a token whose embedded version no longer matches the
+    # stored value has been revoked (for example because the password changed).
+    if int(payload.get("ver", 0)) != int(user.token_version or 0):
         return None
 
     return user

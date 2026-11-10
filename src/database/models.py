@@ -273,6 +273,13 @@ class User:
     password_hash: str
     created_at: str
     status: str = "active"  # 'active', 'suspended', 'deactivated'
+    # Phase 14 Stage B: explicit administrator authorization. Administrator
+    # rights are granted by the seeder or by an audited database update and
+    # can never be obtained by self-registration.
+    is_admin: bool = False
+    # Incremented whenever the credentials change, so previously issued
+    # session tokens stop validating.
+    token_version: int = 0
 
     @property
     def is_active(self) -> bool:

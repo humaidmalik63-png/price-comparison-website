@@ -31,6 +31,11 @@ SECRET_KEY = (os.environ.get("SECRET_KEY") or "").strip()
 RATE_LIMIT_PER_MINUTE = int(os.environ.get("RATE_LIMIT_PER_MINUTE", "120"))
 MAX_UPLOAD_SIZE_BYTES = int(os.environ.get("MAX_UPLOAD_SIZE_BYTES", str(5 * 1024 * 1024)))  # 5 MB
 
+# Phase 14 Stage B: session cookies must carry the Secure attribute in every
+# environment that is served over TLS. Local HTTP development keeps the
+# cookie usable by leaving it unset there.
+SESSION_COOKIE_SECURE = ENVIRONMENT in ("production", "prod", "staging")
+
 # CORS Allowed Origins
 RAW_CORS_ORIGINS = os.environ.get("CORS_ORIGINS", "")
 CORS_ORIGINS = [o.strip() for o in RAW_CORS_ORIGINS.split(",") if o.strip()]

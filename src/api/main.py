@@ -37,8 +37,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.config import (
     APP_NAME,
     APP_VERSION,
+    DEMO_USER_EMAIL,
     ENVIRONMENT,
     IS_PRODUCTION,
+    MAX_UPLOAD_SIZE_BYTES,
+    RATE_LIMIT_PER_MINUTE,
+    SESSION_COOKIE_SECURE,
     CORS_ORIGINS as CONFIG_CORS_ORIGINS,
     validate_session_secret_configuration,
 )
@@ -290,6 +294,7 @@ from src.services.beauty_intelligence_advanced import (
 from src.services.live_comparison_engine import get_live_comparison_engine
 
 from src.api.auth_deps import get_current_user, get_optional_current_user
+from src.api import rate_limit
 
 from src.services.auth_service import register_user, authenticate_user, generate_session_token
 
@@ -427,6 +432,46 @@ async def add_security_headers_and_timing(request: Request, call_next):
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     if IS_PRODUCTION or request.url.scheme == "https":
         response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    return response
+
+
+@app.middleware("http")
+async def enforce_rate_limit(request: Request, call_next):
+    """Enforce the configured per-client request budget (Phase 14 Stage B).
+
+    ``RATE_LIMIT_PER_MINUTE`` was previously declared in configuration and in
+    ``render.yaml`` but never enforced. Health probes and API documentation
+    are exempt so an orchestrator can always poll the service.
+    """
+    if rate_limit.is_exempt(request.url.path):
+        return await call_next(request)
+
+    key = rate_limit.client_key_for(request)
+    allowed, remaining, retry_after = rate_limit.rate_limiter.check(key)
+
+    if not allowed:
+        logger.warning(
+            "Rate limit exceeded for client bucket (path=%s)", request.url.path
+        )
+        return JSONResponse(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            content={
+                "detail": (
+                    "Too many requests. Please retry in "
+                    f"{retry_after} second(s)."
+                ),
+                "retry_after_seconds": retry_after,
+            },
+            headers={
+                "Retry-After": str(retry_after),
+                "X-RateLimit-Limit": str(rate_limit.rate_limiter.requests_per_minute),
+                "X-RateLimit-Remaining": "0",
+            },
+        )
+
+    response = await call_next(request)
+    response.headers["X-RateLimit-Limit"] = str(rate_limit.rate_limiter.requests_per_minute)
+    response.headers["X-RateLimit-Remaining"] = str(remaining)
     return response
 
 
@@ -947,7 +992,7 @@ def api_register(req: RegisterRequest, response: Response) -> AuthResponse:
 
 
 
-    token = generate_session_token(user.id, user.email)
+    token = generate_session_token(user.id, user.email, token_version=user.token_version)
 
     response.set_cookie(
 
@@ -959,7 +1004,10 @@ def api_register(req: RegisterRequest, response: Response) -> AuthResponse:
 
         samesite="lax",
 
-        secure=False,
+        # Phase 14 Stage B: the cookie is marked Secure in every environment
+        # that is served over TLS (production, staging). Plain-HTTP local
+        # development keeps it usable.
+        secure=SESSION_COOKIE_SECURE,
 
         max_age=7 * 24 * 3600,
 
@@ -1025,7 +1073,7 @@ def api_login(req: LoginRequest, response: Response) -> AuthResponse:
 
 
 
-    token = generate_session_token(user.id, user.email)
+    token = generate_session_token(user.id, user.email, token_version=user.token_version)
 
     response.set_cookie(
 
@@ -1037,7 +1085,10 @@ def api_login(req: LoginRequest, response: Response) -> AuthResponse:
 
         samesite="lax",
 
-        secure=False,
+        # Phase 14 Stage B: the cookie is marked Secure in every environment
+        # that is served over TLS (production, staging). Plain-HTTP local
+        # development keeps it usable.
+        secure=SESSION_COOKIE_SECURE,
 
         max_age=7 * 24 * 3600,
 
@@ -2733,7 +2784,22 @@ os.makedirs(EVIDENCE_UPLOAD_DIR, exist_ok=True)
 
 ALLOWED_MIME_TYPES = {"image/png", "image/jpeg", "image/jpg", "image/webp"}
 
-MAX_EVIDENCE_BYTES = 5 * 1024 * 1024  # 5 MB
+# Phase 14 Stage B: the upload ceiling comes from configuration instead of a
+# hard-coded literal, so operators can tighten it without a code change.
+MAX_EVIDENCE_BYTES = MAX_UPLOAD_SIZE_BYTES
+
+# Phase 14 Stage B: the client supplied Content-Type is not trusted. The
+# actual file signature (magic bytes) is verified instead, so a renamed
+# executable or HTML document cannot be stored as an "image".
+def _detect_evidence_extension(contents: bytes):
+    """Return the extension implied by the file signature, or None when unknown."""
+    if contents.startswith(b"\x89PNG\r\n\x1a\n"):
+        return ".png"
+    if contents[:3] == b"\xff\xd8\xff":
+        return ".jpg"
+    if contents[:4] == b"RIFF" and contents[8:12] == b"WEBP":
+        return ".webp"
+    return None
 
 
 
@@ -2779,11 +2845,26 @@ async def api_upload_evidence(
 
     import uuid
 
-    raw_ext = os.path.splitext(file.filename or "")[1].lower()
+    # Phase 14 Stage B: verify the real file type and use a high-entropy
+    # filename. The client supplied name and extension are ignored entirely.
+    detected_ext = _detect_evidence_extension(contents)
 
-    ext = raw_ext if raw_ext in (".png", ".jpg", ".jpeg", ".webp") else ".png"
+    if detected_ext is None:
 
-    safe_filename = f"evidence_{uuid.uuid4().hex[:12]}{ext}"
+        raise HTTPException(
+
+            status_code=status.HTTP_400_BAD_REQUEST,
+
+            detail=(
+                "Unsupported file content. Allowed: PNG, JPEG, WEBP "
+                "(verified by file signature)."
+            ),
+
+        )
+
+    ext = detected_ext
+
+    safe_filename = f"evidence_{uuid.uuid4().hex}{ext}"
 
     dest_path = os.path.join(EVIDENCE_UPLOAD_DIR, safe_filename)
 
@@ -2833,7 +2914,25 @@ def api_get_evidence_file(filename: str):
 
         )
 
-    return FileResponse(target_path)
+    return FileResponse(
+
+        target_path,
+
+        headers={
+
+            # Never let the browser sniff the type of a stored upload.
+            "X-Content-Type-Options": "nosniff",
+
+            # Uploads are images only; block active content and framing.
+            "Content-Security-Policy": (
+                "default-src 'none'; img-src 'self'; sandbox"
+            ),
+
+            "Content-Disposition": "inline",
+
+        },
+
+    )
 
 
 
@@ -2848,10 +2947,55 @@ def api_get_evidence_file(filename: str):
 
 
 def is_admin_user(user: User) -> bool:
+    """Determine whether user has admin privileges for verification review.
 
-    """Determine whether user has admin privileges for verification review."""
+    Phase 14 Stage B (explicit administrator authorization):
 
-    return user.id == 1 or user.email.lower().endswith("@pricewise.ai") or getattr(user, "is_admin", False)
+    * The previous rule granted administrator rights to ``user.id == 1`` and to
+      **any** account whose e-mail address ended in ``@pricewise.ai``. Because
+      registration accepted arbitrary addresses, any visitor able to register
+      an ``@pricewise.ai`` address inherited full review rights.
+    * Administrator status is now an explicit, persisted ``users.is_admin``
+      flag. It is granted explicitly (seed administrator, or a direct audited
+      database update) and can never be obtained by self-registration.
+    """
+    if getattr(user, "is_admin", False):
+
+        return True
+
+    # Legacy compatibility: the very first account created by the local
+    # seeder is the demo administrator. It is honoured only when that account
+    # actually exists and is the seeded demo account, never for a
+    # self-registered address.
+    if user.id == 1:
+
+        try:
+
+            with get_connection() as conn:
+
+                cursor = conn.cursor()
+
+                cursor.execute(
+                    "SELECT is_admin, email FROM users WHERE id = ?", (user.id,)
+                )
+
+                row = cursor.fetchone()
+
+        except Exception:  # pragma: no cover - defensive
+
+            return False
+
+        if not row:
+
+            return False
+
+        if bool(row["is_admin"]):
+
+            return True
+
+        return str(row["email"] or "").lower() == DEMO_USER_EMAIL
+
+    return False
 
 
 

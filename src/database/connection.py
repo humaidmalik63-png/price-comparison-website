@@ -243,11 +243,25 @@ def _migrate_sqlite_schema(custom_path: str | None = None) -> None:
                 email TEXT UNIQUE NOT NULL COLLATE NOCASE,
                 password_hash TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                status TEXT DEFAULT 'active' CHECK(status IN ('active', 'suspended', 'deactivated'))
+                status TEXT DEFAULT 'active' CHECK(status IN ('active', 'suspended', 'deactivated')),
+                is_admin BOOLEAN DEFAULT 0,
+                token_version INTEGER DEFAULT 0
             )
             """
         )
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)")
+
+        # 4b. Phase 14 Stage B: administrator flag and session token version
+        # Schema-only, additive and idempotent. Administrator rights are never
+        # granted by a migration: the column defaults to 0 and is set
+        # explicitly by the seeder or by an audited database update.
+        cursor.execute("PRAGMA table_info(users)")
+        existing_user_cols = {row["name"] for row in cursor.fetchall()}
+        if existing_user_cols:
+            if "is_admin" not in existing_user_cols:
+                cursor.execute("ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT 0")
+            if "token_version" not in existing_user_cols:
+                cursor.execute("ALTER TABLE users ADD COLUMN token_version INTEGER DEFAULT 0")
 
         # 5. Phase 7: Ensure wishlist table exists
         cursor.execute(
@@ -818,6 +832,12 @@ def _migrate_postgres_schema() -> None:
         # 3. Indexes supporting the soft-archive filters
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_products_brand ON products(brand)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_products_is_active ON products(is_active)")
+
+        # 4. Phase 14 Stage B: explicit administrator flag and session token
+        #    version. Both are additive, idempotent and default to the
+        #    non-privileged value, so a migration can never grant rights.
+        cursor.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE")
+        cursor.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS token_version INTEGER DEFAULT 0")
 
         # 4. Report (never create) a missing relational schema. The portable
         #    DDL is SQLite-specific, so provisioning stays an explicit,

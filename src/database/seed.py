@@ -638,6 +638,16 @@ def seed_database(custom_path: str | None = None, force: bool = False, seed_demo
                 custom_path=custom_path,
             )
         if demo_user:
+            # Phase 14 Stage B: the seeded demo account is the only account
+            # that is granted administrator rights automatically. Explicit
+            # administrator authorisation replaced the previous rule that
+            # treated every "@pricewise.ai" address as an administrator.
+            with get_connection(custom_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "UPDATE users SET is_admin = 1 WHERE id = ?", (demo_user.id,)
+                )
+            demo_user.is_admin = True
             from src.services.product_service import get_products
             prods = get_products(custom_path=custom_path)
             macbook = next((p for p in prods if "LAP-MAC" in p.sku), prods[0] if prods else None)
