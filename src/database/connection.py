@@ -1,9 +1,13 @@
+import hashlib
+import logging
 import os
 import sqlite3
 from contextlib import contextmanager
 from typing import Generator, Any
 from pathlib import Path
 from src.config import DATABASE_PATH, DATABASE_URL, SCHEMA_PATH
+
+logger = logging.getLogger("pricewise.db")
 
 
 def get_database_engine_type() -> str:
@@ -165,8 +169,14 @@ def get_connection(custom_path: str | None = None) -> Generator[Any, None, None]
             conn.close()
 
 
-def migrate_db(custom_path: str | None = None) -> None:
-    """Ensure newer columns and indexes exist in the SQLite database."""
+def _migrate_sqlite_schema(custom_path: str | None = None) -> None:
+    """Apply idempotent SQLite schema migrations.
+
+    Schema only: this function performs additive DDL (columns, indexes and
+    tables). It never creates, archives, restores or otherwise rewrites
+    business records. The archival state of individual products is business
+    data and is owned by src.database.product_archival.
+    """
     db_path = get_db_path(custom_path)
     with get_connection(str(db_path)) as conn:
         cursor = conn.cursor()
@@ -190,40 +200,29 @@ def migrate_db(custom_path: str | None = None) -> None:
             if "data_status" not in existing_hist_cols:
                 cursor.execute("ALTER TABLE price_history ADD COLUMN data_status TEXT DEFAULT 'demo'")
 
-        # 2b. Check products table columns (Phase 14 Stage 2: Soft-archive non-beauty products)
-        db_engine = get_database_engine_type() if not custom_path else "sqlite"
-        if db_engine == "postgresql":
-            cursor.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE")
-            cursor.execute("UPDATE products SET is_active = FALSE WHERE id <= 11")
-            cursor.execute("UPDATE products SET is_active = FALSE WHERE id IN (998, 999)")
-            cursor.execute("UPDATE products SET is_active = TRUE WHERE id >= 12 AND id NOT IN (998, 999)")
-        else:
-            cursor.execute("PRAGMA table_info(products)")
-            existing_product_cols = {row["name"] for row in cursor.fetchall()}
-            if existing_product_cols:
-                if "is_active" not in existing_product_cols:
-                    cursor.execute("ALTER TABLE products ADD COLUMN is_active BOOLEAN DEFAULT 1")
-                cursor.execute("UPDATE products SET is_active = 0 WHERE id <= 11 OR id IN (998, 999)")
-                cursor.execute("UPDATE products SET is_active = 1 WHERE id >= 12 AND id NOT IN (998, 999)")
+        # 2b. Check products table columns (Phase 14 Stage 2: soft-archive support column)
+        # Schema only. The archival state of individual products is business
+        # data: it is applied explicitly through src.database.product_archival
+        # and must never be rewritten by a schema migration. Re-running a
+        # migration therefore cannot reactivate an archived product.
+        cursor.execute("PRAGMA table_info(products)")
+        existing_product_cols = {row["name"] for row in cursor.fetchall()}
+        if existing_product_cols:
+            if "is_active" not in existing_product_cols:
+                cursor.execute("ALTER TABLE products ADD COLUMN is_active BOOLEAN DEFAULT 1")
 
         # 2c. Image Provenance & Verification Columns (Phase 14 Stage 3)
-        if db_engine == "postgresql":
-            cursor.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS image_source_url TEXT")
-            cursor.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS image_source_name TEXT")
-            cursor.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS image_status TEXT DEFAULT 'placeholder'")
-            cursor.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS image_last_checked TIMESTAMP")
-        else:
-            cursor.execute("PRAGMA table_info(products)")
-            existing_product_cols = {row["name"] for row in cursor.fetchall()}
-            if existing_product_cols:
-                if "image_source_url" not in existing_product_cols:
-                    cursor.execute("ALTER TABLE products ADD COLUMN image_source_url TEXT")
-                if "image_source_name" not in existing_product_cols:
-                    cursor.execute("ALTER TABLE products ADD COLUMN image_source_name TEXT")
-                if "image_status" not in existing_product_cols:
-                    cursor.execute("ALTER TABLE products ADD COLUMN image_status TEXT DEFAULT 'placeholder'")
-                if "image_last_checked" not in existing_product_cols:
-                    cursor.execute("ALTER TABLE products ADD COLUMN image_last_checked TIMESTAMP")
+        cursor.execute("PRAGMA table_info(products)")
+        existing_product_cols = {row["name"] for row in cursor.fetchall()}
+        if existing_product_cols:
+            if "image_source_url" not in existing_product_cols:
+                cursor.execute("ALTER TABLE products ADD COLUMN image_source_url TEXT")
+            if "image_source_name" not in existing_product_cols:
+                cursor.execute("ALTER TABLE products ADD COLUMN image_source_name TEXT")
+            if "image_status" not in existing_product_cols:
+                cursor.execute("ALTER TABLE products ADD COLUMN image_status TEXT DEFAULT 'placeholder'")
+            if "image_last_checked" not in existing_product_cols:
+                cursor.execute("ALTER TABLE products ADD COLUMN image_last_checked TIMESTAMP")
 
         # 3. Ensure indexes exist
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='products'")
@@ -737,8 +736,150 @@ def migrate_db(custom_path: str | None = None) -> None:
         )
 
 
+# ==============================================================================
+# Phase 14 Stage 2.5 (FIX 2): Schema migration runner
+# ==============================================================================
+# Contract of migrate_db():
+#   * SCHEMA ONLY. It performs additive DDL (columns, indexes, tables) and
+#     never creates, archives, restores or rewrites business records.
+#   * IDEMPOTENT. Every statement is safe to execute repeatedly, and the
+#     runner itself executes at most once per database per process, so an
+#     ordinary authenticated request never triggers DDL.
+#   * ENGINE AWARE. PostgreSQL is used when DATABASE_URL is configured;
+#     SQLite is used otherwise.
+#
+# Product archival state is business data and lives in
+# src.database.product_archival, which operates on explicit product IDs and
+# never on numeric ranges.
+
+# Records the signature of each database that has already been migrated in
+# this process, keyed by migration target.
+_MIGRATION_SIGNATURES: dict[str, str] = {}
+
+
+def _migration_target_key(custom_path: str | None) -> str:
+    """Return a stable identifier for a migration target.
+
+    PostgreSQL targets are keyed by a short digest of the connection URL so
+    that switching databases (for example between staging branches) never
+    reuses a previous migration state. The URL itself is never logged.
+    """
+    if custom_path:
+        return f"sqlite:{Path(custom_path).resolve()}"
+    if get_database_engine_type() == "postgresql":
+        url = (os.environ.get("DATABASE_URL") or DATABASE_URL or "").strip()
+        digest = hashlib.sha256(url.encode("utf-8")).hexdigest()[:16] if url else "unknown"
+        return f"postgresql:{digest}"
+    return f"sqlite:{Path(DATABASE_PATH).resolve()}"
+
+
+def _migration_signature(custom_path: str | None) -> str:
+    """Return a fingerprint that changes when the target database is replaced.
+
+    SQLite files are identified by inode, which survives ordinary writes but
+    changes when a database file is deleted and recreated. This lets the
+    runner detect a replaced database without re-running DDL on every write.
+    """
+    if custom_path:
+        path = Path(custom_path)
+    elif get_database_engine_type() == "postgresql":
+        return "postgresql"
+    else:
+        path = Path(DATABASE_PATH)
+    try:
+        return f"inode:{path.stat().st_ino}"
+    except OSError:
+        return "missing"
+
+
+def _migrate_postgres_schema() -> None:
+    """Apply idempotent, PostgreSQL-safe schema migrations.
+
+    Only additive, engine-safe DDL is executed here. The portable SQLite DDL
+    used by _migrate_sqlite_schema() is not valid PostgreSQL (AUTOINCREMENT,
+    PRAGMA), so it is never replayed against a PostgreSQL server.
+
+    The relational schema of a PostgreSQL deployment is provisioned by
+    scripts/migrate_sqlite_to_postgres.py; this function only brings the
+    Phase 14 catalogue columns and indexes up to date.
+    """
+    with get_connection() as conn:
+        cursor = conn.cursor()
+
+        # 1. Phase 14 Stage 2: soft-archive support column (schema only)
+        cursor.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE")
+
+        # 2. Phase 14 Stage 3: image provenance metadata columns (schema only)
+        cursor.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS image_source_url TEXT")
+        cursor.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS image_source_name TEXT")
+        cursor.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS image_status TEXT DEFAULT 'placeholder'")
+        cursor.execute("ALTER TABLE products ADD COLUMN IF NOT EXISTS image_last_checked TIMESTAMP")
+
+        # 3. Indexes supporting the soft-archive filters
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_products_brand ON products(brand)")
+        cursor.execute("CREATE INDEX IF NOT EXISTS idx_products_is_active ON products(is_active)")
+
+        # 4. Report (never create) a missing relational schema. The portable
+        #    DDL is SQLite-specific, so provisioning stays an explicit,
+        #    operator-driven step via scripts/migrate_sqlite_to_postgres.py.
+        cursor.execute(
+            "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"
+        )
+        existing_tables = {str(row[0]) for row in cursor.fetchall()}
+        required_tables = {"products", "offers", "price_history", "stores", "users"}
+        missing_tables = sorted(required_tables - existing_tables)
+        if missing_tables:
+            logger.warning(
+                "PostgreSQL database is missing expected tables: %s. Provision them with "
+                "scripts/migrate_sqlite_to_postgres.py.",
+                ", ".join(missing_tables),
+            )
+
+
+def migrate_db(custom_path: str | None = None, force: bool = False) -> None:
+    """Apply idempotent schema migrations to the configured database.
+
+    Phase 14 Stage 2.5 (FIX 2) guarantees:
+      * schema migration is strictly separated from business-data updates, so
+        archival state is never rewritten by a migration;
+      * migrations are idempotent and run at most once per database per
+        process, so authenticated requests do not repeatedly execute DDL;
+      * the migration runs against the correct engine (PostgreSQL when
+        DATABASE_URL is configured, SQLite otherwise).
+
+    Args:
+        custom_path: optional SQLite database path (tests and tooling).
+        force: re-run the migration even if it already ran for this target in
+            the current process.
+    """
+    key = _migration_target_key(custom_path)
+    signature = _migration_signature(custom_path)
+
+    if not force and _MIGRATION_SIGNATURES.get(key) == signature:
+        return
+
+    engine = get_database_engine_type() if not custom_path else "sqlite"
+    if engine == "postgresql":
+        _migrate_postgres_schema()
+    else:
+        _migrate_sqlite_schema(custom_path)
+
+    _MIGRATION_SIGNATURES[key] = signature
+
+
 def init_db(custom_path: str | None = None) -> None:
-    """Initialize database tables using schema.sql and apply migrations."""
+    """Initialize database tables using schema.sql and apply migrations.
+
+    The bundled schema script is SQLite-specific. PostgreSQL deployments are
+    provisioned with scripts/migrate_sqlite_to_postgres.py instead.
+    """
+    if not custom_path and get_database_engine_type() == "postgresql":
+        raise RuntimeError(
+            "init_db() replays the SQLite schema script and cannot be used with "
+            "PostgreSQL. Provision a PostgreSQL database with "
+            "scripts/migrate_sqlite_to_postgres.py instead."
+        )
+
     db_path = get_db_path(custom_path)
     if not SCHEMA_PATH.exists():
         raise FileNotFoundError(f"Schema file not found at {SCHEMA_PATH}")

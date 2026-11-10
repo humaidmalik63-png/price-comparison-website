@@ -13,6 +13,7 @@ from src.config import (
     DEMO_BADGE_LABEL,
     DEMO_USER_EMAIL,
     DEMO_USER_PASSWORD,
+    validate_session_secret_configuration,
 )
 from src.database.connection import migrate_db
 from src.database.seed import seed_database
@@ -28,6 +29,11 @@ from src.ui.views.about_view import render_about_view
 from src.services.auth_service import authenticate_user, register_user
 from src.services.wishlist_service import get_wishlist_count
 from src.services.price_tracking_service import get_alert_history
+
+# Phase 14 Stage 2.5 (FIX 1): refuse to run when the session signing secret
+# is not configured in a secured environment (production / staging). In
+# development an ephemeral per-process secret is used instead.
+validate_session_secret_configuration()
 
 # Streamlit Page Configuration
 st.set_page_config(

@@ -331,8 +331,18 @@ import base64
 import json
 import time
 
-AUTH_SECRET_KEY = os.getenv("AUTH_SECRET_KEY", "pricewise_beauty_super_secret_session_key_2026").encode("utf-8")
+from src.config import MissingSessionSecretError, get_session_secret
+
 DEFAULT_SESSION_DURATION_SECONDS = 7 * 24 * 3600  # 7 days
+
+# Phase 14 Stage 2.5 (FIX 1): the signing secret is resolved centrally by
+# src.config.get_session_secret(). There is no hardcoded fallback value here,
+# so a publicly known secret can never be used to sign or verify tokens.
+#
+# The secret is read from AUTH_SECRET_KEY (canonical) or SECRET_KEY (legacy
+# alias). In production/staging a missing secret raises
+# MissingSessionSecretError; in development an ephemeral per-process secret is
+# generated instead. Rotating the secret invalidates all issued sessions.
 
 
 def _base64url_encode(data: bytes) -> str:
@@ -346,6 +356,17 @@ def _base64url_decode(s: str) -> bytes:
     if rem:
         s += "=" * (4 - rem)
     return base64.urlsafe_b64decode(s.encode("utf-8"))
+
+
+def _sign_payload(payload_b64: str, secret: str) -> str:
+    """Compute the base64url HMAC-SHA256 signature for a payload segment.
+
+    The secret is supplied by the caller (resolved through
+    src.config.get_session_secret) so that a missing secret is detected once,
+    up-front, instead of being silently interpreted as a rejected token.
+    """
+    sig = hashlib.pbkdf2_hmac("sha256", payload_b64.encode("utf-8"), secret.encode("utf-8"), 1)
+    return _base64url_encode(sig)
 
 
 def generate_session_token(
@@ -367,9 +388,12 @@ def generate_session_token(
     payload_bytes = json.dumps(payload, separators=(",", ":"), sort_keys=True).encode("utf-8")
     payload_b64 = _base64url_encode(payload_bytes)
 
+    # Resolve the signing secret up-front: signing must never happen with an
+    # unconfigured secret.
+    secret = get_session_secret()
+
     # Compute HMAC-SHA256 signature
-    sig = hashlib.pbkdf2_hmac("sha256", payload_b64.encode("utf-8"), AUTH_SECRET_KEY, 1)
-    sig_b64 = _base64url_encode(sig)
+    sig_b64 = _sign_payload(payload_b64, secret)
 
     return f"{payload_b64}.{sig_b64}"
 
@@ -378,9 +402,17 @@ def verify_session_token(token: str) -> Optional[dict]:
     """
     Verify signature and expiration of an HMAC-SHA256 signed session token.
     Returns payload dictionary if valid, or None if expired / tampered.
+
+    Raises MissingSessionSecretError when the signing secret is not configured
+    in a secured environment: a configuration fault must be reported as such
+    instead of masquerading as a rejected session.
     """
     if not token or not isinstance(token, str):
         return None
+
+    # Resolve the signing secret before parsing the token so that a missing
+    # secret fails loudly for every verification attempt.
+    secret = get_session_secret()
 
     try:
         parts = token.strip().split(".")
@@ -388,8 +420,7 @@ def verify_session_token(token: str) -> Optional[dict]:
             return None
 
         payload_b64, sig_b64 = parts
-        expected_sig = hashlib.pbkdf2_hmac("sha256", payload_b64.encode("utf-8"), AUTH_SECRET_KEY, 1)
-        expected_b64 = _base64url_encode(expected_sig)
+        expected_b64 = _sign_payload(payload_b64, secret)
 
         # Constant-time comparison prevents timing attacks
         if not secrets.compare_digest(sig_b64, expected_b64):
@@ -403,6 +434,10 @@ def verify_session_token(token: str) -> Optional[dict]:
             return None  # Expired token
 
         return payload
+    except MissingSessionSecretError:
+        # Fail closed and loudly: an unconfigured secret in a secured
+        # environment must not be mistaken for "token rejected".
+        raise
     except Exception:
         return None
 

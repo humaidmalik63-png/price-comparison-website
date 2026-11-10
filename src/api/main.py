@@ -25,6 +25,7 @@ from typing import Any, Optional
 from urllib.parse import urlparse
 
 import time
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from fastapi import FastAPI, HTTPException, Query, Depends, Response, status, UploadFile, File, Request
 from fastapi.responses import JSONResponse
@@ -33,9 +34,16 @@ from fastapi.responses import FileResponse
 
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.config import APP_NAME, APP_VERSION, ENVIRONMENT, IS_PRODUCTION, CORS_ORIGINS as CONFIG_CORS_ORIGINS
+from src.config import (
+    APP_NAME,
+    APP_VERSION,
+    ENVIRONMENT,
+    IS_PRODUCTION,
+    CORS_ORIGINS as CONFIG_CORS_ORIGINS,
+    validate_session_secret_configuration,
+)
 
-from src.database.connection import get_connection, get_database_engine_type
+from src.database.connection import get_connection, get_database_engine_type, migrate_db
 
 from src.database.models import Offer, Product, User
 
@@ -332,6 +340,28 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("pricewise.api")
 
 
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    """Application start-up lifecycle.
+
+    Phase 14 Stage 2.5 (FIX 1): the service refuses to start when the
+    session signing secret is missing in a secured environment (production /
+    staging) instead of signing tokens with an unconfigured secret.
+
+    Phase 14 Stage 2.5 (FIX 2): schema migrations are applied once here, so
+    ordinary authenticated requests never execute DDL. A migration failure is
+    logged rather than fatal, because database availability is reported by the
+    readiness probe (/api/health/ready).
+    """
+    validate_session_secret_configuration()
+
+    try:
+        migrate_db()
+    except Exception as exc:  # pragma: no cover - depends on live database
+        logger.error("Start-up schema migration failed: %s", exc)
+
+    yield
+
 
 app = FastAPI(
 
@@ -340,6 +370,8 @@ app = FastAPI(
     description="Bridge API connecting React frontend to Python service layer.",
 
     version=APP_VERSION,
+
+    lifespan=lifespan,
 
 )
 

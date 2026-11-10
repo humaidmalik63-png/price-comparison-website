@@ -1,7 +1,22 @@
 -- ==============================================================================
 -- PriceWise AI — Rollback 001: Restore Non-Beauty Products to Active
 -- Phase 14 Stage 2 Rollback Plan
+--
+-- PHASE 14 STAGE 2.5 AMENDMENT (FIX 2)
+-- ------------------------------------------------------------------
+-- The original rollback reactivated EVERY product:
+--
+--     UPDATE products SET is_active = TRUE;
+--
+-- That blanket statement would also reactivate products that were archived
+-- for other reasons (for example a product retired after Stage 2.5). It is
+-- replaced below by an explicit ID list matching the archival set applied by
+-- migration 001, so a rollback only reverses what migration 001 changed.
+--
+-- This file is a manual, operator-invoked rollback. It is not executed by the
+-- migration runner (src/database/connection.py), which performs schema DDL
+-- only.
 -- ==============================================================================
 
--- Re-activate all products including legacy demo products if needed
-UPDATE products SET is_active = TRUE;
+-- Re-activate exactly the products archived by migration 001
+UPDATE products SET is_active = TRUE WHERE id IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 998, 999);

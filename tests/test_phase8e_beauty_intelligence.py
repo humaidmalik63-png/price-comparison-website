@@ -36,10 +36,10 @@ def test_product():
         cursor = conn.cursor()
         # Insert product with sku
         cursor.execute("""
-            INSERT OR REPLACE INTO products (id, sku, title, brand, category, specs_json, description)
+            INSERT OR REPLACE INTO products (id, sku, title, brand, category, specs_json, description, is_active)
             VALUES (999, 'TEST-VIT-C-001', 'Test Vitamin C Serum', 'TestBrand', 'Serum', 
                     '{"Key Ingredients": "Vitamin C, Hyaluronic Acid, Ferulic Acid", "Product Type": "Serum", "Net Quantity": "30ml"}',
-                    'A test serum')
+                    'A test serum', 0)
         """)
         # Insert offer for price
         cursor.execute("""
@@ -129,9 +129,9 @@ class TestAlternativeFinder:
         with get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("""
-                INSERT OR REPLACE INTO products (id, sku, title, brand, category, specs_json)
+                INSERT OR REPLACE INTO products (id, sku, title, brand, category, specs_json, is_active)
                 VALUES (998, 'TEST-VIT-C-002', 'Cheaper Vitamin C Serum', 'OtherBrand', 'Serum', 
-                        '{"Key Ingredients": "Vitamin C, Hyaluronic Acid", "Product Type": "Serum", "Net Quantity": "30ml"}')
+                        '{"Key Ingredients": "Vitamin C, Hyaluronic Acid", "Product Type": "Serum", "Net Quantity": "30ml"}', 0)
             """)
             cursor.execute("""
                 INSERT OR REPLACE INTO offers (id, product_id, store_id, current_price, original_price, shipping_cost, currency, availability, last_checked)

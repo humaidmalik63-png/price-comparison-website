@@ -24,5 +24,16 @@ services:
         sync: false # Set securely in Render dashboard
       - key: SECRET_KEY
         generateValue: true
+      # Phase 14 Stage 2.5 (FIX 1): session token signing secret.
+      # MANUAL STEP REQUIRED — set this in the Render dashboard
+      # (Service -> Environment -> Add -> "AUTH_SECRET_KEY").
+      # There is no safe fallback secret: if neither AUTH_SECRET_KEY nor
+      # SECRET_KEY is present the service refuses to start rather than signing
+      # session tokens with a publicly known value. SECRET_KEY above is still
+      # accepted as a legacy alias, so the service keeps running until the
+      # canonical variable is added.
+      # Rotating this value invalidates every issued session token.
+      - key: AUTH_SECRET_KEY
+        sync: false
       - key: RATE_LIMIT_PER_MINUTE
         value: "120"
