@@ -940,6 +940,17 @@ def api_get_recommendations(
 # =====================================================================
 
 from src.services.price_collection_engine import record_manual_price_observation
+from src.services.price_intelligence import (
+    get_verified_offers,
+    get_cheapest_verified,
+    list_cheapest_per_catalog,
+    expire_stale_observations,
+    get_observation_price_history,
+    get_price_health_stats,
+)
+from src.adapters.mcp_adapters.priceinindia_adapter import PriceInIndiaAdapter
+from src.adapters.mcp_adapters.open_beauty_facts_adapter import OpenBeautyFactsAdapter
+from src.services.product_matching_service import evaluate_product_match, admin_correct_match, MatchClassification
 
 
 class ManualPriceEntryRequest(BaseModel):
@@ -1048,3 +1059,219 @@ def manual_price_entry(
         logger.error(f"Manual price entry failed: {e}")
         raise HTTPException(status_code=500, detail="Failed to record manual price observation")
 
+
+
+# ============================================================================
+# Phase 16.2 Stage 4: Price Intelligence & MCP Integration Endpoints
+# ============================================================================
+
+@app.get("/api/products/{product_id}/offers")
+def get_product_offers(product_id: int):
+    """Return verified offers for a product with unit prices and discounts."""
+    offers = get_verified_offers(product_id)
+    if not offers:
+        raise HTTPException(status_code=404, detail="No offers found for this product")
+    return {"product_id": product_id, "offers": offers}
+
+
+@app.get("/api/products/{product_id}/cheapest")
+def get_product_cheapest(product_id: int):
+    """Return the single cheapest verified offer for a product."""
+    offer = get_cheapest_verified(product_id)
+    if not offer:
+        raise HTTPException(status_code=404, detail="No verified offers available")
+    return {"product_id": product_id, "cheapest": offer}
+
+
+@app.get("/api/catalog/cheapest-offers")
+def list_catalog_cheapest_offers(limit: int = Query(200, ge=1, le=500)):
+    """Return cheapest verified offer across all active products."""
+    results = list_cheapest_per_catalog(limit=limit)
+    return {"count": len(results), "offers": results}
+
+
+@app.post("/api/admin/price-observations/expire-stale")
+def expire_stale_endpoint(max_age_hours: int = Query(72, ge=1, le=720)):
+    """Expire observations older than max_age_hours. Admin-only."""
+    count = expire_stale_observations(max_age_hours=max_age_hours)
+    return {"expired_count": count, "max_age_hours": max_age_hours}
+
+
+@app.get("/api/products/{product_id}/price-history")
+def get_product_price_history(product_id: int, limit: int = Query(30, ge=1, le=100)):
+    """Return price history for a product (excludes superseded)."""
+    history = get_observation_price_history(product_id, limit=limit)
+    return {
+        "product_id": product_id,
+        "history_points": [
+            {
+                "id": p.id,
+                "retailer": p.retailer,
+                "observed_price": p.observed_price,
+                "observed_mrp": p.observed_mrp,
+                "observation_type": p.observation_type,
+                "observation_status": p.observation_status,
+                "created_at": p.created_at,
+                "unit_price": p.unit_price,
+                "evidence_notes": p.evidence_notes,
+            }
+            for p in history
+        ],
+    }
+
+
+@app.get("/api/admin/health-stats")
+def admin_health_stats():
+    """Get overall data-quality health stats for the admin dashboard."""
+    stats = get_price_health_stats()
+    return stats
+
+
+@app.get("/api/connectors/priceinindia/health")
+def priceinindia_health():
+    """Health check for PriceInIndia MCP connector."""
+    adapter = PriceInIndiaAdapter()
+    h = adapter.health
+    return {
+        "name": h.name,
+        "endpoint": h.endpoint,
+        "is_configured": h.is_configured,
+        "is_healthy": h.is_healthy,
+        "last_success_at": h.last_success_at,
+        "last_error": h.last_error,
+        "total_requests": h.total_requests,
+        "failed_requests": h.failed_requests,
+        "avg_response_time_ms": h.avg_response_time_ms,
+    }
+
+
+@app.post("/api/connectors/priceinindia/search")
+def priceinindia_search(
+    query: str = Body(..., min_length=1),
+    brand: Optional[str] = Body(None),
+    page: int = Body(1, ge=1),
+    per_page: int = Body(20, ge=1, le=50),
+):
+    """Search PriceInIndia for products."""
+    adapter = PriceInIndiaAdapter()
+    result = adapter.search_products(query=query, brand=brand, page=page, per_page=per_page)
+    total = result.data.get("total", 0) if result.data else 0
+    return {
+        "success": result.success,
+        "tool": result.tool_name,
+        "total": total,
+        "products": result.items[:per_page] if result.items else [],
+        "error": result.error_message,
+        "response_time_ms": result.response_time_ms,
+    }
+
+
+@app.post("/api/connectors/priceinindia/find")
+def priceinindia_find(
+    brand: str = Body(...),
+    product_name: str = Body(...),
+    size_volume: Optional[str] = Body(None),
+    max_results: int = Body(5, ge=1, le=20),
+):
+    """Find best-matching product from PriceInIndia for a brand+name combo."""
+    adapter = PriceInIndiaAdapter()
+    result = adapter.find_beauty_product(
+        brand=brand, product_name=product_name, size_volume=size_volume
+    )
+    return {
+        "success": result.success,
+        "query": f"{brand} {product_name}",
+        "products": result.items if result.items else [],
+        "error": result.error_message,
+    }
+
+
+@app.get("/api/connectors/open-beauty-facts/health")
+def obf_health():
+    """Health check for Open Beauty Facts connector."""
+    adapter = OpenBeautyFactsAdapter()
+    return adapter.health_status
+
+
+@app.get("/api/connectors/open-beauty-facts/barcode/{barcode}")
+def obf_lookup_barcode(barcode: str):
+    """Look up a product by barcode in OBF."""
+    adapter = OpenBeautyFactsAdapter()
+    result = adapter.lookup_by_barcode(barcode)
+    return {
+        "success": result.success,
+        "product": result.data if result.data else None,
+        "error": result.error_message,
+    }
+
+
+@app.post("/api/connectors/open-beauty-facts/search")
+def obf_search(
+    brands: Optional[list[str]] = Body(None),
+    categories: Optional[list[str]] = Body(None),
+    limit: int = Body(20, ge=1, le=50),
+):
+    """Search OBF by brands and/or categories."""
+    adapter = OpenBeautyFactsAdapter()
+    result = adapter.search_products(brands=brands, categories=categories, limit=limit)
+    return {
+        "success": result.success,
+        "count": len(result.items),
+        "products": result.items,
+        "error": result.error_message,
+    }
+
+
+@app.post("/api/match/product")
+def match_product_endpoint(req: dict = Body(...)):
+    """Evaluate product-to-product matching with full evidence."""
+    result = evaluate_product_match(
+        target_brand=req["target_brand"],
+        target_title=req["target_title"],
+        target_specs=req.get("target_specs"),
+        offer_brand=req.get("offer_brand", ""),
+        offer_title=req.get("offer_title", ""),
+        offer_variant=req.get("offer_variant"),
+        offer_specs=req.get("offer_specs"),
+        target_barcode=req.get("target_barcode"),
+        offer_barcode=req.get("offer_barcode"),
+        reference_price=req.get("reference_price"),
+        offer_price=req.get("offer_price"),
+    )
+    return {
+        "match_classification": result.match_classification,
+        "confidence_score": result.confidence_score,
+        "is_comparable": result.is_comparable,
+        "brand_match": result.brand_match,
+        "size_match": result.size_match,
+        "shade_match": result.shade_match,
+        "formulation_match": result.formulation_match,
+        "title_similarity": result.title_similarity,
+        "evidence_tier": result.evidence_tier.value if result.evidence_tier else None,
+        "barcode_match": result.barcode_match,
+        "gtin_matched": result.gtin_matched,
+        "unit_price_target": result.unit_price_target,
+        "unit_price_offer": result.unit_price_offer,
+        "requires_human_review": result.requires_human_review,
+        "reasons": result.reasons,
+        "flagged_reasons": result.flagged_reasons,
+        "display_badge": result.display_badge,
+    }
+
+
+@app.post("/api/admin/match/correct")
+def admin_correct_match_endpoint(req: dict = Body(...)):
+    """Admin override for a previously computed match result."""
+    stored = req.get("stored_result", {})
+    new_class = req["new_classification"]
+    correction_note = req.get("correction_note", "")
+    from types import SimpleNamespace
+    ns = SimpleNamespace(**{k: v for k, v in stored.items()})
+    result = admin_correct_match(ns, new_class, correction_note)
+    return {
+        "match_classification": result.match_classification,
+        "confidence_score": result.confidence_score,
+        "is_comparable": result.is_comparable,
+        "admin_corrections_applied": result.admin_corrections_applied,
+        "reasons": result.reasons,
+    }
