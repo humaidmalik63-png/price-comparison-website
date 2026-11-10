@@ -6,7 +6,9 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-01',
-    dbId: 12,
+    dbId: 12, imageStatus: 'permission_review',
+    imageSourceName: 'Dot & Key official site',
+    imageSourceUrl: 'https://www.dotandkey.com/products/watermelon-cooling-spf-50-face-sunscreen',
     slug: 'watermelon-cooling-sunscreen-spf-50',
     name: 'Watermelon Cooling Sunscreen SPF 50+ PA++++',
     brand: 'Dot & Key',
@@ -18,7 +20,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 595,
     rating: 4.8,
     reviewCount: 2840,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=800&q=80',
+    image: 'https://www.dotandkey.com/cdn/shop/files/80ml.jpg?v=1793277172',
     description: 'Ultra-lightweight fluid sunscreen infused with Watermelon and Hyaluronic acid that instantly cools skin temperature by 6°C with zero white cast and no greasy residue.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -143,7 +145,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-02',
-    dbId: 13,
+    dbId: 13, imageStatus: 'permission_review',
+    imageSourceName: 'The Derma Co official site',
+    imageSourceUrl: 'https://thedermaco.com/products/1-hyaluronic-sunscreen-aqua-gel',
     name: '1% Hyaluronic Sunscreen Aqua Gel SPF 50 PA++++',
     brand: 'The Derma Co',
     brandTier: 'Affordable',
@@ -154,7 +158,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 499,
     rating: 4.7,
     reviewCount: 3120,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80',
+    image: 'http://thedermaco.com/cdn/shop/files/1_PDP_2cce8939-1296-471f-8b74-f4fbfa814378.jpg?v=1791452607',
     description: 'Dermatologist-formulated light aqua gel with Hyaluronic Acid and Vitamin E. Absorbs like water with zero pilling under makeup and broad spectrum blue-light defense.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -182,7 +186,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-03',
-    dbId: 14,
+    dbId: 14, imageStatus: 'placeholder',
     name: '10% Niacinamide Face Serum with Zinc PCA',
     brand: 'Minimalist',
     brandTier: 'Affordable',
@@ -193,7 +197,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 599,
     rating: 4.9,
     reviewCount: 5410,
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'Clinical-strength 10% pure Niacinamide paired with EUK-134 and Zinc PCA to visibly reduce sebum, fade post-acne blemishes, and refine skin texture.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -221,7 +225,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-04',
-    dbId: 16,
+    dbId: 16, imageStatus: 'permission_review',
+    imageSourceName: 'COSRX official site',
+    imageSourceUrl: 'https://www.cosrx.com/products/advanced-snail-96-mucin-power-essence-new-original',
     name: 'Advanced Snail 96 Mucin Power Essence',
     brand: 'COSRX',
     brandTier: 'Premium',
@@ -232,7 +238,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 1450,
     rating: 4.8,
     reviewCount: 4180,
-    image: 'https://images.unsplash.com/photo-1608248597359-52410a747e93?auto=format&fit=crop&w=800&q=80',
+    image: 'http://www.cosrx.com/cdn/shop/files/james_800x1067_1_1_4e9750cc-2cd6-4817-ace5-be2305a85806_1200x1200.jpg?v=1763111577',
     description: 'Formulated with 96.3% Snail Secretion Filtrate to protect skin from moisture loss, soothe redness, and restore skin elasticity for glass skin finish.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -260,7 +266,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-05',
-    dbId: 15,
+    dbId: 15, imageStatus: 'permission_review',
+    imageSourceName: 'Plum official site',
+    imageSourceUrl: 'https://plumgoodness.com/products/15-vitamin-c-mandarin-glow-boost-serum-copy',
     name: 'Kumkumadi Miraculous Beauty Ayurvedic Night Serum',
     brand: 'Kama Ayurveda',
     brandTier: 'Luxury',
@@ -271,7 +279,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 3195,
     rating: 4.9,
     reviewCount: 980,
-    image: 'https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=800&q=80',
+    image: 'http://plumgoodness.com/cdn/shop/files/Combo-SKUs-Vit-C-15_-Serum-20ml-Pack-of-2-1st-Tile-1001x1001-px.webp?v=1778053169&width=1024',
     description: 'Prescribed in Ayurveda for radiant glow and brightening. Infused with pure Kashmiri Saffron, Sandalwood, and Indian Madder to diminish pigmentation.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -299,7 +307,9 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-06',
-    dbId: 20,
+    dbId: 20, imageStatus: 'permission_review',
+    imageSourceName: 'Dot & Key official site',
+    imageSourceUrl: 'https://www.dotandkey.com/products/dot-key-ceramides-hyaluronic-hydrating-face-cream-i-repairs-skin-barrier-intense-moisturization-sensitive-dry-skin-fragrance-free',
     slug: 'ceramide-moisturizer',
     name: 'Barrier Repair Ceramides & Hyaluronic Moisturizer',
     brand: 'Dot & Key',
@@ -311,7 +321,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 495,
     rating: 4.7,
     reviewCount: 2190,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80',
+    image: 'https://www.dotandkey.com/cdn/shop/files/1-175g.jpg?v=1789649901',
     description: 'Nourishing daily face cream enriched with 5 essential ceramides, hyaluronic acid, and Japanese rice water to restore compromised barriers.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -421,7 +431,7 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-07',
-    dbId: 18,
+    dbId: 18, imageStatus: 'placeholder',
     name: 'Soundarya Radiance Cream with 24K Gold & SPF 25',
     brand: 'Forest Essentials',
     brandTier: 'Luxury',
@@ -432,7 +442,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 5475,
     rating: 4.9,
     reviewCount: 840,
-    image: 'https://images.unsplash.com/photo-1608248597359-52410a747e93?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'An iconic Ayurvedic day formulation with pure 24K Gold Bhasma, cold-pressed sweet almond oil, and pure ghee for royal luminosity and tone firming.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -456,7 +466,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-08',
-    dbId: 19,
+    dbId: 19, imageStatus: 'permission_review',
+    imageSourceName: 'Clinique official site',
+    imageSourceUrl: 'https://www.clinique.com/products/moisture-surge-100h-auto-replenishing-hydrator',
     name: 'Moisture Surge 100H Auto-Replenishing Hydrator',
     brand: 'Clinique',
     brandTier: 'Luxury',
@@ -467,7 +479,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 3200,
     rating: 4.8,
     reviewCount: 1650,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80',
+    image: 'http://www.clinique.com/cdn/shop/files/cl_sku_KWW301_3000x3000_0.png?v=1794309831&width=1200',
     description: 'Oil-free gel-cream with exclusive aloe bio-ferment and hyaluronic acid that penetrates deep for continuous hydration even after washing your face.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -496,7 +508,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-09',
-    dbId: 17,
+    dbId: 17, imageStatus: 'placeholder',
     name: 'Gentle Skin Cleanser for Dry to Normal Sensitive Skin',
     brand: 'Cetaphil',
     brandTier: 'Drugstore',
@@ -507,7 +519,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 399,
     rating: 4.8,
     reviewCount: 9230,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'Soap-free, fragrance-free creamy wash clinically tested to cleanse and hydrate without stripping. Defends against 5 signs of skin sensitivity.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -532,7 +544,7 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-10',
-    dbId: 21,
+    dbId: 21, imageStatus: 'placeholder',
     name: 'Clear Face Cleansing Foam with pH 5.5',
     brand: 'Sebamed',
     brandTier: 'Drugstore',
@@ -543,7 +555,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 650,
     rating: 4.7,
     reviewCount: 1450,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'Active antibacterial cleansing foam featuring Montaline C40 that combats acne-causing bacteria in 3 minutes while maintaining natural skin acid mantle.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -570,7 +582,9 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-11',
-    dbId: 25,
+    dbId: 25, imageStatus: 'permission_review',
+    imageSourceName: 'Kay Beauty official site',
+    imageSourceUrl: 'https://www.kaybeauty.com/products/kay-beauty-creme-blush-1',
     name: 'Green Tea Alcohol-Free Toner with Glycolic Acid',
     brand: 'Plum',
     brandTier: 'Affordable',
@@ -581,7 +595,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 420,
     rating: 4.6,
     reviewCount: 3680,
-    image: 'https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?auto=format&fit=crop&w=800&q=80',
+    image: 'http://www.kaybeauty.com/cdn/shop/files/1_44d242fa-748c-4398-8424-b0634a4270ba.jpg?v=1758699093',
     description: '100% vegan alcohol-free toner packed with antioxidant Green Tea and gentle Glycolic Acid to unclog pores and balance excess sebum.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -606,7 +620,7 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-12',
-    dbId: 28,
+    dbId: 28, imageStatus: 'placeholder',
     name: 'Lip Sleeping Mask - Berry',
     brand: 'Laneige',
     brandTier: 'Premium',
@@ -617,7 +631,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 1420,
     rating: 4.9,
     reviewCount: 6540,
-    image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'Iconic leave-on lip treatment that melts away dead skin cells and delivers intensive moisture with Berry Fruit Complex, Vitamin C, and coconut oil.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -645,7 +659,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-13',
-    dbId: 23,
+    dbId: 23, imageStatus: 'placeholder',
     name: 'Fit Me Matte + Poreless Liquid Foundation',
     brand: 'Maybelline New York',
     brandTier: 'Drugstore',
@@ -656,7 +670,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 699,
     rating: 4.6,
     reviewCount: 14200,
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'Indias most popular lightweight liquid foundation with micro-powders that control shine and blur pores for a natural, seamless matte finish.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -682,7 +696,7 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-14',
-    dbId: 1054,
+    dbId: 1054, imageStatus: 'placeholder',
     name: 'Studio Fix Fluid SPF 15 24HR Matte Foundation',
     brand: 'M.A.C Cosmetics',
     brandTier: 'Luxury',
@@ -693,7 +707,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 3900,
     rating: 4.8,
     reviewCount: 3210,
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'The global benchmark for buildable medium-to-full coverage with 24-hour shine control and non-streaking resistance, formulated specifically for humid conditions.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -717,7 +731,7 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-15',
-    dbId: 26,
+    dbId: 26, imageStatus: 'placeholder',
     name: 'Hollywood Flawless Filter Complexion Booster',
     brand: 'Charlotte Tilbury',
     brandTier: 'Luxury',
@@ -728,7 +742,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 4300,
     rating: 4.9,
     reviewCount: 2190,
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'A customizable complexion booster that blurs, smooths, and illuminates for a celebrity glow filter in real life. Wear alone, under, or mixed with foundation.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -752,7 +766,7 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-16',
-    dbId: 1072,
+    dbId: 1072, imageStatus: 'placeholder',
     name: 'Instant Age Rewind Eraser Multi-Use Concealer',
     brand: 'Maybelline New York',
     brandTier: 'Drugstore',
@@ -763,7 +777,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 799,
     rating: 4.7,
     reviewCount: 11400,
-    image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'Equipped with a micro-corrector sponge tip to instantly brighten dark circles, conceal imperfections, and contour with crease-resistant buildable coverage.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -792,7 +806,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-17',
-    dbId: 22,
+    dbId: 22, imageStatus: 'placeholder',
     name: 'Matteinee Matte Lipstick - Fulfill',
     brand: 'Kay Beauty',
     brandTier: 'Premium',
@@ -803,7 +817,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 999,
     rating: 4.8,
     reviewCount: 3820,
-    image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'Katrina Kaifs signature ultra-pigmented velvet matte lipstick enriched with Chamomile and Marula oil to nourish lips while offering 12-hour comfortable wear.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -827,7 +841,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-18',
-    dbId: 24,
+    dbId: 24, imageStatus: 'permission_review',
+    imageSourceName: 'Rare Beauty official site',
+    imageSourceUrl: 'https://www.rarebeauty.com/products/soft-pinch-liquid-blush',
     name: 'Soft Pinch Liquid Blush - Encourage',
     brand: 'Rare Beauty',
     brandTier: 'Luxury',
@@ -838,7 +854,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 2400,
     rating: 4.9,
     reviewCount: 4610,
-    image: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80',
+    image: 'http://www.rarebeauty.com/cdn/shop/files/ECOMM-SP-LIQUID-BLUSH-DEWY-HOPE.jpg?format=pjpg&v=1762200490&width=1440',
     description: 'A weightless, long-lasting liquid blush created by Selena Gomez that blends and builds effortlessly for a soft, healthy flush that stays in place all day.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -862,7 +878,7 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-19',
-    dbId: 27,
+    dbId: 27, imageStatus: 'placeholder',
     name: 'Ultra Blush Palette - 8 Shades',
     brand: 'Swiss Beauty',
     brandTier: 'Drugstore',
@@ -873,7 +889,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 449,
     rating: 4.5,
     reviewCount: 2950,
-    image: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'An all-in-one 8-pan blush and contour palette with matte and shimmer shades curated specifically to flatter warm Indian complexions.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -898,7 +914,7 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-20',
-    dbId: 29,
+    dbId: 29, imageStatus: 'placeholder',
     name: 'Nude Obsessions Eyeshadow Palette - Medium',
     brand: 'Huda Beauty',
     brandTier: 'Luxury',
@@ -909,7 +925,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 2950,
     rating: 4.9,
     reviewCount: 1840,
-    image: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'Rich warm terracotta and copper metallics paired with buttery matte mauve bases crafted to flatter Indian skin tones and eye colors.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -933,7 +949,7 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-21',
-    dbId: 30,
+    dbId: 30, imageStatus: 'placeholder',
     name: 'Kind to Skin Micellar Cleansing Water',
     brand: 'Simple',
     brandTier: 'Affordable',
@@ -945,7 +961,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 450,
     rating: 4.8,
     reviewCount: 4290,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'Triple-purified water and Vitamin B3/C formula that gently lifts away stubborn makeup and unclogs pores without rinsing, stinging, or residue.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -971,7 +987,7 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-22',
-    dbId: 31,
+    dbId: 31, imageStatus: 'placeholder',
     name: 'Maleic Bond Repair Complex 5% Hair Serum',
     brand: 'Minimalist',
     brandTier: 'Affordable',
@@ -983,7 +999,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 599,
     rating: 4.7,
     reviewCount: 2190,
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+    image: '',
     description: 'Patent-pending pre-shampoo bond repair treatment with Maleic Acid, Transglutaminase, and Amino Acids that repairs disulfide bonds broken by heat and coloring.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -1008,7 +1024,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prod-23',
-    dbId: 32,
+    dbId: 32, imageStatus: 'permission_review',
+    imageSourceName: 'Chemist at Play official site',
+    imageSourceUrl: 'https://innovist.com/products/lactic-acid-zemea-vitamin-e-exfoliating-body-wash',
     name: 'Exfoliating 2% Lactic Acid Body Wash with Ceramides',
     brand: 'Chemist at Play',
     brandTier: 'Affordable',
@@ -1020,7 +1038,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 499,
     rating: 4.8,
     reviewCount: 3820,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80',
+    image: 'http://innovist.com/cdn/shop/files/Exfoliating_Body_wash_236_ml_b7d84d40-e8fa-4711-b88b-371f7e954025.jpg?v=1787219525',
     description: 'Ceramide-infused daily exfoliating body wash with 2% Lactic Acid and Zemea to buff away strawberry skin, rough bumps, and back acne gently.',
     dataSource: 'Manufacturer Official Specification / Open Beauty Facts Reference',
     dataStatus: 'catalog_verified',
@@ -1050,7 +1068,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-24',
-    dbId: 1000,
+    dbId: 1000, imageStatus: 'placeholder',
     slug: 'minimalist-minimalist-invisible-sunscreen-spf-40-with-tomato-fruit-extract',
     name: 'Minimalist Invisible Sunscreen SPF 40 with Tomato Fruit Extract',
     brand: 'Minimalist',
@@ -1063,7 +1081,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 399.0,
     rating: 4.8,
     reviewCount: 1800,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Transparent silicone gel sunscreen with SPF 40 and PA+++ rating, enriched with antioxidant Tomato Fruit extract that leaves zero white cast and no greasy residue.',
     skinType: 'Normal, Dry, Sensitive',
     keyIngredients: ["Tomato Fruit Extract", "Uvinul A Plus", "Octisalate", "Homosalate"],
@@ -1150,7 +1168,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-25',
-    dbId: 1001,
+    dbId: 1001, imageStatus: 'placeholder',
     slug: 'aqualogica-aqualogica-glow-dewy-sunscreen-spf-50-pa-with-papaya-vitamin-c',
     name: 'Aqualogica Glow+ Dewy Sunscreen SPF 50+ PA++++ with Papaya & Vitamin C',
     brand: 'Aqualogica',
@@ -1163,7 +1181,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 449.0,
     rating: 4.8,
     reviewCount: 1837,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Ultra-lightweight hydrating sunscreen formulated with water-lock technology, Papaya extracts, and Vitamin C to deliver a radiant dewy finish without stickiness.',
     skinType: 'All Skin Types, Dull Skin',
     keyIngredients: ["Papaya Extract", "Vitamin C", "Hyaluronic Acid", "Zinc Oxide", "Titanium Dioxide"],
@@ -1250,7 +1268,9 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-26',
-    dbId: 1002,
+    dbId: 1002, imageStatus: 'permission_review',
+    imageSourceName: 'Dr. Sheth\'s official site',
+    imageSourceUrl: 'https://www.drsheths.com/products/ceramide-vitamin-c-sunscreen-50g',
     slug: 'dr-sheth-s-dr-sheth-s-ceramide-vitamin-c-sunscreen-spf-50-pa',
     name: 'Dr. Sheth\'s Ceramide & Vitamin C Sunscreen SPF 50+ PA++++',
     brand: 'Dr. Sheth\'s',
@@ -1263,7 +1283,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 499.0,
     rating: 4.8,
     reviewCount: 1874,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: 'http://www.drsheths.com/cdn/shop/files/CVC_SUNSCREEN.jpg?v=1790148636',
     description: 'Formulated specifically for Indian skin, combining 1% Ceramide Complex to rebuild the skin barrier with 1% Vitamin C to protect against UV and blue light.',
     skinType: 'Sensitive, Normal, Dry',
     keyIngredients: ["Ceramide Complex 1%", "Vitamin C 1%", "Hyaluronic Acid", "Micro-encapsulated Filters"],
@@ -1350,7 +1370,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-27',
-    dbId: 1003,
+    dbId: 1003, imageStatus: 'placeholder',
     slug: 'neutrogena-neutrogena-ultra-sheer-dry-touch-sunscreen-spf-50-pa',
     name: 'Neutrogena Ultra Sheer Dry-Touch Sunscreen SPF 50+ PA++++',
     brand: 'Neutrogena',
@@ -1363,7 +1383,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 750.0,
     rating: 4.8,
     reviewCount: 1911,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Iconic matte-finish sunscreen featuring Helioplex broad spectrum UVA/UVB technology with Dry-Touch silica microspheres for clean, non-greasy all-day wear.',
     skinType: 'Oily, Normal, Combination',
     keyIngredients: ["Helioplex Technology", "Avobenzone", "Oxybenzone", "Silica"],
@@ -1450,7 +1470,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-28',
-    dbId: 1004,
+    dbId: 1004, imageStatus: 'placeholder',
     slug: 'foxtale-foxtale-daily-glow-sunscreen-spf-50-pa-with-vitamin-c-niacinamide',
     name: 'Foxtale Daily Glow Sunscreen SPF 50 PA++++ with Vitamin C & Niacinamide',
     brand: 'Foxtale',
@@ -1463,7 +1483,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 595.0,
     rating: 4.8,
     reviewCount: 1948,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Infused with photostable modern European filters, Vitamin C, and Niacinamide, this daily sunscreen brightens dull complexion while providing robust UV defense.',
     skinType: 'All Skin Types, Dull Skin',
     keyIngredients: ["Niacinamide", "Vitamin C", "Tinosorb S", "Uvinul T 150"],
@@ -1550,7 +1570,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-29',
-    dbId: 1005,
+    dbId: 1005, imageStatus: 'placeholder',
     slug: 'conscious-chemist-conscious-chemist-sundrink-hybrid-sunscreen-spf-50-pa',
     name: 'Conscious Chemist Sundrink Hybrid Sunscreen SPF 50 PA++++',
     brand: 'Conscious Chemist',
@@ -1563,7 +1583,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 599.0,
     rating: 4.8,
     reviewCount: 1985,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Ultra-lightweight milk sunscreen featuring a ceramide complex and modern photostable hybrid filters that absorb instantly without white cast or pore clogging.',
     skinType: 'Acne-Prone, Sensitive, Oily',
     keyIngredients: ["Ceramide Complex", "Niacinamide", "Uvinul A Plus", "Tinosorb M"],
@@ -1650,7 +1670,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-30',
-    dbId: 1006,
+    dbId: 1006, imageStatus: 'placeholder',
     slug: 'dot-key-dot-key-cica-calming-sunscreen-spf-50-pa-with-green-tea',
     name: 'Dot & Key Cica Calming Sunscreen SPF 50+ PA++++ with Green Tea',
     brand: 'Dot & Key',
@@ -1663,7 +1683,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 595.0,
     rating: 4.8,
     reviewCount: 2022,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Dermatologically tested mineral-infused calming sunscreen formulated with fermented Cica and Green Tea to soothe active breakouts while shielding from UV.',
     skinType: 'Acne-Prone, Sensitive, Oily',
     keyIngredients: ["Centella Asiatica (Cica)", "Niacinamide", "Green Tea Extract", "Zinc Oxide"],
@@ -1750,7 +1770,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-31',
-    dbId: 1007,
+    dbId: 1007, imageStatus: 'placeholder',
     slug: 'plum-plum-2-niacinamide-rice-water-sunscreen-spf-50-pa',
     name: 'Plum 2% Niacinamide & Rice Water Sunscreen SPF 50 PA+++',
     brand: 'Plum',
@@ -1763,7 +1783,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 399.0,
     rating: 4.8,
     reviewCount: 2059,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Hybrid fluid sunscreen with 2% Niacinamide and Japanese fermented rice water that nourishes, prevents hyperpigmentation, and imparts a natural dewy glow.',
     skinType: 'Combination, Oily, Blemish-Prone',
     keyIngredients: ["Niacinamide 2%", "Fermented Rice Water", "Hybrid UV Filters"],
@@ -1850,7 +1870,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-32',
-    dbId: 1008,
+    dbId: 1008, imageStatus: 'placeholder',
     slug: 'the-derma-co-the-derma-co-pure-zinc-matte-sunscreen-gel-spf-30-pa',
     name: 'The Derma Co Pure Zinc Matte Sunscreen Gel SPF 30 PA+++',
     brand: 'The Derma Co',
@@ -1863,7 +1883,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 499.0,
     rating: 4.8,
     reviewCount: 2096,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: '100% mineral sunscreen formulated with 100% Zinc Oxide and Titanium Dioxide. Designed for post-procedure and highly sensitized skin with zero chemical irritants.',
     skinType: 'Highly Sensitive, Post-Procedure, Acne-Prone',
     keyIngredients: ["100% Mineral Zinc Oxide", "Titanium Dioxide", "Vitamin E"],
@@ -1950,7 +1970,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-33',
-    dbId: 1009,
+    dbId: 1009, imageStatus: 'placeholder',
     slug: 'minimalist-minimalist-spf-50-sunscreen-with-multi-vitamins-cica',
     name: 'Minimalist SPF 50 Sunscreen with Multi-Vitamins & CICA',
     brand: 'Minimalist',
@@ -1963,7 +1983,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 399.0,
     rating: 4.8,
     reviewCount: 2133,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Broad-spectrum SPF 50 PA++++ sunscreen powered by 4 modern UV filters, Vitamin B5 (Panthenol), Vitamin F, and Centella Asiatica to soothe and repair skin during UV exposure.',
     skinType: 'All Skin Types, Sensitive',
     keyIngredients: ["Vitamin B5", "Vitamin F", "Centella Asiatica", "Tinosorb S", "Uvinul A Plus"],
@@ -2050,7 +2070,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-34',
-    dbId: 1010,
+    dbId: 1010, imageStatus: 'placeholder',
     slug: 'aqualogica-aqualogica-radiance-dewy-sunscreen-spf-50-pa-with-watermelon',
     name: 'Aqualogica Radiance+ Dewy Sunscreen SPF 50+ PA++++ with Watermelon',
     brand: 'Aqualogica',
@@ -2063,7 +2083,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 449.0,
     rating: 4.8,
     reviewCount: 2170,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Formulated with Watermelon and Niacinamide to protect against sun damage, prevent pigmentation, and impart an ultra-dewy glass-skin finish with zero white cast.',
     skinType: 'Dehydrated, Combination, Normal',
     keyIngredients: ["Watermelon Extract", "Niacinamide", "Hyaluronic Acid", "Tinosorb M"],
@@ -2150,7 +2170,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-35',
-    dbId: 1011,
+    dbId: 1011, imageStatus: 'placeholder',
     slug: 're-equil-re-equil-oxybenzone-and-omc-free-sunscreen-spf-50-pa',
     name: 'Re\'equil Oxybenzone and OMC Free Sunscreen SPF 50 PA+++',
     brand: 'Re\'equil',
@@ -2163,7 +2183,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 550.0,
     rating: 4.8,
     reviewCount: 2207,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Specially formulated for oily, acne-prone and sensitive skin without endocrine-disrupting chemicals. Non-comedogenic and certified coral-reef safe.',
     skinType: 'Acne-Prone, Sensitive, Oily',
     keyIngredients: ["Eurol BT", "Zinc Oxide", "Titanium Dioxide", "Tocopherol"],
@@ -2250,7 +2270,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-36',
-    dbId: 1012,
+    dbId: 1012, imageStatus: 'placeholder',
     slug: 'cetaphil-cetaphil-sun-spf-50-very-high-protection-light-gel',
     name: 'Cetaphil Sun SPF 50+ Very High Protection Light Gel',
     brand: 'Cetaphil',
@@ -2263,7 +2283,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 1100.0,
     rating: 4.8,
     reviewCount: 2244,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Dermatologist-recommended hypoallergenic light gel sunscreen providing very high broad spectrum UV and IR radiation protection. Oil-free, fragrance-free, and water-resistant.',
     skinType: 'Extreme Sensitive, Dermatitis-Prone, Normal',
     keyIngredients: ["Vitamin E", "Aloe Vera", "Broad Spectrum UVA/UVB Filters"],
@@ -2350,7 +2370,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-37',
-    dbId: 1013,
+    dbId: 1013, imageStatus: 'placeholder',
     slug: 'minimalist-minimalist-2-salicylic-acid-face-serum-with-oligopeptide',
     name: 'Minimalist 2% Salicylic Acid Face Serum with Oligopeptide',
     brand: 'Minimalist',
@@ -2363,7 +2383,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 549.0,
     rating: 4.8,
     reviewCount: 2281,
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Daily gentle exfoliating serum with 2% Salicylic Acid (BHA) and anti-microbial Oligopeptide-10 that penetrates deep into pores to dissolve sebum, dirt, and blackheads.',
     skinType: 'Acne-Prone, Oily, Blackhead-Prone',
     keyIngredients: ["Salicylic Acid 2%", "Oligopeptide-10", "EGCG (Green Tea Extract)", "Aloe Juice"],
@@ -2450,7 +2470,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-38',
-    dbId: 1014,
+    dbId: 1014, imageStatus: 'placeholder',
     slug: 'minimalist-minimalist-16-vitamin-c-face-serum-with-ferulic-acid',
     name: 'Minimalist 16% Vitamin C Face Serum with Ferulic Acid',
     brand: 'Minimalist',
@@ -2463,7 +2483,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 699.0,
     rating: 4.8,
     reviewCount: 2318,
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'High-potency antioxidant serum formulated with 16% stabilized Ethyl Ascorbic Acid, 1% Ferulic Acid, and Fullerenes to target dark spots, collagen synthesis, and sun damage.',
     skinType: 'Dull, Uneven Tone, Mature',
     keyIngredients: ["Ethyl Ascorbic Acid 16%", "Ferulic Acid 1%", "Fullerenes", "Hyaluronic Acid"],
@@ -2550,7 +2570,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-39',
-    dbId: 1015,
+    dbId: 1015, imageStatus: 'placeholder',
     slug: 'the-derma-co-the-derma-co-2-kojic-acid-face-serum-with-1-alpha-arbutin',
     name: 'The Derma Co 2% Kojic Acid Face Serum with 1% Alpha Arbutin',
     brand: 'The Derma Co',
@@ -2563,7 +2583,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 499.0,
     rating: 4.8,
     reviewCount: 2355,
-    image: 'https://images.unsplash.com/photo-1608248597359-25f0376ef79d?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Clinically proven dermatological solution designed to treat melasma, stubborn dark spots, and post-acne marks with 2% Kojic Acid and 1% Alpha Arbutin.',
     skinType: 'Pigmented, Uneven Tone, All Skin Types',
     keyIngredients: ["Kojic Acid 2%", "Alpha Arbutin 1%", "Niacinamide 1%", "Hyaluronic Acid"],
@@ -2650,7 +2670,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-40',
-    dbId: 1016,
+    dbId: 1016, imageStatus: 'placeholder',
     slug: 'the-derma-co-the-derma-co-10-vitamin-c-face-serum-with-5-niacinamide',
     name: 'The Derma Co 10% Vitamin C Face Serum with 5% Niacinamide',
     brand: 'The Derma Co',
@@ -2663,7 +2683,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 649.0,
     rating: 4.8,
     reviewCount: 2392,
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Dual-action glow serum combining 10% 3-O-Ethyl Ascorbic Acid with 5% Niacinamide and Ferulic Acid to visibly fade pigmentation and protect from free radical damage.',
     skinType: 'All Skin Types, Dull Skin',
     keyIngredients: ["3-O-Ethyl Ascorbic Acid 10%", "Niacinamide 5%", "Ferulic Acid 0.5%"],
@@ -2750,7 +2770,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-41',
-    dbId: 1017,
+    dbId: 1017, imageStatus: 'placeholder',
     slug: 'l-oreal-paris-l-oreal-paris-revitalift-1-5-hyaluronic-acid-face-serum',
     name: 'L\'Oreal Paris Revitalift 1.5% Hyaluronic Acid Face Serum',
     brand: 'L\'Oreal Paris',
@@ -2763,7 +2783,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 999.0,
     rating: 4.8,
     reviewCount: 2429,
-    image: 'https://images.unsplash.com/photo-1608248597359-25f0376ef79d?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Dermatologist-validated lightweight plumping serum with dual molecular weight Hyaluronic Acid (0.5% Macro + 1.0% Micro) for immediate +42% radiant hydration.',
     skinType: 'Dehydrated, Dry, Fine Lines, Sensitive',
     keyIngredients: ["Macro Hyaluronic Acid 0.5%", "Micro Hyaluronic Acid 1.0%", "Glycerin"],
@@ -2850,7 +2870,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-42',
-    dbId: 1018,
+    dbId: 1018, imageStatus: 'placeholder',
     slug: 'dot-key-dot-key-10-niacinamide-blemish-clearing-serum-with-cica',
     name: 'Dot & Key 10% Niacinamide Blemish Clearing Serum with Cica',
     brand: 'Dot & Key',
@@ -2863,7 +2883,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 595.0,
     rating: 4.8,
     reviewCount: 2466,
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Soothes irritated acne-prone skin with Centella Asiatica while 10% Niacinamide and Zinc PCA balance excess oil production and fade post-blemish redness.',
     skinType: 'Oily, Acne-Prone, Sensitive',
     keyIngredients: ["Niacinamide 10%", "Cica Extract", "Zinc PCA", "Fermented Rice Water"],
@@ -2950,7 +2970,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-43',
-    dbId: 1019,
+    dbId: 1019, imageStatus: 'placeholder',
     slug: 'foxtale-foxtale-15-vitamin-c-face-serum-with-emblica',
     name: 'Foxtale 15% Vitamin C Face Serum with Emblica',
     brand: 'Foxtale',
@@ -2963,7 +2983,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 595.0,
     rating: 4.8,
     reviewCount: 2503,
-    image: 'https://images.unsplash.com/photo-1608248597359-25f0376ef79d?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Formulated in an airtight opaque container with 15% pure L-Ascorbic Acid, Indian Gooseberry (Emblica), and Vitamin E for zero oxidation and maximum radiant glow.',
     skinType: 'Sun Damaged, Dull, Uneven Texture',
     keyIngredients: ["L-Ascorbic Acid 15%", "Emblica (Amla) Extract", "Vitamin E", "Bisabolol"],
@@ -3050,7 +3070,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-44',
-    dbId: 1020,
+    dbId: 1020, imageStatus: 'placeholder',
     slug: 'deconstruct-deconstruct-clearing-serum-2-alpha-arbutin-5-niacinamide',
     name: 'Deconstruct Clearing Serum 2% Alpha Arbutin + 5% Niacinamide',
     brand: 'Deconstruct',
@@ -3063,7 +3083,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 699.0,
     rating: 4.8,
     reviewCount: 2540,
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Scientifically balanced gentle formulation combining Alpha Arbutin to suppress tyrosinase activity with Niacinamide to inhibit melanosome transfer for spotless skin.',
     skinType: 'Dark Spots, PIH, All Skin Types',
     keyIngredients: ["Alpha Arbutin 2%", "Niacinamide 5%", "Phospholipids", "Glycerin"],
@@ -3150,7 +3170,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-45',
-    dbId: 1021,
+    dbId: 1021, imageStatus: 'placeholder',
     slug: 'plum-plum-2-niacinamide-clarifying-face-serum-with-rice-water',
     name: 'Plum 2% Niacinamide Clarifying Face Serum with Rice Water',
     brand: 'Plum',
@@ -3163,7 +3183,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 499.0,
     rating: 4.8,
     reviewCount: 2577,
-    image: 'https://images.unsplash.com/photo-1608248597359-25f0376ef79d?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Beginner-friendly non-sticky serum featuring 2% Niacinamide, fermented Japanese rice water, and Licorice extract to gently clear blemishes without tingling.',
     skinType: 'Sensitive, Beginner, Normal, Combination',
     keyIngredients: ["Niacinamide 2%", "Fermented Rice Water", "Licorice Extract", "Squalane"],
@@ -3250,7 +3270,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-46',
-    dbId: 1022,
+    dbId: 1022, imageStatus: 'placeholder',
     slug: 'conscious-chemist-conscious-chemist-trubiom-pigmentation-corrector-serum',
     name: 'Conscious Chemist Trubiom Pigmentation Corrector Serum',
     brand: 'Conscious Chemist',
@@ -3263,7 +3283,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 699.0,
     rating: 4.8,
     reviewCount: 2614,
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Synergistic pigmentation treatment combining Tranexamic Acid 3%, Niacinamide 5%, and Kojic Dipalmitate 2% to interrupt melanin synthesis at multiple biological stages.',
     skinType: 'Stubborn Pigmentation, Melasma, Sun Spots',
     keyIngredients: ["Tranexamic Acid 3%", "Niacinamide 5%", "Kojic Dipalmitate 2%"],
@@ -3350,7 +3370,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-47',
-    dbId: 1023,
+    dbId: 1023, imageStatus: 'placeholder',
     slug: 'dr-sheth-s-dr-sheth-s-centella-niacinamide-oil-acne-control-serum',
     name: 'Dr. Sheth\'s Centella & Niacinamide Oil & Acne Control Serum',
     brand: 'Dr. Sheth\'s',
@@ -3363,7 +3383,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 599.0,
     rating: 4.8,
     reviewCount: 2651,
-    image: 'https://images.unsplash.com/photo-1608248597359-25f0376ef79d?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Crafted for humid Indian conditions with Centella Asiatica 10%, Niacinamide 10%, and Zinc PCA 1% to balance excess sebum and calm active inflamed pustules.',
     skinType: 'Indian Acne-Prone Skin, Oily, Sensitive',
     keyIngredients: ["Centella Asiatica Extract 10%", "Niacinamide 10%", "Zinc PCA 1%"],
@@ -3450,7 +3470,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-48',
-    dbId: 1024,
+    dbId: 1024, imageStatus: 'placeholder',
     slug: 'minimalist-minimalist-0-3-retinol-face-serum-in-squalane',
     name: 'Minimalist 0.3% Retinol Face Serum in Squalane',
     brand: 'Minimalist',
@@ -3463,7 +3483,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 599.0,
     rating: 4.8,
     reviewCount: 2688,
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Waterless oil-free anti-aging treatment formulated with 0.3% pure stabilized Retinol suspended in hydrating plant-derived Squalane and antioxidant Coenzyme Q10.',
     skinType: 'Aging, Fine Lines, Wrinkles, Loss of Firmness',
     keyIngredients: ["Pure Retinol 0.3%", "Plant Squalane", "Coenzyme Q10", "Tocopherol"],
@@ -3550,7 +3570,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-49',
-    dbId: 1025,
+    dbId: 1025, imageStatus: 'placeholder',
     slug: 'the-ordinary-the-ordinary-niacinamide-10-zinc-1',
     name: 'The Ordinary Niacinamide 10% + Zinc 1%',
     brand: 'The Ordinary',
@@ -3563,7 +3583,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 550.0,
     rating: 4.8,
     reviewCount: 2725,
-    image: 'https://images.unsplash.com/photo-1608248597359-25f0376ef79d?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Global gold-standard high-strength vitamin and mineral blemish formula with 10% pure Niacinamide and 1% Zinc salt of pyrrolidone carboxylic acid to reduce congestion.',
     skinType: 'Congested, Oily, Textured Skin',
     keyIngredients: ["Niacinamide 10%", "Zinc PCA 1%", "Tamarindus Indica Seed Gum", "Pentylene Glycol"],
@@ -3650,7 +3670,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-50',
-    dbId: 1026,
+    dbId: 1026, imageStatus: 'placeholder',
     slug: 'dot-key-dot-key-20-vitamin-c-serum-with-blood-orange',
     name: 'Dot & Key 20% Vitamin C Serum with Blood Orange',
     brand: 'Dot & Key',
@@ -3663,7 +3683,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 695.0,
     rating: 4.8,
     reviewCount: 2762,
-    image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Extra-strength brightening booster with 20% Ethyl Ascorbic Acid, Sicilian Blood Orange, and Ferulic Acid to revitalize dull tired skin and fade persistent sun tanning.',
     skinType: 'Dull, Sun Spots, Resilient Skin',
     keyIngredients: ["Ethyl Ascorbic Acid 20%", "Blood Orange Extract", "Ferulic Acid", "Hyaluronic Acid"],
@@ -3750,7 +3770,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-51',
-    dbId: 1027,
+    dbId: 1027, imageStatus: 'placeholder',
     slug: 'the-derma-co-the-derma-co-2-salicylic-acid-face-serum-with-witch-hazel',
     name: 'The Derma Co 2% Salicylic Acid Face Serum with Witch Hazel',
     brand: 'The Derma Co',
@@ -3763,7 +3783,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 499.0,
     rating: 4.8,
     reviewCount: 2799,
-    image: 'https://images.unsplash.com/photo-1608248597359-25f0376ef79d?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Pore-clearing exfoliant formulated with encapsulated 2% Salicylic Acid and astringent Witch Hazel to target active whiteheads and dissolve deep comedones.',
     skinType: 'Active Acne, Whiteheads, Blackheads, Oily',
     keyIngredients: ["Salicylic Acid 2%", "Witch Hazel 2%", "Willow Bark", "Zinc PCA"],
@@ -3850,7 +3870,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-52',
-    dbId: 1028,
+    dbId: 1028, imageStatus: 'placeholder',
     slug: 'minimalist-minimalist-marula-oil-5-face-moisturizer-with-hyaluronic-acid',
     name: 'Minimalist Marula Oil 5% Face Moisturizer with Hyaluronic Acid',
     brand: 'Minimalist',
@@ -3863,7 +3883,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 399.0,
     rating: 4.8,
     reviewCount: 2836,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Rich nourishing daily moisturizer with 5% cold-pressed Marula Oil, Betaine, and Hyaluronic Acid to restore dry damaged lipid barriers and prevent trans-epidermal water loss.',
     skinType: 'Dry, Very Dry, Dehydrated, Sensitive',
     keyIngredients: ["Marula Oil 5%", "Betaine", "Hyaluronic Acid", "Vitamin F", "Trehalose"],
@@ -3950,7 +3970,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-53',
-    dbId: 1029,
+    dbId: 1029, imageStatus: 'placeholder',
     slug: 'minimalist-minimalist-sepicalm-3-oat-face-moisturizer',
     name: 'Minimalist Sepicalm 3% + Oat Face Moisturizer',
     brand: 'Minimalist',
@@ -3963,7 +3983,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 349.0,
     rating: 4.8,
     reviewCount: 2873,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Lightweight, non-greasy soothing moisturizer combining 3% Sepicalm (Amino Acids + Water Lily) with Oat Extract and Shea Butter to calm redness and irritated sensitive skin.',
     skinType: 'Sensitive, Normal, Combination, Redness-Prone',
     keyIngredients: ["Sepicalm 3%", "Oat Kernel Flour", "Polyglutamic Acid", "Squalane"],
@@ -4050,7 +4070,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-54',
-    dbId: 1030,
+    dbId: 1030, imageStatus: 'placeholder',
     slug: 'neutrogena-neutrogena-hydro-boost-water-gel-with-hyaluronic-acid',
     name: 'Neutrogena Hydro Boost Water Gel with Hyaluronic Acid',
     brand: 'Neutrogena',
@@ -4063,7 +4083,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 1050.0,
     rating: 4.8,
     reviewCount: 2910,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Award-winning oil-free water gel with purified Hyaluronic Acid and natural moisturizing factors that quenches dry skin instantly with +72 hours continuous hydration.',
     skinType: 'Dehydrated, Oily, Combination',
     keyIngredients: ["Purified Hyaluronic Acid", "Trehalose", "Glycerin", "Dimethicone"],
@@ -4150,7 +4170,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-55',
-    dbId: 1031,
+    dbId: 1031, imageStatus: 'placeholder',
     slug: 'plum-plum-green-tea-oil-free-moisturizer-with-niacinamide',
     name: 'Plum Green Tea Oil-Free Moisturizer with Niacinamide',
     brand: 'Plum',
@@ -4163,7 +4183,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 470.0,
     rating: 4.8,
     reviewCount: 2947,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: '100% vegan, oil-free mattifying cream infused with Green Tea extracts and Niacinamide to deliver lightweight hydration while preventing acne and controlling excess shine.',
     skinType: 'Oily, Acne-Prone, Sensitive',
     keyIngredients: ["Green Tea Extract", "Niacinamide", "Hyaluronic Acid", "Squalane"],
@@ -4250,7 +4270,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-56',
-    dbId: 1032,
+    dbId: 1032, imageStatus: 'placeholder',
     slug: 'cetaphil-cetaphil-moisturising-cream-for-dry-sensitive-skin',
     name: 'Cetaphil Moisturising Cream for Dry, Sensitive Skin',
     brand: 'Cetaphil',
@@ -4263,7 +4283,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 520.0,
     rating: 4.8,
     reviewCount: 2984,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Intense clinically proven dermatological cream enriched with Sweet Almond Oil, Niacinamide, and Panthenol that hydrates and fortifies dry barrier for up to 48 hours.',
     skinType: 'Very Dry, Sensitive, Eczema-Prone',
     keyIngredients: ["Sweet Almond Oil", "Niacinamide", "Panthenol", "Glycerin", "Tocopherol"],
@@ -4350,7 +4370,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-57',
-    dbId: 1033,
+    dbId: 1033, imageStatus: 'placeholder',
     slug: 'bioderma-bioderma-atoderm-intensive-baume-ultra-soothing-balm',
     name: 'Bioderma Atoderm Intensive Baume Ultra-Soothing Balm',
     brand: 'Bioderma',
@@ -4363,7 +4383,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 849.0,
     rating: 4.8,
     reviewCount: 3021,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Medical-grade 2-in-1 anti-itching soothing lipid-replenishing balm that reconstructs the cutaneous barrier and limits bacterial adhesion with Skin Barrier Therapy patent.',
     skinType: 'Atopic, Irritated, Severely Dry Skin',
     keyIngredients: ["PEA Anti-itching Agent", "Lipigenium Complex", "Skin Barrier Therapy"],
@@ -4450,7 +4470,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-58',
-    dbId: 1034,
+    dbId: 1034, imageStatus: 'placeholder',
     slug: 'formula-rx-formula-rx-barrier-relief-ceramide-moisturizer',
     name: 'Formula RX Barrier Relief Ceramide Moisturizer',
     brand: 'Formula RX',
@@ -4463,7 +4483,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 699.0,
     rating: 4.8,
     reviewCount: 3058,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Engineered with the optimal 3:1:1 physiological golden ratio of Ceramides, Cholesterol, and Free Fatty Acids with 4% Niacinamide to restore chronic compromised skin barriers.',
     skinType: 'Damaged Barrier, Over-Exfoliated, Sensitive',
     keyIngredients: ["Ceramide NP/AP/EOP", "Cholesterol", "Free Fatty Acids (3:1:1)", "Niacinamide 4%"],
@@ -4550,7 +4570,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-59',
-    dbId: 1035,
+    dbId: 1035, imageStatus: 'placeholder',
     slug: 'dr-sheth-s-dr-sheth-s-haldi-hyaluronic-acid-oil-free-moisturizer',
     name: 'Dr. Sheth\'s Haldi & Hyaluronic Acid Oil-Free Moisturizer',
     brand: 'Dr. Sheth\'s',
@@ -4563,7 +4583,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 499.0,
     rating: 4.8,
     reviewCount: 3095,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Quick-absorbing gel lotion combining anti-inflammatory Turmeric extract, 1% Hyaluronic Acid, and Cica to hydrate and brighten Indian oily and acne-prone skin.',
     skinType: 'Oily, Acne-Prone, Normal',
     keyIngredients: ["Turmeric (Haldi) Extract", "Hyaluronic Acid 1%", "Cica Extract", "Niacinamide"],
@@ -4650,7 +4670,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-60',
-    dbId: 1036,
+    dbId: 1036, imageStatus: 'placeholder',
     slug: 'dot-key-dot-key-72-hr-hydrating-gel-with-probiotics',
     name: 'Dot & Key 72 HR Hydrating Gel with Probiotics',
     brand: 'Dot & Key',
@@ -4663,7 +4683,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 495.0,
     rating: 4.8,
     reviewCount: 3132,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Oil-free water-light gel moisturizer powered by Kombucha probiotics and Japanese Rice Water that balances skin microbiome and provides long-lasting 72-hour moisture lock.',
     skinType: 'Dehydrated, Oily, Combination',
     keyIngredients: ["Kombucha Probiotics", "Hyaluronic Acid", "Japanese Rice Water"],
@@ -4750,7 +4770,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-61',
-    dbId: 1037,
+    dbId: 1037, imageStatus: 'placeholder',
     slug: 'the-derma-co-the-derma-co-4-ceramide-barrier-repair-cream',
     name: 'The Derma Co 4% Ceramide Barrier Repair Cream',
     brand: 'The Derma Co',
@@ -4763,7 +4783,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 599.0,
     rating: 4.8,
     reviewCount: 3169,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Formulated with 4% Ceramide Complex and Oxylance to soothe active irritation, repair micro-tears in the epidermal barrier, and lock in deep moisture.',
     skinType: 'Dry, Flaky, Sensitive, Compromised Barrier',
     keyIngredients: ["Ceramide Complex 4%", "Oxylance", "Niacinamide 2%", "Cica Extract"],
@@ -4850,7 +4870,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-62',
-    dbId: 1038,
+    dbId: 1038, imageStatus: 'placeholder',
     slug: 'aqualogica-aqualogica-glow-jello-moisturizer-with-papaya-vitamin-c',
     name: 'Aqualogica Glow+ Jello Moisturizer with Papaya & Vitamin C',
     brand: 'Aqualogica',
@@ -4863,7 +4883,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 399.0,
     rating: 4.8,
     reviewCount: 3206,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Fun, bouncy non-sticky jello moisturizer packed with Vitamin C and Papaya extracts that melts instantly into the skin for an illuminated dewy glass finish.',
     skinType: 'Dull, Oily, Combination',
     keyIngredients: ["Papaya Extract", "Vitamin C", "Hyaluronic Acid", "Aloe Vera"],
@@ -4950,7 +4970,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-63',
-    dbId: 1039,
+    dbId: 1039, imageStatus: 'placeholder',
     slug: 'foxtale-foxtale-ceramide-supercream-hydrating-moisturizer',
     name: 'Foxtale Ceramide Supercream Hydrating Moisturizer',
     brand: 'Foxtale',
@@ -4963,7 +4983,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 545.0,
     rating: 4.8,
     reviewCount: 3243,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Rich barrier-plumping supercream loaded with Ceramides and Sodium Hyaluronate that repairs sun and environmental damage while creating a supple protective cocoon.',
     skinType: 'Dry to Normal, Sensitive',
     keyIngredients: ["Ceramide Complex", "Sodium Hyaluronate", "Vitamin E", "Shea Butter"],
@@ -5050,7 +5070,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-64',
-    dbId: 1040,
+    dbId: 1040, imageStatus: 'placeholder',
     slug: 'conscious-chemist-conscious-chemist-indulge-ceramide-barrier-repair-cream',
     name: 'Conscious Chemist Indulge Ceramide Barrier Repair Cream',
     brand: 'Conscious Chemist',
@@ -5063,7 +5083,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 599.0,
     rating: 4.8,
     reviewCount: 3280,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Velvet-finish restorative cream featuring Madecassoside and bio-identical Ceramide lipids to intensely replenish moisture reserves and calm chronic skin irritation.',
     skinType: 'Compromised Barrier, Stressed Skin, Dry',
     keyIngredients: ["Ceramide NP/AP", "Madecassoside", "Hyaluronic Acid", "Panthenol"],
@@ -5150,7 +5170,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-65',
-    dbId: 1041,
+    dbId: 1041, imageStatus: 'placeholder',
     slug: 'minimalist-minimalist-2-salicylic-acid-lha-cleanser-with-zinc',
     name: 'Minimalist 2% Salicylic Acid + LHA Cleanser with Zinc',
     brand: 'Minimalist',
@@ -5163,7 +5183,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 299.0,
     rating: 4.8,
     reviewCount: 3317,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Daily foaming cleanser formulated with 2% Salicylic Acid (BHA) and lipophilic LHA to gently exfoliate pores, control sebum, and reduce blackheads without drying.',
     skinType: 'Oily, Acne-Prone, Congested',
     keyIngredients: ["Salicylic Acid 2%", "Capryloyl Salicylic Acid (LHA)", "Zinc PCA", "Panthenol"],
@@ -5250,7 +5270,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-66',
-    dbId: 1042,
+    dbId: 1042, imageStatus: 'placeholder',
     slug: 'minimalist-minimalist-gentle-oat-extract-6-face-cleanser',
     name: 'Minimalist Gentle Oat Extract 6% Face Cleanser',
     brand: 'Minimalist',
@@ -5263,7 +5283,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 299.0,
     rating: 4.8,
     reviewCount: 3354,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Sulfate-free, non-foaming calming cleanser with 6% Oat Extract, Colloidal Oat, and Hyaluronic Acid that cleanses without stripping essential skin barrier lipids.',
     skinType: 'Dry, Sensitive, Compromised Barrier',
     keyIngredients: ["Oat Extract 6%", "Colloidal Oatmeal", "Hyaluronic Acid", "Glycerin"],
@@ -5350,7 +5370,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-67',
-    dbId: 1043,
+    dbId: 1043, imageStatus: 'placeholder',
     slug: 'the-derma-co-the-derma-co-1-salicylic-acid-gel-face-wash',
     name: 'The Derma Co 1% Salicylic Acid Gel Face Wash',
     brand: 'The Derma Co',
@@ -5363,7 +5383,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 299.0,
     rating: 4.8,
     reviewCount: 3391,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Targeted anti-acne gel face wash with 1% Salicylic Acid and Witch Hazel that deeply purifies oily skin and clears active pustules without disrupting moisture balance.',
     skinType: 'Oily, Acne-Prone, Large Pores',
     keyIngredients: ["Salicylic Acid 1%", "Witch Hazel Extract", "Willow Bark", "Vitamin E"],
@@ -5450,7 +5470,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-68',
-    dbId: 1044,
+    dbId: 1044, imageStatus: 'placeholder',
     slug: 'dot-key-dot-key-barrier-repair-gentle-hydrating-cleanser',
     name: 'Dot & Key Barrier Repair Gentle Hydrating Cleanser',
     brand: 'Dot & Key',
@@ -5463,7 +5483,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 395.0,
     rating: 4.8,
     reviewCount: 3428,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Cream-to-lather barrier strengthening cleanser infused with 5 Essential Ceramides and Japanese Rice Water to dissolve makeup and impurities without tight skin feeling.',
     skinType: 'Sensitive, Dry, All Skin Types',
     keyIngredients: ["5 Essential Ceramides", "Hyaluronic Acid", "Japanese Rice Water"],
@@ -5550,7 +5570,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-69',
-    dbId: 1045,
+    dbId: 1045, imageStatus: 'placeholder',
     slug: 'plum-plum-green-tea-pore-cleansing-face-wash',
     name: 'Plum Green Tea Pore Cleansing Face Wash',
     brand: 'Plum',
@@ -5563,7 +5583,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 375.0,
     rating: 4.8,
     reviewCount: 3465,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Soap-free foaming wash packed with Green Tea antioxidants and gentle cellulose scrub beads that thoroughly unclogs pores and washes away acne-causing bacteria.',
     skinType: 'Oily, Combination, Acne-Prone',
     keyIngredients: ["Green Tea Extract", "Glycolic Acid", "Soft Cellulose Beads"],
@@ -5650,7 +5670,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-70',
-    dbId: 1046,
+    dbId: 1046, imageStatus: 'placeholder',
     slug: 'simple-simple-kind-to-skin-refreshing-facial-wash',
     name: 'Simple Kind to Skin Refreshing Facial Wash',
     brand: 'Simple',
@@ -5663,7 +5683,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 385.0,
     rating: 4.8,
     reviewCount: 3502,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: '100% soap-free clean gel cleanser enriched with Pro-Vitamin B5 and Vitamin E that purifies sensitive skin without artificial perfumes, colorants, or harsh chemicals.',
     skinType: '100% Sensitive Skin, All Skin Types',
     keyIngredients: ["Pro-Vitamin B5", "Vitamin E", "Triple Purified Water"],
@@ -5750,7 +5770,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-71',
-    dbId: 1047,
+    dbId: 1047, imageStatus: 'placeholder',
     slug: 'bioderma-bioderma-sensibio-h2o-micellar-water-make-up-removing-biphasic',
     name: 'Bioderma Sensibio H2O Micellar Water Make-up Removing Biphasic',
     brand: 'Bioderma',
@@ -5763,7 +5783,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 495.0,
     rating: 4.8,
     reviewCount: 3539,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Dermatological cult-favorite micellar water that captures impurities and waterproof makeup while respecting skin\'s natural hydrolipidic film and physiological pH 5.5.',
     skinType: 'Sensitive, Intolerant, All Skin Types',
     keyIngredients: ["Micellar Technology", "Cucumber Extract", "Fructooligosaccharides"],
@@ -5850,7 +5870,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-72',
-    dbId: 1048,
+    dbId: 1048, imageStatus: 'placeholder',
     slug: 'cetaphil-cetaphil-daily-facial-cleanser-for-combination-skin',
     name: 'Cetaphil Daily Facial Cleanser for Combination Skin',
     brand: 'Cetaphil',
@@ -5863,7 +5883,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 625.0,
     rating: 4.8,
     reviewCount: 3576,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Clinically proven low-lather foaming cleanser with Niacinamide and Glycerin that removes up to 99% of excess surface oils, dirt, and light makeup without over-drying.',
     skinType: 'Combination, Oily, Sensitive',
     keyIngredients: ["Glycerin", "Niacinamide (Vitamin B3)", "Panthenol (Vitamin B5)"],
@@ -5950,7 +5970,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-73',
-    dbId: 1049,
+    dbId: 1049, imageStatus: 'placeholder',
     slug: 'cerave-cerave-hydrating-facial-cleanser-for-normal-to-dry-skin',
     name: 'CeraVe Hydrating Facial Cleanser for Normal to Dry Skin',
     brand: 'CeraVe',
@@ -5963,7 +5983,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 750.0,
     rating: 4.8,
     reviewCount: 3613,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Developed with dermatologists, this non-foaming lotion cleanser features 3 Essential Ceramides and Hyaluronic Acid with MVE delivery technology for 24-hr moisture.',
     skinType: 'Normal, Dry, Sensitive',
     keyIngredients: ["Ceramides 1", "3", "6-II", "Hyaluronic Acid", "Glycerin", "Cholesterol"],
@@ -6050,7 +6070,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-74',
-    dbId: 1050,
+    dbId: 1050, imageStatus: 'placeholder',
     slug: 'dr-sheth-s-dr-sheth-s-ceramide-vitamin-c-oil-cleanser',
     name: 'Dr. Sheth\'s Ceramide & Vitamin C Oil Cleanser',
     brand: 'Dr. Sheth\'s',
@@ -6063,7 +6083,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 499.0,
     rating: 4.8,
     reviewCount: 3650,
-    image: 'https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'First-cleanse emulsifying oil cleanser formulated with Ceramide complex and lipid-soluble Vitamin C that effortlessly melts stubborn waterproof mascara and SPF.',
     skinType: 'All Skin Types, Waterproof Makeup Wearers',
     keyIngredients: ["Ceramide Complex", "Ascorbyl Tetraisopalmitate", "Olive Oil", "Vitamin E"],
@@ -6150,7 +6170,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-75',
-    dbId: 1051,
+    dbId: 1051, imageStatus: 'placeholder',
     slug: 'foxtale-foxtale-the-daily-duet-gentle-hydrating-cleanser',
     name: 'Foxtale The Daily Duet Gentle Hydrating Cleanser',
     brand: 'Foxtale',
@@ -6163,7 +6183,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 349.0,
     rating: 4.8,
     reviewCount: 3687,
-    image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Two-in-one gentle makeup remover and hydrating cleanser infused with Sodium Hyaluronate and Red Algae extract that leaves skin clean, soft, and refreshed.',
     skinType: 'All Skin Types, Dry, Normal',
     keyIngredients: ["Sodium Hyaluronate", "Red Algae Extract", "Vitamin B5"],
@@ -6250,7 +6270,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-76',
-    dbId: 1052,
+    dbId: 1052, imageStatus: 'placeholder',
     slug: 'l-oreal-paris-l-oreal-paris-true-match-super-blendable-liquid-foundation-3n-creamy-beige',
     name: 'L\'Oreal Paris True Match Super-Blendable Liquid Foundation - 3N Creamy Beige',
     brand: 'L\'Oreal Paris',
@@ -6263,7 +6283,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 1099.0,
     rating: 4.8,
     reviewCount: 3724,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Skin-matching foundation enriched with Hyaluronic Acid and ultra-fine pigments that seamlessly adapts to skin tone and undertone for natural, medium buildable coverage.',
     skinType: 'All Skin Types, Combination',
     keyIngredients: ["Hyaluronic Acid", "Glycerin", "Micro-pigments", "Dimethicone"],
@@ -6350,7 +6370,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-77',
-    dbId: 1053,
+    dbId: 1053, imageStatus: 'placeholder',
     slug: 'maybelline-maybelline-super-stay-24h-full-coverage-foundation-120-classic-ivory',
     name: 'Maybelline Super Stay 24H Full Coverage Foundation - 120 Classic Ivory',
     brand: 'Maybelline',
@@ -6363,7 +6383,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 849.0,
     rating: 4.8,
     reviewCount: 3761,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'High-pigment full coverage foundation with an ultra-matte oil-free finish that resists sweat, heat, and humidity for 24-hour flawless wear.',
     skinType: 'Oily, Combination',
     keyIngredients: ["Oil-Free Pigments", "Vitamin E", "Silica Microspheres"],
@@ -6450,7 +6470,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-78',
-    dbId: 1054,
+    dbId: 1054, imageStatus: 'placeholder',
     slug: 'm-a-c-m-a-c-studio-fix-fluid-spf-15-foundation-nc25',
     name: 'M.A.C Studio Fix Fluid SPF 15 Foundation - NC25',
     brand: 'M.A.C',
@@ -6463,7 +6483,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 3600.0,
     rating: 4.8,
     reviewCount: 3798,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Iconic prestige foundation delivering 24-hour color-true wear, shine control, and natural matte medium-to-full buildable coverage with broad spectrum SPF 15.',
     skinType: 'All Skin Types, Oily, Normal',
     keyIngredients: ["Micronized Minerals", "Silica", "Octinoxate (SPF 15)", "Vitamin E"],
@@ -6550,7 +6570,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-79',
-    dbId: 1055,
+    dbId: 1055, imageStatus: 'placeholder',
     slug: 'kay-beauty-kay-beauty-hydrating-foundation-120y-light',
     name: 'Kay Beauty Hydrating Foundation - 120Y Light',
     brand: 'Kay Beauty',
@@ -6563,7 +6583,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 1200.0,
     rating: 4.8,
     reviewCount: 3835,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Formulated with Mango Butter and Avocado Butter, this hydrating foundation blends like butter to impart a radiant, dewy, lit-from-within glow suited for Indian undertones.',
     skinType: 'Dry, Normal, Dehydrated',
     keyIngredients: ["Mango Butter", "Avocado Butter", "Hyaluronic Acid", "Vitamin E"],
@@ -6650,7 +6670,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-80',
-    dbId: 1056,
+    dbId: 1056, imageStatus: 'placeholder',
     slug: 'lakme-lakme-9-to-5-primer-matte-perfect-cover-foundation-warm-natural',
     name: 'Lakme 9 to 5 Primer + Matte Perfect Cover Foundation - Warm Natural',
     brand: 'Lakme',
@@ -6663,7 +6683,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 500.0,
     rating: 4.8,
     reviewCount: 3872,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Convenient built-in primer foundation that evens out skin tone, covers fine lines, and delivers a comfortable work-day matte finish with SPF 20 sun protection.',
     skinType: 'All Skin Types, Oily, Normal',
     keyIngredients: ["Silicone Primer Complex", "Vitamin E", "SPF 20 Sun Filters"],
@@ -6750,7 +6770,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-81',
-    dbId: 1057,
+    dbId: 1057, imageStatus: 'placeholder',
     slug: 'sugar-cosmetics-sugar-cosmetics-ace-of-face-foundation-stick-15-cappuccino',
     name: 'Sugar Cosmetics Ace of Face Foundation Stick - 15 Cappuccino',
     brand: 'Sugar Cosmetics',
@@ -6763,7 +6783,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 999.0,
     rating: 4.8,
     reviewCount: 3909,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Multi-purpose portable stick foundation with a built-in brush applicator that glides effortlessly across skin to provide lightweight velvet matte full coverage.',
     skinType: 'Combination, Oily, Normal',
     keyIngredients: ["Candelilla Wax", "Vitamin E", "Micronized Pigments", "Silica"],
@@ -6850,7 +6870,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-82',
-    dbId: 1058,
+    dbId: 1058, imageStatus: 'placeholder',
     slug: 'colorbar-colorbar-24hrs-weightless-liquid-foundation-warm-sand',
     name: 'Colorbar 24Hrs Weightless Liquid Foundation - Warm Sand',
     brand: 'Colorbar',
@@ -6863,7 +6883,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 995.0,
     rating: 4.8,
     reviewCount: 3946,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Featherlight liquid formula enriched with Hyaluronic Acid that glides on like second skin for a breathable sweat-proof natural matte complexion with SPF 15.',
     skinType: 'All Skin Types, Normal, Oily',
     keyIngredients: ["Hyaluronic Acid", "Vitamin E", "SPF 15 UV Filters"],
@@ -6950,7 +6970,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-83',
-    dbId: 1059,
+    dbId: 1059, imageStatus: 'placeholder',
     slug: 'nykaa-nykaa-all-day-matte-long-wear-liquid-foundation-warm-sand',
     name: 'Nykaa All Day Matte Long Wear Liquid Foundation - Warm Sand',
     brand: 'Nykaa',
@@ -6963,7 +6983,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 599.0,
     rating: 4.8,
     reviewCount: 3983,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Formulated specifically for Indian tropical climates, this oil-controlling liquid foundation stays put through heat and humidity without settling into smile lines.',
     skinType: 'Oily, Combination',
     keyIngredients: ["Vitamin E", "Oil-Absorbing Polymers", "Dimethicone"],
@@ -7050,7 +7070,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-84',
-    dbId: 1060,
+    dbId: 1060, imageStatus: 'placeholder',
     slug: 'swiss-beauty-swiss-beauty-high-coverage-waterproof-foundation-02-warm-nude',
     name: 'Swiss Beauty High Coverage Waterproof Foundation - 02 Warm Nude',
     brand: 'Swiss Beauty',
@@ -7063,7 +7083,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 399.0,
     rating: 4.8,
     reviewCount: 4020,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Ultra-affordable high-pigment bridal foundation that provides full porcelain coverage, conceals severe blemishes, and resists water and sweat for special events.',
     skinType: 'All Skin Types, Blemish-Prone',
     keyIngredients: ["Jojoba Oil", "Titanium Dioxide", "Vitamin E", "Mineral Wax"],
@@ -7150,7 +7170,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-85',
-    dbId: 1061,
+    dbId: 1061, imageStatus: 'placeholder',
     slug: 'plum-plum-soft-blend-liquid-foundation-120-warm-sand',
     name: 'Plum Soft Blend Liquid Foundation - 120 Warm Sand',
     brand: 'Plum',
@@ -7163,7 +7183,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 675.0,
     rating: 4.8,
     reviewCount: 4057,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: '100% vegan clean beauty foundation infused with Centella Asiatica and Hyaluronic Acid that hydrates like skincare while imparting seamless medium skin-like finish.',
     skinType: 'Sensitive, Normal, Dry',
     keyIngredients: ["Centella Asiatica", "Hyaluronic Acid", "Vitamin E"],
@@ -7250,7 +7270,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-86',
-    dbId: 1062,
+    dbId: 1062, imageStatus: 'placeholder',
     slug: 'clinique-clinique-even-better-makeup-broad-spectrum-spf-15-foundation-cn-52',
     name: 'Clinique Even Better Makeup Broad Spectrum SPF 15 Foundation - CN 52',
     brand: 'Clinique',
@@ -7263,7 +7283,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 3500.0,
     rating: 4.8,
     reviewCount: 4094,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Dermatologist-developed treatment foundation with Vitamin C and Salicylic Acid that actively reduces dark spots and improves skin clarity with every application.',
     skinType: 'Hyperpigmented, Sensitive, Dry to Combination',
     keyIngredients: ["Vitamin C", "Salicylic Acid", "SPF 15 Sun Filters", "Grapefruit Peel Extract"],
@@ -7350,7 +7370,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-87',
-    dbId: 1063,
+    dbId: 1063, imageStatus: 'placeholder',
     slug: 'maybelline-maybelline-super-stay-matte-ink-liquid-lipstick-20-pioneer',
     name: 'Maybelline Super Stay Matte Ink Liquid Lipstick - 20 Pioneer',
     brand: 'Maybelline',
@@ -7363,7 +7383,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 699.0,
     rating: 4.8,
     reviewCount: 4131,
-    image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'The global benchmark in liquid lipsticks: up to 16-hour saturated transfer-proof pigment with a unique arrow applicator for precise flawless coverage.',
     skinType: 'All Skin Tones',
     keyIngredients: ["High-Intensity Colorants", "Dimethicone", "Silica"],
@@ -7450,7 +7470,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-88',
-    dbId: 1064,
+    dbId: 1064, imageStatus: 'placeholder',
     slug: 'm-a-c-m-a-c-powder-kiss-lipstick-devoted-to-chili',
     name: 'M.A.C Powder Kiss Lipstick - Devoted To Chili',
     brand: 'M.A.C',
@@ -7463,7 +7483,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 2550.0,
     rating: 4.8,
     reviewCount: 4168,
-    image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Zero-shine weightless moisture-matte lipstick featuring moisture-coated powder pigments that condition and hydrate lips with a romantic soft-focus blur.',
     skinType: 'All Skin Tones',
     keyIngredients: ["Moisture-Coated Powder Pigments", "Vitamin E", "Dimethicone"],
@@ -7550,7 +7570,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-89',
-    dbId: 1065,
+    dbId: 1065, imageStatus: 'placeholder',
     slug: 'kay-beauty-kay-beauty-matte-drama-matte-lipstick-roll-on',
     name: 'Kay Beauty Matte Drama Matte Lipstick - Roll On',
     brand: 'Kay Beauty',
@@ -7563,7 +7583,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 999.0,
     rating: 4.8,
     reviewCount: 4205,
-    image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Infused with Red Raspberry and Grape Seed Oil, this luxurious velvet bullet lipstick glides like silk and locks in rich pigment with a hydrating cushion matte finish.',
     skinType: 'All Skin Tones',
     keyIngredients: ["Red Raspberry Extract", "Grape Seed Oil", "Vitamin E"],
@@ -7650,7 +7670,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-90',
-    dbId: 1066,
+    dbId: 1066, imageStatus: 'placeholder',
     slug: 'nykaa-nykaa-ultra-matte-lipstick-diana',
     name: 'Nykaa Ultra Matte Lipstick - Diana',
     brand: 'Nykaa',
@@ -7663,7 +7683,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 599.0,
     rating: 4.8,
     reviewCount: 4242,
-    image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Bestselling cult Indian nude brown bullet lipstick formulated with Jojoba and Olive oil that provides intense opaque matte pigment in a single effortless swipe.',
     skinType: 'Warm & Dusky Indian Undertones',
     keyIngredients: ["Olive Oil", "Jojoba Oil", "Vitamin E", "Carnauba Wax"],
@@ -7750,7 +7770,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-91',
-    dbId: 1067,
+    dbId: 1067, imageStatus: 'placeholder',
     slug: 'sugar-cosmetics-sugar-matte-as-hell-crayon-lipstick-01-scarlett-o-hara',
     name: 'Sugar Matte As Hell Crayon Lipstick - 01 Scarlett O\'Hara',
     brand: 'Sugar Cosmetics',
@@ -7763,7 +7783,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 849.0,
     rating: 4.8,
     reviewCount: 4279,
-    image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'High-definition lipstick crayon featuring bold velvet matte formula with extreme color payoff that defines, shapes, and fills lips with fiery red drama.',
     skinType: 'All Skin Tones',
     keyIngredients: ["Candelilla Wax", "Carnauba Wax", "Vitamin E", "Mineral Colorants"],
@@ -7850,7 +7870,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-92',
-    dbId: 1068,
+    dbId: 1068, imageStatus: 'placeholder',
     slug: 'plum-plum-matte-in-heaven-liquid-lipstick-pink-power',
     name: 'Plum Matte In Heaven Liquid Lipstick - Pink Power',
     brand: 'Plum',
@@ -7863,7 +7883,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 499.0,
     rating: 4.8,
     reviewCount: 4316,
-    image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: '100% vegan, smudge-proof, transfer-resistant liquid lipstick enriched with Vitamin E and Sweet Almond Oil for zero-crack comfortable all-day wear.',
     skinType: 'All Skin Tones',
     keyIngredients: ["Sweet Almond Oil", "Vitamin E", "Kaolin Clay"],
@@ -7950,7 +7970,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-93',
-    dbId: 1069,
+    dbId: 1069, imageStatus: 'placeholder',
     slug: 'colorbar-colorbar-velvet-matte-lipstick-bare',
     name: 'Colorbar Velvet Matte Lipstick - Bare',
     brand: 'Colorbar',
@@ -7963,7 +7983,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 349.0,
     rating: 4.8,
     reviewCount: 4353,
-    image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Timeless creamy velvet matte bullet lipstick that enriches lips with Jojoba and Shea Butter, locking in comfortable peachy-nude hydration for 8 hours.',
     skinType: 'Fair to Medium Indian Undertones',
     keyIngredients: ["Jojoba Oil", "Shea Butter", "Vitamin E"],
@@ -8050,7 +8070,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-94',
-    dbId: 1070,
+    dbId: 1070, imageStatus: 'placeholder',
     slug: 'lakme-lakme-forever-matte-liquid-lip-colour-red-carpet',
     name: 'Lakme Forever Matte Liquid Lip Colour - Red Carpet',
     brand: 'Lakme',
@@ -8063,7 +8083,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 349.0,
     rating: 4.8,
     reviewCount: 4390,
-    image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Intense matte liquid lip color with a wand applicator that delivers saturated festive red pigment that stays fresh and smudge-free for 16 hours.',
     skinType: 'All Skin Tones',
     keyIngredients: ["Lightweight Polymers", "Intense Colorants", "Vitamin E"],
@@ -8150,7 +8170,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-95',
-    dbId: 1071,
+    dbId: 1071, imageStatus: 'placeholder',
     slug: 'maybelline-maybelline-color-sensational-creamy-matte-lipstick-touch-of-spice',
     name: 'Maybelline Color Sensational Creamy Matte Lipstick - Touch of Spice',
     brand: 'Maybelline',
@@ -8163,7 +8183,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 399.0,
     rating: 4.8,
     reviewCount: 4427,
-    image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Global viral sensation formulated with nourishing Honey Nectar and precious oils to deliver a velvety soft-matte warm mauve that flatters every skin tone.',
     skinType: 'Universal Flattering Mauve',
     keyIngredients: ["Honey Nectar", "Sesame Seed Oil", "Vitamin E"],
@@ -8250,7 +8270,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-96',
-    dbId: 1072,
+    dbId: 1072, imageStatus: 'placeholder',
     slug: 'maybelline-maybelline-instant-age-rewind-eraser-multi-use-concealer-120-light',
     name: 'Maybelline Instant Age Rewind Eraser Multi-Use Concealer - 120 Light',
     brand: 'Maybelline',
@@ -8263,7 +8283,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 699.0,
     rating: 4.8,
     reviewCount: 4464,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Cult-favorite anti-aging concealer formulated with Haloxyl complex and Goji Berry with an iconic micro-sponge applicator that erases dark circles and fine lines.',
     skinType: 'All Skin Types, Mature Under-Eye',
     keyIngredients: ["Haloxyl Complex", "Goji Berry Extract", "Dimethicone"],
@@ -8350,7 +8370,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-97',
-    dbId: 1073,
+    dbId: 1073, imageStatus: 'placeholder',
     slug: 'l-oreal-paris-l-oreal-paris-infallible-full-wear-concealer-312-amber',
     name: 'L\'Oreal Paris Infallible Full Wear Concealer - 312 Amber',
     brand: 'L\'Oreal Paris',
@@ -8363,7 +8383,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 899.0,
     rating: 4.8,
     reviewCount: 4501,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Maximum full-coverage waterproof liquid concealer equipped with an extra-large doe-foot applicator for seamless all-over face and under-eye camouflage.',
     skinType: 'All Skin Types, Oily, Normal',
     keyIngredients: ["High-Resistance Polymers", "Vitamin E", "Dimethicone"],
@@ -8450,7 +8470,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-98',
-    dbId: 1074,
+    dbId: 1074, imageStatus: 'placeholder',
     slug: 'kay-beauty-kay-beauty-hd-liquid-concealer-120y-light',
     name: 'Kay Beauty HD Liquid Concealer - 120Y Light',
     brand: 'Kay Beauty',
@@ -8463,7 +8483,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 849.0,
     rating: 4.8,
     reviewCount: 4538,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Enriched with Marula Oil and Caffeine to de-puff under-eyes, this HD liquid concealer blurs discoloration and imperfections without settling into creases.',
     skinType: 'Dry, Normal, Sensitive Under-Eye',
     keyIngredients: ["Marula Oil", "Chamomile Extract", "Caffeine", "Vitamin E"],
@@ -8550,7 +8570,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-99',
-    dbId: 1075,
+    dbId: 1075, imageStatus: 'placeholder',
     slug: 'm-a-c-m-a-c-studio-fix-24-hour-smooth-wear-concealer-nc25',
     name: 'M.A.C Studio Fix 24-Hour Smooth Wear Concealer - NC25',
     brand: 'M.A.C',
@@ -8563,7 +8583,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 2600.0,
     rating: 4.8,
     reviewCount: 4575,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'Professional lightweight liquid concealer with a wand applicator that delivers comfortable, medium-to-full buildable coverage with a natural matte 24-hr finish.',
     skinType: 'All Skin Types, Oily, Normal',
     keyIngredients: ["Dimethicone", "Squalane", "Vitamin E", "Silica"],
@@ -8650,7 +8670,7 @@ export const PRODUCTS_DATA: Product[] = [
   // -------------------------------------------------------------
   {
     id: 'prod-100',
-    dbId: 1076,
+    dbId: 1076, imageStatus: 'placeholder',
     slug: 'swiss-beauty-swiss-beauty-liquid-concealer-02-sand-sable',
     name: 'Swiss Beauty Liquid Concealer - 02 Sand Sable',
     brand: 'Swiss Beauty',
@@ -8663,7 +8683,7 @@ export const PRODUCTS_DATA: Product[] = [
     originalPrice: 249.0,
     rating: 4.8,
     reviewCount: 4612,
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+    image: '',
     description: 'India\'s highest volume budget concealer: creamy blendable semi-matte liquid formula that conceals acne spots and dark circles with zero caking.',
     skinType: 'All Skin Types',
     keyIngredients: ["Beeswax", "Titanium Dioxide", "Vitamin E", "Mineral Pigments"],

@@ -565,6 +565,7 @@ class SkinConcernAnalysisResponse(BaseModel):
     matches: list[SkinConcernMatchSchema]
     total_products_analyzed: int
     has_live_data: bool = False
+    source: str = "deterministic_ingredient_rules"
 
 
 class AlternativeProductSchema(BaseModel):
