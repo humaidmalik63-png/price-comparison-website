@@ -545,6 +545,9 @@ def vercel_preview_deploy(token: str, project: Dict[str, Any], branch: str, team
     payload = {
         "name": project.get("name"),
         "target": "preview",
+        # Ask Vercel to use the project's configured framework instead of
+        # prompting for auto-detection confirmation.
+        "skipAutoDetectionConfirmation": 1,
         "gitSource": {"type": "github", "repo": repo, "ref": branch},
     }
     if project.get("id"):
