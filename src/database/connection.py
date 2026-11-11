@@ -403,6 +403,9 @@ def migrate_db(custom_path: str | None = None) -> None:
                 evidence_notes TEXT,
                 evidence_reference TEXT,
                 match_result TEXT,
+                retailer_domain TEXT,
+                currency TEXT,
+                provider_name TEXT,
                 FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
                 FOREIGN KEY (admin_user_id) REFERENCES users(id) ON DELETE SET NULL
             )
@@ -500,6 +503,20 @@ def migrate_db(custom_path: str | None = None) -> None:
         if "match_result" not in observation_cols:
             cursor.execute("ALTER TABLE retail_price_observation ADD COLUMN match_result TEXT")
 
+        # 19. Phase 16.6 Stage 4: provenance columns for retail_price_observation
+        #     (idempotent, additive-only; existing observations and history are
+        #     never modified or dropped; plain ADD COLUMN keeps the statements
+        #     PostgreSQL-compatible). Re-read the table info because the
+        #     rebuild above may already have created the full column set.
+        cursor.execute("PRAGMA table_info(retail_price_observation)")
+        observation_cols_after_rebuild = {row["name"] for row in cursor.fetchall()}
+        if "retailer_domain" not in observation_cols_after_rebuild:
+            cursor.execute("ALTER TABLE retail_price_observation ADD COLUMN retailer_domain TEXT")
+        if "currency" not in observation_cols_after_rebuild:
+            cursor.execute("ALTER TABLE retail_price_observation ADD COLUMN currency TEXT")
+        if "provider_name" not in observation_cols_after_rebuild:
+            cursor.execute("ALTER TABLE retail_price_observation ADD COLUMN provider_name TEXT")
+
         # 17. Phase 16.2: Remove UNIQUE(product_id, retailer) constraint on retail_price_observation
         # 18. Phase 16.5: Add 'live' and 'historical' to observation_type, add match_result
         #     SQLite cannot DROP a column-level UNIQUE constraint without recreating the table.
@@ -548,6 +565,9 @@ def migrate_db(custom_path: str | None = None) -> None:
                     "evidence_notes TEXT",
                     "evidence_reference TEXT",
                     "match_result TEXT",
+                    "retailer_domain TEXT",
+                    "currency TEXT",
+                    "provider_name TEXT",
                     "FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE",
                     "FOREIGN KEY (admin_user_id) REFERENCES users(id) ON DELETE SET NULL",
                 ]

@@ -122,13 +122,18 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
     }
   };
 
-  // If live results are ready, use them; otherwise, prepare progressive or placeholder cards
+  // If live results are ready, use them; otherwise, prepare progressive or placeholder cards.
+  // Phase 16.6 Stage 8 honesty rules for fallback cards:
+  // - demo catalogue prices are labelled demo, never 'verified_match'
+  // - no fabricated retailer homepage URLs presented as product offers
+  // - unavailable retailers show a transparent "no live quote" state
   const displayOffers: LiveRetailerOffer[] = useMemo(() => {
     if (comparison) {
       return comparison.offers;
     }
     return RETAILER_NAMES.map((name) => {
       const local = fallbackOffers.find((f) => f.storeName.toLowerCase().includes(name.toLowerCase().split(' ')[0]));
+      const isLiveQuote = local?.sourceType === 'provider_observed' || local?.sourceType === 'verified_live';
       return {
         retailerName: name,
         storeId: name.toLowerCase().replace(' ', '-'),
@@ -143,13 +148,21 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
         totalCost: local?.totalCost,
         stockStatus: local?.stockStatus || (local?.inStock ? 'In Stock' : 'Out of Stock'),
         inStock: local?.inStock ?? true,
-        purchaseUrl: local?.purchaseUrl || `https://www.${name.toLowerCase().replace(' ', '')}.com`,
+        // Only a real product-page URL is linkable; homepage URLs are never
+        // fabricated as offers (empty string = no link).
+        purchaseUrl: local?.purchaseUrl && local.purchaseUrl.length > 0 ? local.purchaseUrl : '',
         matchClassification: 'verified_match',
         isLowestListed: !!local?.isLowestPrice,
         isLowestTotal: !!local?.isLowestPrice,
-        sourceType: 'demo',
+        sourceType: local && isLiveQuote && local.sourceType ? local.sourceType : 'demo',
         retrievedAt: mountedAt,
-        validationNotes: isLoading ? 'Checking live feed...' : undefined,
+        validationNotes: isLoading
+          ? 'Checking live feed...'
+          : local && isLiveQuote
+            ? undefined
+            : local
+              ? 'Demo catalogue price — not a live provider quote'
+              : 'No live provider quote yet',
       };
     });
   }, [comparison, fallbackOffers, isLoading, mountedAt]);
@@ -339,21 +352,24 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
         </div>
       )}
 
-      {/* Phase 16.2 Backend Integration Status */}
+      {/* Phase 16.6 Backend Integration Status */}
       <div className="p-3 rounded-xl bg-gradient-to-r from-sage-50 to-rose-50 border border-sage-200 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
         <div className="flex items-center space-x-2">
           <Info className="w-4 h-4 text-sage-600" />
           <span className="text-xs font-semibold text-sage-800">
-            Phase 16.2 Backend Active:
+            Live Price Pipeline Active:
           </span>
           <span className="text-xs text-espresso-600">
-            Product matching engine, price intelligence pipeline, and MCP adapters connected.
+            Provider-observed prices from the PriceInIndia MCP feed and Open Beauty
+            Facts catalog. Provider-observed prices are not independently re-verified
+            at the retailer; offer links may open a provider catalog page — always
+            confirm the final price on the retailer's own product page.
           </span>
         </div>
         <div className="flex items-center space-x-2">
           <TrendingUp className="w-4 h-4 text-rose-500" />
-          <span className="text-xs text-rose-700">
-            Verified offers sourced from PriceInIndia & Open Beauty Facts APIs.
+          <span className="text-xs text-rose-700 shrink-0">
+            Stale or unverified prices are excluded from rankings.
           </span>
         </div>
       </div>
@@ -405,7 +421,15 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
                       <>
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-ivory-100 text-espresso-700 border border-rose-100 flex items-center space-x-1">
                           <ShieldCheck className="w-3 h-3 text-sage-600" />
-                          <span>{offer.sourceType === 'verified_live' ? 'Verified Live' : offer.sourceType === 'provider_observed' ? 'Live Price' : 'Feed Active'}</span>
+                          <span>
+                            {offer.sourceType === 'verified_live'
+                              ? 'Verified Live'
+                              : offer.sourceType === 'provider_observed'
+                              ? 'Live Price'
+                              : offer.sourceType === 'demo'
+                              ? 'Demo Data'
+                              : 'Feed Active'}
+                          </span>
                         </span>
                         {/* Match Classification Badge */}
                         {offer.matchClassification && offer.matchClassification !== 'verified_match' && (
@@ -419,11 +443,16 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
                             <span>{offer.matchClassification === 'possible_match' ? 'Possible Match' : 'Incompatible'}</span>
                           </span>
                         )}
-                        {/* Provenance Distinction - Critical Safety Requirement */}
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center space-x-1 bg-champagne-50 border-champagne-300 text-champagne-800">
-                          <Info className="w-3 h-3" />
-                          <span>Provider Observed</span>
-                        </span>
+                        {/* Provenance Distinction - Critical Safety Requirement.
+                            Provider-observed means the price came through a
+                            provider feed; it is NOT an independent verification
+                            and availability is not guaranteed. */}
+                        {offer.sourceType === 'provider_observed' && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center space-x-1 bg-champagne-50 border-champagne-300 text-champagne-800">
+                            <Info className="w-3 h-3" />
+                            <span>Provider Observed — not independently verified</span>
+                          </span>
+                        )}
                         {offer.sourceType === 'verified_live' && (
                           <span className="px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center space-x-1 bg-sage-50 border-sage-300 text-sage-800">
                             <ShieldCheck className="w-3 h-3" />
@@ -530,19 +559,21 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
                   </div>
                 )}
 
-                {/* Purchase Link Button */}
+                {/* Purchase Link Button — only real, linkable product pages
+                    get an active CTA; everything else is transparently
+                    unavailable. */}
                 <a
                   href={offer.purchaseUrl || '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`px-4 py-2.5 rounded-xl text-xs font-bold tracking-wide transition-all shadow-xs flex items-center space-x-1 shrink-0 ${
-                    isRetrieved
+                    isRetrieved && offer.purchaseUrl
                       ? 'bg-espresso-800 hover:bg-espresso-950 text-ivory'
                       : 'bg-ivory-100 text-espresso-400 border border-rose-200 cursor-not-allowed pointer-events-none'
                   }`}
                 >
-                  <span>{isRetrieved ? 'View Offer' : 'Unavailable'}</span>
-                  {isRetrieved && <ExternalLink className="w-3 h-3 ml-1" />}
+                  <span>{isRetrieved && offer.purchaseUrl ? 'View Offer' : 'Unavailable'}</span>
+                  {isRetrieved && offer.purchaseUrl && <ExternalLink className="w-3 h-3 ml-1" />}
                 </a>
               </div>
             </div>

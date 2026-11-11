@@ -15,7 +15,17 @@ IS_DEMO_DATA = True
 DEMO_BADGE_LABEL = "DEMO DATASET - ACADEMIC BEAUTY PROTOTYPE"
 DEFAULT_CURRENCY = "₹"
 DEMO_USER_EMAIL = "demo@pricewise.ai"
-DEMO_USER_PASSWORD = "DemoPass123!"
+# Demo-user password is NEVER hardcoded. It must be supplied through the
+# PRICEWISE_DEMO_USER_PASSWORD environment variable; when it is absent the
+# demo account is simply not seeded and the demo-login shortcut is disabled.
+DEMO_USER_PASSWORD = os.environ.get("PRICEWISE_DEMO_USER_PASSWORD")
+
+# Price freshness policy (Phase 16.6 Stage 5) — configurable thresholds, hours.
+# fresh: observed within FRESHNESS_FRESH_HOURS (default 24h)
+# aging: older than fresh threshold, within FRESHNESS_AGING_HOURS (default 72h)
+# stale: older than the aging threshold
+FRESHNESS_FRESH_HOURS = float(os.environ.get("PRICEWISE_FRESH_HOURS", "24"))
+FRESHNESS_AGING_HOURS = float(os.environ.get("PRICEWISE_AGING_HOURS", "72"))
 
 # Clean SVG placeholder data URI for offline / fallback rendering
 PRODUCT_IMAGE_FALLBACK = (

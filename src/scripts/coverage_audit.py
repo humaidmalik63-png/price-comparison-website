@@ -1,0 +1,411 @@
+#!/usr/bin/env python
+"""Phase 16.6 Stage 1: Beauty catalogue coverage audit.
+
+Produces a per-product coverage classification over the canonical seeded
+catalogue (or any supplied database) without touching the application
+database. Never calls the PriceInIndia network: Stage 1 is inspection only.
+
+Categories (mutually exclusive, evaluated in this precedence order):
+
+- PROVIDER_OBSERVED      at least one live provider_observed observation
+                         usable as a current price
+- MATCH_REVIEW_REQUIRED  provider candidates exist but every live candidate is
+                         flagged / pending review (ambiguous or conflicting)
+- MANUAL_VERIFIED_ONLY   a manually entered observation verified by an admin,
+                         no provider observation
+- CATALOG_VERIFIED_ONLY  catalog-verified (OBF) product without any
+                         observation; catalog verification does NOT imply a
+                         current retailer price
+- DEMO_ONLY              only demo-priced offers exist
+- NO_PRICE_AVAILABLE     no usable offer or observation at all
+
+Usage:
+    python -m src.scripts.coverage_audit [--db PATH] [--json PATH] [--markdown PATH]
+
+With no --db, a freshly seeded temporary database is created and removed.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+import tempfile
+from collections import Counter, defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from src.adapters.mcp_adapters.priceinindia_adapter import PriceInIndiaAdapter
+from src.database.connection import get_connection
+from src.database.seed import DEMO_PRODUCTS, seed_database
+from src.services.product_matching_service import (
+    parse_concentration,
+    parse_formulation,
+    parse_quantity_volume,
+    parse_shade,
+)
+
+ELECTRONICS_CATEGORIES = {p.get("category", "") for p in DEMO_PRODUCTS}
+
+# Order defines evaluation precedence.
+CATEGORY_PRECEDENCE = (
+    "PROVIDER_OBSERVED",
+    "MATCH_REVIEW_REQUIRED",
+    "MANUAL_VERIFIED_ONLY",
+    "CATALOG_VERIFIED_ONLY",
+    "DEMO_ONLY",
+    "NO_PRICE_AVAILABLE",
+)
+
+CATEGORY_DESCRIPTIONS = {
+    "PROVIDER_OBSERVED": (
+        "Has a live, provider_observed PriceInIndia observation that is eligible "
+        "as a current price. Not independently verified."
+    ),
+    "MATCH_REVIEW_REQUIRED": (
+        "Provider candidates exist but every live candidate is flagged or pending "
+        "review; no usable current provider price."
+    ),
+    "MANUAL_VERIFIED_ONLY": (
+        "Price verified by an admin manual entry; no live provider observation. "
+        "Not a live retailer price."
+    ),
+    "CATALOG_VERIFIED_ONLY": (
+        "Product identity verified in catalog (Open Beauty Facts); no current "
+        "retailer observation. Catalog verification does not imply live pricing."
+    ),
+    "DEMO_ONLY": (
+        "Only seeded demo prices exist; clearly labelled demo data, not real "
+        "retailer prices."
+    ),
+    "NO_PRICE_AVAILABLE": (
+        "No usable offer or observation of any kind."
+    ),
+}
+
+
+def _beauty_rows(conn) -> list:
+    """Beauty products = every active product outside the electronics demo set."""
+    rows = conn.execute(
+        """
+        SELECT id, sku, title, brand, category, specs_json, data_status, source_type, is_active
+        FROM products WHERE is_active = 1 ORDER BY id
+        """
+    ).fetchall()
+    return [r for r in rows if r["category"] not in ELECTRONICS_CATEGORIES]
+
+
+def _product_attributes(row) -> dict[str, Any]:
+    specs = json.loads(row["specs_json"]) if row["specs_json"] else {}
+    title = row["title"]
+    qty_val, qty_unit = parse_quantity_volume(
+        str(specs.get("Net Quantity") or specs.get("Size") or "")
+    )
+    return {
+        "id": row["id"],
+        "sku": row["sku"],
+        "title": title,
+        "brand": row["brand"],
+        "category": row["category"],
+        "data_status": row["data_status"],
+        "source_type": row["source_type"],
+        "net_quantity": str(specs.get("Net Quantity") or specs.get("Size") or "") or None,
+        "formulation": parse_formulation(title, specs),
+        "concentration": sorted(parse_concentration(title, specs) or []),
+        "shade": parse_shade(title, specs),
+        "qty_value": qty_val,
+        "qty_unit": qty_unit,
+        "specs_keys": sorted(specs.keys()),
+    }
+
+
+def audit_database(db_path: str) -> dict[str, Any]:
+    adapter = PriceInIndiaAdapter()
+    with get_connection(db_path) as conn:
+        beauty = [_product_attributes(r) for r in _beauty_rows(conn)]
+
+        stores = {
+            row["id"]: {"name": row["name"], "domain": row["domain"]}
+            for row in conn.execute("SELECT id, name, domain FROM stores")
+        }
+
+        offer_rows = conn.execute(
+            """
+            SELECT o.product_id, o.store_id, o.current_price, o.original_price,
+                   o.currency, o.availability, o.offer_url, o.last_checked,
+                   s.name AS store_name
+            FROM offers o JOIN stores s ON s.id = o.store_id
+            ORDER BY o.product_id, o.current_price
+            """
+        ).fetchall()
+        offers_by_product: dict[int, list[dict]] = defaultdict(list)
+        for o in offer_rows:
+            offers_by_product[o["product_id"]].append(
+                {
+                    "store": o["store_name"],
+                    "price": o["current_price"],
+                    "original_price": o["original_price"],
+                    "currency": o["currency"],
+                    "availability": o["availability"],
+                    "offer_url": o["offer_url"],
+                    "last_checked": o["last_checked"],
+                }
+            )
+
+        obs_rows = conn.execute(
+            """
+            SELECT id, product_id, retailer, product_url, observed_price, observed_mrp,
+                   observation_type, observation_status, verified_by_admin,
+                   verification_status, created_at, evidence_notes
+            FROM retail_price_observation ORDER BY product_id, created_at
+            """
+        ).fetchall()
+        obs_by_product: dict[int, list[dict]] = defaultdict(list)
+        for o in obs_rows:
+            obs_by_product[o["product_id"]].append(
+                {
+                    "id": o["id"],
+                    "retailer": o["retailer"],
+                    "product_url": o["product_url"],
+                    "price": o["observed_price"],
+                    "mrp": o["observed_mrp"],
+                    "observation_type": o["observation_type"],
+                    "observation_status": o["observation_status"],
+                    "verified_by_admin": o["verified_by_admin"],
+                    "verification_status": o["verification_status"],
+                    "created_at": o["created_at"],
+                    "evidence_notes": o["evidence_notes"],
+                }
+            )
+
+    products_out = []
+    for p in beauty:
+        offers = offers_by_product.get(p["id"], [])
+        observations = obs_by_product.get(p["id"], [])
+        live_provider = [
+            o for o in observations
+            if o["observation_status"] == "live"
+            and o["verification_status"] == "provider_observed"
+            and (o["price"] or 0) > 0
+        ]
+        review_pending = [
+            o for o in observations
+            if o["observation_status"] in ("flagged",)
+            or o["verification_status"] in ("pending", "review_required")
+        ]
+        manual_verified = [
+            o for o in observations
+            if o["verified_by_admin"] == 1 or o["verification_status"] == "verified"
+        ]
+        demo_offers = [o for o in offers if "demo" in (o["store"] or "").lower()]
+
+        if live_provider:
+            category = "PROVIDER_OBSERVED"
+        elif review_pending and any(
+            o["verification_status"] == "provider_observed" or o["evidence_notes"]
+            for o in observations
+        ):
+            category = "MATCH_REVIEW_REQUIRED"
+        elif manual_verified:
+            category = "MANUAL_VERIFIED_ONLY"
+        elif p["source_type"] == "catalog_verified":
+            category = "CATALOG_VERIFIED_ONLY"
+        elif demo_offers:
+            category = "DEMO_ONLY"
+        else:
+            category = "NO_PRICE_AVAILABLE"
+
+        products_out.append(
+            {
+                **p,
+                "offers_count": len(offers),
+                "demo_offers_count": len(demo_offers),
+                "offers": offers,
+                "observations_count": len(observations),
+                "live_provider_observations": len(live_provider),
+                "review_pending_observations": len(review_pending),
+                "manual_verified_observations": len(manual_verified),
+                "observations": observations,
+                "coverage_category": category,
+            }
+        )
+
+    counts = Counter(p["coverage_category"] for p in products_out)
+
+    return {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "database_path": db_path,
+        "electronics_categories_excluded": sorted(ELECTRONICS_CATEGORIES),
+        "totals": {
+            "beauty_products": len(products_out),
+            **{cat: counts.get(cat, 0) for cat in CATEGORY_PRECEDENCE},
+        },
+        "metrics": {
+            "products_searched": 0,          # Stage 1 performs no provider calls
+            "products_with_provider_results": sum(
+                1 for p in products_out if p["observations"]
+            ),
+            "products_with_accepted_matches": sum(
+                1 for p in products_out if p["live_provider_observations"]
+            ),
+            "products_with_rejected_matches": sum(
+                1 for p in products_out if p["review_pending_observations"]
+            ),
+            "products_requiring_manual_review": sum(
+                1 for p in products_out if p["review_pending_observations"]
+            ),
+            "products_without_any_usable_price": sum(
+                1 for p in products_out
+                if p["coverage_category"] in ("DEMO_ONLY", "NO_PRICE_AVAILABLE")
+            ),
+        },
+        "stores": list(stores.values()),
+        "adapter_health": {
+            "name": adapter.name,
+            "endpoint": adapter.mcp_endpoint,
+            "is_configured": adapter.health.is_configured,
+            "status": adapter.status,
+            "rate_limit_per_minute": adapter.rate_limit_per_minute,
+            "timeout_seconds": adapter.timeout_seconds,
+            "max_retries": adapter.max_retries,
+            "total_requests": adapter.health.total_requests,
+            "failed_requests": adapter.health.failed_requests,
+            "note": "Stage 1 performs no provider requests; health is a configuration snapshot.",
+        },
+        "products": products_out,
+    }
+
+
+def write_markdown(report: dict, path: Path) -> None:
+    lines: list[str] = []
+    t = report["totals"]
+    m = report["metrics"]
+    ah = report["adapter_health"]
+
+    lines.append("# Phase 16.6 — Stage 1: Beauty Catalogue Coverage Audit")
+    lines.append("")
+    lines.append(f"**Generated:** {report['generated_at']}")
+    lines.append(f"**Audited database:** `{report['database_path']}`")
+    lines.append(
+        "**Method:** offline inspection of the canonical seeded catalogue and its "
+        "offers/observations. No provider requests were made in this stage."
+    )
+    lines.append("")
+    lines.append("## Category definitions (mutually exclusive, precedence order)")
+    lines.append("")
+    for cat in CATEGORY_PRECEDENCE:
+        lines.append(f"- **{cat}** — {CATEGORY_DESCRIPTIONS[cat]}")
+    lines.append("")
+    lines.append("## Totals")
+    lines.append("")
+    lines.append("| Metric | Count |")
+    lines.append("|---|---|")
+    lines.append(f"| Beauty products (non-electronics, active) | {t['beauty_products']} |")
+    for cat in CATEGORY_PRECEDENCE:
+        lines.append(f"| {cat} | {t[cat]} |")
+    lines.append("")
+    lines.append("## Pipeline metrics")
+    lines.append("")
+    lines.append("| Metric | Count |")
+    lines.append("|---|---|")
+    lines.append(f"| Products searched (this stage) | {m['products_searched']} |")
+    lines.append(f"| Products with provider results | {m['products_with_provider_results']} |")
+    lines.append(f"| Products with accepted matches | {m['products_with_accepted_matches']} |")
+    lines.append(f"| Products with rejected matches | {m['products_with_rejected_matches']} |")
+    lines.append(f"| Products requiring manual review | {m['products_requiring_manual_review']} |")
+    lines.append(f"| Products without any usable price | {m['products_without_any_usable_price']} |")
+    lines.append("")
+    lines.append("## PriceInIndia adapter health (configuration snapshot)")
+    lines.append("")
+    lines.append("| Field | Value |")
+    lines.append("|---|---|")
+    lines.append(f"| Name | {ah['name']} |")
+    lines.append(f"| Endpoint | `{ah['endpoint']}` |")
+    lines.append(f"| Configured | {ah['is_configured']} |")
+    lines.append(f"| Status | {ah['status']} |")
+    lines.append(f"| Rate limit | {ah['rate_limit_per_minute']} req/min |")
+    lines.append(f"| Timeout | {ah['timeout_seconds']}s |")
+    lines.append(f"| Max retries | {ah['max_retries']} |")
+    lines.append(f"| Requests made (stage 1) | {ah['total_requests']} |")
+    lines.append("")
+    lines.append("## Per-product coverage")
+    lines.append("")
+    lines.append("| ID | Title | Brand | Category | Size | Formulation | Concentration | "
+                 "Shade | Offers | Observations | Coverage |")
+    lines.append("|---|---|---|---|---|---|---|---|---|---|---|")
+    for p in report["products"]:
+        conc = ", ".join(p["concentration"]) or "—"
+        lines.append(
+            f"| {p['id']} | {p['title'][:58]} | {p['brand']} | {p['category']} "
+            f"| {p['net_quantity'] or '—'} | {p['formulation'] or '—'} | {conc} "
+            f"| {p['shade'] or '—'} | {p['offers_count']} ({p['demo_offers_count']} demo) "
+            f"| {p['observations_count']} | {p['coverage_category']} |"
+        )
+    lines.append("")
+    lines.append("## Observation detail (non-empty only)")
+    lines.append("")
+    any_obs = False
+    for p in report["products"]:
+        if not p["observations"]:
+            continue
+        any_obs = True
+        lines.append(f"### {p['id']} — {p['title']}")
+        lines.append("")
+        lines.append("| Obs ID | Retailer | Status | Verification | Price | Type | Created |")
+        lines.append("|---|---|---|---|---|---|---|")
+        for o in p["observations"]:
+            lines.append(
+                f"| {o['id']} | {o['retailer']} | {o['observation_status']} "
+                f"| {o['verification_status']} | {o['price']} | {o['observation_type']} "
+                f"| {o['created_at']} |"
+            )
+        lines.append("")
+    if not any_obs:
+        lines.append("_No observations exist in the audited database._")
+        lines.append("")
+
+    path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Phase 16.6 Stage 1 coverage audit")
+    parser.add_argument("--db", help="Audit an existing database instead of a fresh seed")
+    parser.add_argument("--json", dest="json_path", default=str(REPO_ROOT / "data" / "phase16_6_coverage.json"))
+    parser.add_argument("--markdown", default=str(REPO_ROOT / "PHASE_16_6_STAGE_1_COVERAGE_AUDIT.md"))
+    args = parser.parse_args()
+
+    temp_db: str | None = None
+    if args.db:
+        db_path = args.db
+    else:
+        fd, temp_db = tempfile.mkstemp(suffix=".db", prefix="pricewise-audit-")
+        os.close(fd)
+        os.remove(temp_db)
+        seed_database(custom_path=temp_db, force=True)
+        db_path = temp_db
+
+    try:
+        report = audit_database(db_path)
+        Path(args.json_path).write_text(
+            json.dumps(report, indent=2, default=str), encoding="utf-8"
+        )
+        write_markdown(report, Path(args.markdown))
+        print(json.dumps({"totals": report["totals"], "metrics": report["metrics"]}, indent=2))
+        print(f"json -> {args.json_path}")
+        print(f"markdown -> {args.markdown}")
+    finally:
+        if temp_db:
+            Path(temp_db).unlink(missing_ok=True)
+            Path(temp_db + "-wal").unlink(missing_ok=True)
+            Path(temp_db + "-shm").unlink(missing_ok=True)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

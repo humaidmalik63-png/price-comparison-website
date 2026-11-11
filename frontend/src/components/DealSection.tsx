@@ -23,6 +23,11 @@ export const DealSection: React.FC<DealSectionProps> = ({
 }) => {
   // State for backend cheapest offers
   const [backendOffers, setBackendOffers] = useState<any[]>([]);
+  const [liveInfo, setLiveInfo] = useState<{
+    totalProducts: number;
+    productsWithEligibleOffers: number;
+    assumptions: string[];
+  } | null>(null);
   const [isLoadingOffers, setIsLoadingOffers] = useState(false);
   const [offersError, setOffersError] = useState<string | null>(null);
   const [offersFreshness, setOffersFreshness] = useState<number | null>(null);
@@ -38,6 +43,11 @@ export const DealSection: React.FC<DealSectionProps> = ({
     try {
       const result = await getCatalogCheapestOffers(50);
       setBackendOffers(result.offers || []);
+      setLiveInfo(result.live ? {
+        totalProducts: result.live.totalProducts,
+        productsWithEligibleOffers: result.live.productsWithEligibleOffers,
+        assumptions: result.live.assumptions,
+      } : null);
       setOffersFreshness(Date.now());
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch live deals';
@@ -144,7 +154,9 @@ export const DealSection: React.FC<DealSectionProps> = ({
               Today's Best Beauty Deals
             </h2>
             <p className="text-espresso-600 text-sm sm:text-base mt-2 max-w-xl">
-              Curated verified price drops across India's leading beauty platforms. Discover authentic products marked down to their 30-day lows.
+              Lowest recorded prices across India's leading beauty platforms.
+              Every deal shows when it was last observed — a recorded low is not a
+              guarantee of current retailer availability.
             </p>
           </div>
 
@@ -158,24 +170,30 @@ export const DealSection: React.FC<DealSectionProps> = ({
             </div>
           )}
 
-          {/* Backend Status Banner (Phase 16.2 integration indicator) */}
-          <div className="mt-6 p-3 rounded-xl bg-gradient-to-r from-sage-50 to-rose-50 border border-sage-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="flex items-center space-x-2">
-              <ShieldCheck className="w-5 h-5 text-sage-600" />
-              <span className="text-xs font-semibold text-sage-800">
-                Phase 16.2 Backend Integration:
-              </span>
-              <span className="text-xs text-espresso-600">
-                Product matching engine, price intelligence pipeline, and MCP adapters active.
-              </span>
+          {/* Backend Status Banner (Phase 16.6 eligibility disclosure) */}
+          {backendOffers.length > 0 && (
+            <div className="mt-6 p-3 rounded-xl bg-gradient-to-r from-sage-50 to-rose-50 border border-sage-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center space-x-2">
+                <ShieldCheck className="w-5 h-5 text-sage-600 shrink-0" />
+                <span className="text-xs text-espresso-600">
+                  <span className="font-semibold text-sage-800">Live deal rules: </span>
+                  only provider-observed prices with verified or admin-approved
+                  product matches participate. Foreign currencies, stale
+                  observations and unreviewed matches are excluded. Provider-observed
+                  prices are not independently re-verified at the retailer.
+                </span>
+              </div>
+              {liveInfo && (
+                <div className="flex items-center space-x-2 shrink-0">
+                  <TrendingUp className="w-4 h-4 text-rose-500" />
+                  <span className="text-xs text-rose-700">
+                    {liveInfo.productsWithEligibleOffers} of {liveInfo.totalProducts} products
+                    have eligible live prices.
+                  </span>
+                </div>
+              )}
             </div>
-            <div className="flex items-center space-x-2">
-              <TrendingUp className="w-4 h-4 text-rose-500" />
-              <span className="text-xs text-rose-700">
-                Real-time verified offers from PriceInIndia & Open Beauty Facts APIs.
-              </span>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Stale Price Warning */}
@@ -305,7 +323,15 @@ export const DealSection: React.FC<DealSectionProps> = ({
                         )}
                         {isBackendOffer && (deal.sourceType === 'provider_observed' || deal.source_type === 'provider_observed') && (
                           <span className="text-[10px] text-emerald-700 ml-2 bg-emerald-100 px-2 py-0.5 rounded-full font-medium">
-                            Live Price
+                            Live Price (Provider Observed)
+                          </span>
+                        )}
+                        {/* CATALOG_VERIFIED ≠ current availability: the product
+                            identity is catalog-verified, its price may be stale
+                            and is NOT a live observation. */}
+                        {isBackendOffer && (deal.sourceType === 'catalog_verified' || deal.source_type === 'catalog_verified') && (
+                          <span className="text-[10px] text-sky-700 ml-2 bg-sky-100 px-2 py-0.5 rounded-full font-medium">
+                            Catalog Verified
                           </span>
                         )}
                       </h3>
@@ -317,6 +343,18 @@ export const DealSection: React.FC<DealSectionProps> = ({
                         {costPerUnit && (
                           <span className="text-[10px] text-sage-800 bg-sage-50 px-1.5 py-0.5 rounded font-medium border border-sage-200">
                             {costPerUnit}
+                          </span>
+                        )}
+                        {/* Freshness disclosure: a recorded low is only
+                            meaningful together with when it was observed. */}
+                        {isBackendOffer && deal.lastChecked && !isNaN(Date.parse(deal.lastChecked)) && (
+                          <span className="text-[10px] text-espresso-500 bg-ivory-100 px-1.5 py-0.5 rounded font-medium border border-rose-100">
+                            Observed {(() => {
+                              const ageMs = Date.now() - Date.parse(deal.lastChecked);
+                              if (ageMs < 0) return 'recently';
+                              const hours = Math.floor(ageMs / 3600000);
+                              return hours < 1 ? `${Math.max(1, Math.floor(ageMs / 60000))}m ago` : `${hours}h ago`;
+                            })()}
                           </span>
                         )}
                       </div>

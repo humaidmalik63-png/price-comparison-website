@@ -762,14 +762,27 @@ def seed_database(custom_path: str | None = None, force: bool = False, seed_demo
         from src.services.preference_service import save_user_preferences
         from src.services.price_tracking_service import add_tracked_product
 
-        demo_user = get_user_by_email("demo@pricewise.ai", custom_path=custom_path)
-        if not demo_user:
-            ok, _, demo_user = register_user(
-                email="demo@pricewise.ai",
-                password="DemoPass123!",
-                display_name="Alex Demo",
-                custom_path=custom_path,
+        from src.config import DEMO_USER_PASSWORD
+
+        # The demo account is only seeded when a password is explicitly
+        # provided through the environment. Never fall back to a hardcoded
+        # credential — a missing value simply skips demo-user seeding.
+        if not DEMO_USER_PASSWORD:
+            import logging
+
+            logging.getLogger("pricewise.seed").warning(
+                "PRICEWISE_DEMO_USER_PASSWORD is not set; skipping demo-user seeding."
             )
+            demo_user = None
+        else:
+            demo_user = get_user_by_email("demo@pricewise.ai", custom_path=custom_path)
+            if not demo_user:
+                ok, _, demo_user = register_user(
+                    email="demo@pricewise.ai",
+                    password=DEMO_USER_PASSWORD,
+                    display_name="Alex Demo",
+                    custom_path=custom_path,
+                )
         if demo_user:
             from src.services.product_service import get_products
             prods = get_products(custom_path=custom_path)

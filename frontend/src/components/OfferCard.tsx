@@ -133,9 +133,15 @@ export const OfferCard: React.FC<OfferCardProps> = ({
         };
       case 'provider_observed':
         return {
-          label: 'Live Price',
+          label: 'Provider Observed',
           color: 'bg-emerald-50 border-emerald-300 text-emerald-800',
           icon: <AlertCircle className="w-3 h-3" />,
+        };
+      case 'catalog_verified':
+        return {
+          label: 'Catalog Verified',
+          color: 'bg-sky-50 border-sky-300 text-sky-800',
+          icon: <ShieldCheck className="w-3 h-3" />,
         };
       default:
         return {
@@ -248,7 +254,41 @@ export const OfferCard: React.FC<OfferCardProps> = ({
             <span>Updated: {offer.lastUpdated}</span>
           </div>
         )}
+        {/* Freshness disclosure (Phase 16.6 Stage 8): age is always reported
+            with the value — a label alone must never imply availability. */}
+        {freshnessSeconds !== null && freshnessSeconds !== undefined && (
+          <div className={`flex items-center space-x-1 ${isStale ? 'text-amber-600 font-medium' : 'text-espresso-500'}`}>
+            <Clock className="w-3 h-3" />
+            <span>
+              {isStale
+                ? `Observed ${Math.round(freshnessSeconds / 3600)}h ago — may be outdated`
+                : `Observed ${freshnessSeconds < 3600 ? `${Math.max(1, Math.round(freshnessSeconds / 60))}m` : `${Math.round(freshnessSeconds / 3600)}h`} ago`}
+            </span>
+          </div>
+        )}
       </div>
+
+      {/* Provenance clarification — honest badge semantics (Phase 16.6 Stage 8):
+          PROVIDER_OBSERVED means the price was observed through a provider
+          feed; it is NOT an independent/admin verification of the offer. */}
+      {offer.sourceType === 'provider_observed' && (
+        <p className="text-[11px] text-espresso-500 flex items-start space-x-1.5">
+          <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-0.5 text-champagne-600" />
+          <span>
+            Price observed via a live provider feed. It has not been independently
+            re-checked at the retailer — verify on the retailer page before purchase.
+          </span>
+        </p>
+      )}
+      {offer.sourceType === 'catalog_verified' && (
+        <p className="text-[11px] text-espresso-500 flex items-start space-x-1.5">
+          <ShieldCheck className="w-3.5 h-3.5 shrink-0 mt-0.5 text-sky-600" />
+          <span>
+            Product identity is catalog-verified. This does not mean the price was
+            observed as currently available — check the retailer page for live stock.
+          </span>
+        </p>
+      )}
 
       {/* Action Button */}
       {offer.inStock && offer.purchaseUrl && (
@@ -261,6 +301,17 @@ export const OfferCard: React.FC<OfferCardProps> = ({
           <span>View Offer</span>
           <ExternalLink className="w-3.5 h-3.5" />
         </a>
+      )}
+
+      {/* Transparent unavailable state: in stock but no usable retailer link */}
+      {offer.inStock && !offer.purchaseUrl && (
+        <div className="p-3 rounded-xl bg-ivory-50 border border-espresso-100 text-xs text-espresso-500 flex items-start space-x-2">
+          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-espresso-400" />
+          <span>
+            A retailer product link is not available for this offer, so it cannot be
+            opened. Prices without a link are excluded from live rankings.
+          </span>
+        </div>
       )}
 
       {/* Warnings */}

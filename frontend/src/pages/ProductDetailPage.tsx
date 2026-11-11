@@ -17,6 +17,7 @@ import { PRODUCTS_DATA } from '../data/products';
 import { ALTERNATIVES_DATA } from '../data/alternatives';
 import { findProductBySlugOrId, generateProductSlug } from '../utils/slug';
 import { PriceHistoryChart } from '../components/PriceHistoryChart';
+import type { PriceTrendPoint } from '../types';
 import { PriceTrackingModal } from '../components/PriceTrackingModal';
 import { BeautyUsageGuide } from '../components/BeautyUsageGuide';
 import { ReviewIntelligenceHub } from '../components/ReviewIntelligenceHub';
@@ -47,6 +48,10 @@ export const ProductDetailPage: React.FC = () => {
   // Track backend data freshness for stale price warnings
   const [productFreshness, setProductFreshness] = useState<number | null>(null);
 
+  // Phase 16.6 Stage 8: real provider-observed price history for numeric
+  // backend products. Demo products keep their static (demo) history.
+  const [livePriceHistory, setLivePriceHistory] = useState<PriceTrendPoint[] | null>(null);
+
   // Modal State
   const [isTrackerModalOpen, setIsTrackerModalOpen] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState(false);
@@ -73,6 +78,36 @@ export const ProductDetailPage: React.FC = () => {
       setProductFreshness(backendFreshness);
     }
   }, [backendFreshness]);
+
+  // Phase 16.6 Stage 8: fetch real observation history for numeric product IDs.
+  // Only replaces the demo history when the backend actually returned
+  // observations — an empty result keeps the honest demo presentation.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { getProductPriceHistory } = await import('../lib/api/v2-client');
+        const numericId = Number.parseInt(slugOrId || '', 10);
+        if (cancelled || !Number.isFinite(numericId) || String(numericId) !== slugOrId) {
+          if (!cancelled) setLivePriceHistory(null);
+          return;
+        }
+        const res = await getProductPriceHistory(numericId, 30);
+        if (cancelled) return;
+        const points = res.history_points || [];
+        setLivePriceHistory(
+          points.length > 0
+            ? points.map((p) => ({ date: String(p.date), price: p.price, store: p.store }))
+            : null
+        );
+      } catch {
+        if (!cancelled) setLivePriceHistory(null);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [slugOrId]);
 
   // Also update freshness when we manually refresh
   const handleRefreshBackend = useCallback(async () => {
@@ -380,11 +415,12 @@ export const ProductDetailPage: React.FC = () => {
         {/* Price History & Trends Section */}
         <section className="space-y-3">
           <PriceHistoryChart
-            priceHistory={product.priceHistory}
+            priceHistory={livePriceHistory ?? product.priceHistory}
             currentPrice={product.price}
             originalPrice={product.originalPrice}
             targetPrice={trackingRecord?.targetPrice}
             productName={product.name}
+            dataSource={livePriceHistory ? 'provider_observed' : 'demo'}
           />
         </section>
 

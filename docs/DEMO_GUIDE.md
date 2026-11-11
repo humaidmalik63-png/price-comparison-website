@@ -41,7 +41,7 @@ Open **`http://localhost:8501`** in your browser.
 | Parameter | Value |
 |:---|:---|
 | **Email** | `demo@pricewise.ai` |
-| **Password** | `DemoPass123!` |
+| **Password** | Set via `PRICEWISE_DEMO_USER_PASSWORD` env var |
 | **Name** | Demo Researcher |
 | **Quick Action** | Click **⚡ Quick Fill Demo Login** in the sidebar |
 
@@ -151,7 +151,7 @@ Follow these 15 steps sequentially during a project demonstration or viva examin
 ### Step 9: User Registration, Login & Session State
 - **Action**:
   1. Log out if currently signed in.
-  2. Click **⚡ Quick Fill Demo Login** in the sidebar, or enter `demo@pricewise.ai` / `DemoPass123!`.
+  2. Click **⚡ Quick Fill Demo Login** in the sidebar, or enter `demo@pricewise.ai` / the value of `PRICEWISE_DEMO_USER_PASSWORD`.
   3. Click **Sign In**.
 - **Talking Points**:
   - Security architecture:

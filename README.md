@@ -258,7 +258,7 @@ http://localhost:8501
 | Credential | Value |
 |:---|:---|
 | **Email** | `demo@pricewise.ai` |
-| **Password** | `DemoPass123!` |
+| **Password** | Set via `PRICEWISE_DEMO_USER_PASSWORD` env var |
 | **One-Click Action** | Click **⚡ Quick Fill Demo Login** in the sidebar |
 | **Step-by-Step Viva Guide** | [`docs/DEMO_GUIDE.md`](docs/DEMO_GUIDE.md) |
 

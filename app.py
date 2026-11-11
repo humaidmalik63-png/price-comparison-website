@@ -150,23 +150,29 @@ with st.sidebar:
                 key="auth_tab_radio",
             )
             if auth_mode == "Sign In":
-                st.markdown(
-                    f"""
-                    <div style="font-size: 0.72rem; color: #475569; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; padding: 6px 8px; margin-bottom: 8px;">
-                        <strong>Demo Login:</strong><br/>
-                        <code>{DEMO_USER_EMAIL}</code> / <code>{DEMO_USER_PASSWORD}</code>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-                if st.button("⚡ Quick Fill Demo Login", key="btn_quick_demo_login", use_container_width=True):
-                    auth_user, auth_msg = authenticate_user(DEMO_USER_EMAIL, DEMO_USER_PASSWORD)
-                    if auth_user:
-                        st.session_state["authenticated_user"] = auth_user
-                        st.toast("Signed in as Demo User!")
-                        st.rerun()
-                    else:
-                        st.info("Demo user not initialized. Click 'Reset / Re-seed Demo DB' below.")
+                if DEMO_USER_PASSWORD:
+                    st.markdown(
+                        f"""
+                        <div style="font-size: 0.72rem; color: #475569; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 6px; padding: 6px 8px; margin-bottom: 8px;">
+                            <strong>Demo Login:</strong><br/>
+                            <code>{DEMO_USER_EMAIL}</code> / <code>{DEMO_USER_PASSWORD}</code>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                    if st.button("⚡ Quick Fill Demo Login", key="btn_quick_demo_login", use_container_width=True):
+                        auth_user, auth_msg = authenticate_user(DEMO_USER_EMAIL, DEMO_USER_PASSWORD)
+                        if auth_user:
+                            st.session_state["authenticated_user"] = auth_user
+                            st.toast("Signed in as Demo User!")
+                            st.rerun()
+                        else:
+                            st.info("Demo user not initialized. Click 'Reset / Re-seed Demo DB' below.")
+                else:
+                    st.info(
+                        "Demo login disabled: set the PRICEWISE_DEMO_USER_PASSWORD "
+                        "environment variable to enable the demo account."
+                    )
 
                 login_email = st.text_input("Email", key="sidebar_login_email", placeholder="you@example.com")
                 login_pass = st.text_input("Password", type="password", key="sidebar_login_pass")

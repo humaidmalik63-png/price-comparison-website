@@ -23,6 +23,7 @@ import json
 import sqlite3
 
 from src.database.connection import get_connection, migrate_db
+from src.services import freshness_service as freshness
 from src.services.product_matching_service import (
     MatchClassification,
     MatchEvidenceTier,
@@ -106,6 +107,7 @@ class PriceHistoryPoint:
     created_at: str
     evidence_notes: Optional[str]
     unit_price: Optional[float]
+    price_change: Optional[float] = None    # delta vs previous point in the series
 
 
 # ============================================================================
@@ -376,6 +378,7 @@ def get_observation_price_history(product_id: int, limit: int = 30) -> list[Pric
         qty_text = d.get("size_volume") or ""
         qv, qu = parse_quantity_volume(qty_text)
         up = round(d["observed_price"] / qv, 4) if qv and d["observed_price"] else None
+        previous_price = results[-1].observed_price if results else None
         results.append(PriceHistoryPoint(
             id=d["id"],
             product_id=d["product_id"],
@@ -387,8 +390,162 @@ def get_observation_price_history(product_id: int, limit: int = 30) -> list[Pric
             created_at=d["created_at"],
             evidence_notes=d["evidence_notes"],
             unit_price=up,
+            price_change=(
+                round(d["observed_price"] - previous_price, 2)
+                if previous_price is not None else None
+            ),
         ))
     return results
+
+
+# ============================================================================
+# Phase 16.6 Stage 5: full history, freshness and history summaries
+# ============================================================================
+
+def get_full_price_history(product_id: int, limit: int = 100) -> list[PriceHistoryPoint]:
+    """Full observation history for a product, INCLUDING superseded rows.
+
+    Complements get_observation_price_history: superseded observations are
+    genuine historical data points and are never deleted. Ordered
+    chronologically; each point carries the price change vs the previous
+    point in the series.
+    """
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT id, product_id, retailer, observed_price, observed_mrp,
+                   observation_type, observation_status, created_at,
+                   evidence_notes, size_volume
+            FROM retail_price_observation
+            WHERE product_id = ?
+            ORDER BY created_at ASC, id ASC
+            LIMIT ?
+        """, (product_id, limit))
+        rows = cursor.fetchall()
+
+    results: list[PriceHistoryPoint] = []
+    for r in rows:
+        d = dict(r)
+        qty_text = d.get("size_volume") or ""
+        qv, _qu = parse_quantity_volume(qty_text)
+        up = round(d["observed_price"] / qv, 4) if qv and d["observed_price"] else None
+        previous_price = results[-1].observed_price if results else None
+        results.append(PriceHistoryPoint(
+            id=d["id"],
+            product_id=d["product_id"],
+            retailer=d["retailer"],
+            observed_price=d["observed_price"],
+            observed_mrp=d["observed_mrp"],
+            observation_type=d["observation_type"],
+            observation_status=d["observation_status"],
+            created_at=d["created_at"],
+            evidence_notes=d["evidence_notes"],
+            unit_price=up,
+            price_change=(
+                round(d["observed_price"] - previous_price, 2)
+                if previous_price is not None else None
+            ),
+        ))
+    return results
+
+
+def get_latest_observation_per_retailer(product_id: int) -> list[dict[str, Any]]:
+    """Latest observation for each retailer that ever observed the product.
+
+    Includes every status (live/superseded/expired/flagged) with its
+    freshness annotation, so the comparison UI can show honest age instead
+    of pretending an old row is current.
+    """
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT ro.id, ro.product_id, ro.retailer, ro.retailer_domain, ro.product_url,
+                   ro.observed_price, ro.observed_mrp, ro.currency, ro.provider_name,
+                   ro.observation_status, ro.verification_status, ro.created_at,
+                   ro.match_result, ro.evidence_notes
+            FROM retail_price_observation ro
+            WHERE ro.product_id = ?
+              AND ro.id = (
+                  SELECT ro2.id FROM retail_price_observation ro2
+                  WHERE ro2.product_id = ro.product_id AND ro2.retailer = ro.retailer
+                  ORDER BY ro2.created_at DESC, ro2.id DESC LIMIT 1
+              )
+            ORDER BY ro.observed_price ASC
+        """, (product_id,))
+        rows = [dict(r) for r in cursor.fetchall()]
+
+    return [freshness.annotate(r) for r in rows]
+
+
+def get_last_collection_time(product_id: Optional[int] = None) -> Optional[str]:
+    """Most recent successful observation timestamp (collection time).
+
+    Scoped to one product when product_id is given, otherwise the newest
+    observation across the catalogue. Returns None when nothing collected.
+    """
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        if product_id is None:
+            cursor.execute(
+                "SELECT MAX(created_at) AS last_at FROM retail_price_observation"
+            )
+        else:
+            cursor.execute(
+                "SELECT MAX(created_at) AS last_at FROM retail_price_observation "
+                "WHERE product_id = ?",
+                (product_id,),
+            )
+        row = cursor.fetchone()
+    return row["last_at"] if row else None
+
+
+def get_price_history_summary(product_id: int) -> dict[str, Any]:
+    """Summary statistics over a product's REAL observation history.
+
+    Uses only stored observations — no interpolation, no synthetic points.
+    The average is reported only when at least 2 valid observations exist.
+    The trend compares the earliest and latest valid observations.
+    """
+    history = get_full_price_history(product_id)
+    valid = [h for h in history if h.observed_price and h.observed_price > 0]
+
+    summary: dict[str, Any] = {
+        "product_id": product_id,
+        "observation_count": len(history),
+        "valid_price_count": len(valid),
+        "lowest_observed": None,
+        "highest_observed": None,
+        "average_observed": None,
+        "trend": None,
+        "first_observed_at": None,
+        "last_observed_at": None,
+        "last_collection_time": get_last_collection_time(product_id),
+        "freshness": None,
+    }
+    if not valid:
+        return summary
+
+    prices = [h.observed_price for h in valid]
+    summary["lowest_observed"] = min(prices)
+    summary["highest_observed"] = max(prices)
+    if len(valid) >= 2:
+        summary["average_observed"] = round(sum(prices) / len(prices), 2)
+        first, last = valid[0], valid[-1]
+        summary["first_observed_at"] = first.created_at
+        summary["last_observed_at"] = last.created_at
+        delta = round(last.observed_price - first.observed_price, 2)
+        if abs(delta) < 0.01:
+            summary["trend"] = "flat"
+        elif delta < 0:
+            summary["trend"] = "falling"
+        else:
+            summary["trend"] = "rising"
+
+    latest = max(valid, key=lambda h: h.created_at)
+    summary["freshness"] = freshness.annotate(
+        {"created_at": latest.created_at}, policy=freshness.DEFAULT_POLICY
+    )["freshness"]
+    return summary
 
 
 def calculate_discount(observation: dict[str, Any]) -> Optional[float]:

@@ -1,0 +1,1545 @@
+{
+  "generated_at": "2026-11-11T11:27:14.856079+00:00",
+  "database_path": "C:\\Users\\humai\\AppData\\Local\\Temp\\pricewise-audit-8hf34_05.db",
+  "electronics_categories_excluded": [
+    "Audio",
+    "Cameras",
+    "Gaming",
+    "Laptops",
+    "Monitors",
+    "Smartphones",
+    "TVs",
+    "Wearables"
+  ],
+  "totals": {
+    "beauty_products": 26,
+    "PROVIDER_OBSERVED": 0,
+    "MATCH_REVIEW_REQUIRED": 0,
+    "MANUAL_VERIFIED_ONLY": 0,
+    "CATALOG_VERIFIED_ONLY": 5,
+    "DEMO_ONLY": 21,
+    "NO_PRICE_AVAILABLE": 0
+  },
+  "metrics": {
+    "products_searched": 0,
+    "products_with_provider_results": 0,
+    "products_with_accepted_matches": 0,
+    "products_with_rejected_matches": 0,
+    "products_requiring_manual_review": 0,
+    "products_without_any_usable_price": 21
+  },
+  "stores": [
+    {
+      "name": "TechMart (Demo)",
+      "domain": "techmart-demo.example.com"
+    },
+    {
+      "name": "ElectroHub (Demo)",
+      "domain": "electrohub-demo.example.com"
+    },
+    {
+      "name": "Apex Direct (Demo)",
+      "domain": "apexdirect-demo.example.com"
+    },
+    {
+      "name": "DigitalBay (Demo)",
+      "domain": "digitalbay-demo.example.com"
+    },
+    {
+      "name": "PrimeGear (Demo)",
+      "domain": "primegear-demo.example.com"
+    },
+    {
+      "name": "Nykaa (Demo)",
+      "domain": "nykaa.com"
+    },
+    {
+      "name": "Tira (Demo)",
+      "domain": "tirabeauty.com"
+    },
+    {
+      "name": "Purplle (Demo)",
+      "domain": "purplle.com"
+    },
+    {
+      "name": "Amazon India (Demo)",
+      "domain": "amazon.in"
+    },
+    {
+      "name": "Myntra (Demo)",
+      "domain": "myntra.com"
+    }
+  ],
+  "adapter_health": {
+    "name": "PriceInIndia",
+    "endpoint": "https://mcp.priceinindia.website/mcp",
+    "is_configured": true,
+    "status": "never_run",
+    "rate_limit_per_minute": 15,
+    "timeout_seconds": 10.0,
+    "max_retries": 2,
+    "total_requests": 0,
+    "failed_requests": 0,
+    "note": "Stage 1 performs no provider requests; health is a configuration snapshot."
+  },
+  "products": [
+    {
+      "id": 12,
+      "sku": "BEAUTY-DOTKEY-SUN-50",
+      "title": "Dot & Key Watermelon Cooling Sunscreen SPF 50+ PA++++",
+      "brand": "Dot & Key",
+      "category": "Sunscreens",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "50 g",
+      "formulation": "Fluid Sunscreen",
+      "concentration": [],
+      "shade": null,
+      "qty_value": 50.0,
+      "qty_unit": "g",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Routine",
+        "Skin Type"
+      ],
+      "offers_count": 4,
+      "demo_offers_count": 4,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 465.0,
+          "original_price": 595.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-DOTKEY-SUN-50",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Amazon India (Demo)",
+          "price": 475.0,
+          "original_price": 595.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://amazon.in/product/BEAUTY-DOTKEY-SUN-50",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Purplle (Demo)",
+          "price": 489.0,
+          "original_price": 595.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://purplle.com/product/BEAUTY-DOTKEY-SUN-50",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Tira (Demo)",
+          "price": 495.0,
+          "original_price": 595.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://tirabeauty.com/product/BEAUTY-DOTKEY-SUN-50",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 13,
+      "sku": "BEAUTY-DERMACO-SUN-50",
+      "title": "The Derma Co 1% Hyaluronic Sunscreen Aqua Gel SPF 50 PA++++",
+      "brand": "The Derma Co",
+      "category": "Sunscreens",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "50 g",
+      "formulation": "Aqua Gel Sunscreen",
+      "concentration": [
+        "1%"
+      ],
+      "shade": null,
+      "qty_value": 50.0,
+      "qty_unit": "g",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Routine",
+        "Skin Type"
+      ],
+      "offers_count": 3,
+      "demo_offers_count": 3,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 449.0,
+          "original_price": 499.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-DERMACO-SUN-50",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Amazon India (Demo)",
+          "price": 469.0,
+          "original_price": 499.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://amazon.in/product/BEAUTY-DERMACO-SUN-50",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Purplle (Demo)",
+          "price": 479.0,
+          "original_price": 499.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://purplle.com/product/BEAUTY-DERMACO-SUN-50",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 14,
+      "sku": "BEAUTY-MIN-NIAC-30",
+      "title": "Minimalist 10% Niacinamide Face Serum with Zinc PCA",
+      "brand": "Minimalist",
+      "category": "Serums",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "30 ml",
+      "formulation": "Active Face Serum",
+      "concentration": [
+        "10%"
+      ],
+      "shade": null,
+      "qty_value": 30.0,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Routine",
+        "Skin Type"
+      ],
+      "offers_count": 4,
+      "demo_offers_count": 4,
+      "offers": [
+        {
+          "store": "Amazon India (Demo)",
+          "price": 559.0,
+          "original_price": 599.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://amazon.in/product/BEAUTY-MIN-NIAC-30",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Nykaa (Demo)",
+          "price": 569.0,
+          "original_price": 599.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-MIN-NIAC-30",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Tira (Demo)",
+          "price": 569.0,
+          "original_price": 599.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://tirabeauty.com/product/BEAUTY-MIN-NIAC-30",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Purplle (Demo)",
+          "price": 599.0,
+          "original_price": 599.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://purplle.com/product/BEAUTY-MIN-NIAC-30",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 15,
+      "sku": "BEAUTY-PLUM-VITC-30",
+      "title": "Plum 15% Vitamin C Glow Face Serum with Mandarin",
+      "brand": "Plum",
+      "category": "Serums",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "30 ml",
+      "formulation": "Glow Face Serum",
+      "concentration": [
+        "15%"
+      ],
+      "shade": null,
+      "qty_value": 30.0,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Routine",
+        "Skin Type"
+      ],
+      "offers_count": 3,
+      "demo_offers_count": 3,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 675.0,
+          "original_price": 790.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-PLUM-VITC-30",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Purplle (Demo)",
+          "price": 690.0,
+          "original_price": 790.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://purplle.com/product/BEAUTY-PLUM-VITC-30",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Tira (Demo)",
+          "price": 710.0,
+          "original_price": 790.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://tirabeauty.com/product/BEAUTY-PLUM-VITC-30",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 16,
+      "sku": "BEAUTY-COSRX-SNAIL-100",
+      "title": "COSRX Advanced Snail 96 Mucin Power Essence",
+      "brand": "COSRX",
+      "category": "Serums",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "100 ml",
+      "formulation": "Repair Essence / Serum",
+      "concentration": [],
+      "shade": null,
+      "qty_value": 100.0,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Routine",
+        "Skin Type"
+      ],
+      "offers_count": 3,
+      "demo_offers_count": 3,
+      "offers": [
+        {
+          "store": "Tira (Demo)",
+          "price": 1375.0,
+          "original_price": 1450.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://tirabeauty.com/product/BEAUTY-COSRX-SNAIL-100",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Myntra (Demo)",
+          "price": 1410.0,
+          "original_price": 1450.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://myntra.com/product/BEAUTY-COSRX-SNAIL-100",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Nykaa (Demo)",
+          "price": 1450.0,
+          "original_price": 1450.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-COSRX-SNAIL-100",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 17,
+      "sku": "BEAUTY-CETAPHIL-CLN-125",
+      "title": "Cetaphil Gentle Skin Cleanser Hydrating Formula",
+      "brand": "Cetaphil",
+      "category": "Face cleansers",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "125 ml",
+      "formulation": "Cream Cleanser",
+      "concentration": [],
+      "shade": null,
+      "qty_value": 125.0,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Routine",
+        "Skin Type"
+      ],
+      "offers_count": 3,
+      "demo_offers_count": 3,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 333.0,
+          "original_price": 370.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-CETAPHIL-CLN-125",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Amazon India (Demo)",
+          "price": 349.0,
+          "original_price": 370.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://amazon.in/product/BEAUTY-CETAPHIL-CLN-125",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Purplle (Demo)",
+          "price": 355.0,
+          "original_price": 370.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://purplle.com/product/BEAUTY-CETAPHIL-CLN-125",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 18,
+      "sku": "BEAUTY-FE-SAFFRON-CLN-200",
+      "title": "Forest Essentials Delicate Facial Cleanser Kashmiri Saffron & Neem",
+      "brand": "Forest Essentials",
+      "category": "Face cleansers",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "200 ml",
+      "formulation": "Gel Cleanser",
+      "concentration": [],
+      "shade": null,
+      "qty_value": 200.0,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Routine",
+        "Skin Type"
+      ],
+      "offers_count": 2,
+      "demo_offers_count": 2,
+      "offers": [
+        {
+          "store": "Tira (Demo)",
+          "price": 1475.0,
+          "original_price": 1550.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://tirabeauty.com/product/BEAUTY-FE-SAFFRON-CLN-200",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Nykaa (Demo)",
+          "price": 1550.0,
+          "original_price": 1550.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-FE-SAFFRON-CLN-200",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 19,
+      "sku": "BEAUTY-CLINIQUE-100H-50",
+      "title": "Clinique Moisture Surge 100H Auto-Replenishing Hydrator",
+      "brand": "Clinique",
+      "category": "Moisturizers",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "50 ml",
+      "formulation": "Gel-Cream Moisturizer",
+      "concentration": [],
+      "shade": null,
+      "qty_value": 50.0,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Routine",
+        "Skin Type"
+      ],
+      "offers_count": 3,
+      "demo_offers_count": 3,
+      "offers": [
+        {
+          "store": "Tira (Demo)",
+          "price": 2790.0,
+          "original_price": 2950.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://tirabeauty.com/product/BEAUTY-CLINIQUE-100H-50",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Myntra (Demo)",
+          "price": 2850.0,
+          "original_price": 2950.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://myntra.com/product/BEAUTY-CLINIQUE-100H-50",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Nykaa (Demo)",
+          "price": 2950.0,
+          "original_price": 2950.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-CLINIQUE-100H-50",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 20,
+      "sku": "BEAUTY-DOTKEY-CERAM-50",
+      "title": "Dot & Key Ceramides & Hyaluronic Skin Barrier Repair Face Cream",
+      "brand": "Dot & Key",
+      "category": "Moisturizers",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "50 g",
+      "formulation": "Barrier Cream Moisturizer",
+      "concentration": [],
+      "shade": null,
+      "qty_value": 50.0,
+      "qty_unit": "g",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Routine",
+        "Skin Type"
+      ],
+      "offers_count": 3,
+      "demo_offers_count": 3,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 395.0,
+          "original_price": 495.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-DOTKEY-CERAM-50",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Purplle (Demo)",
+          "price": 415.0,
+          "original_price": 495.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://purplle.com/product/BEAUTY-DOTKEY-CERAM-50",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Amazon India (Demo)",
+          "price": 420.0,
+          "original_price": 495.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://amazon.in/product/BEAUTY-DOTKEY-CERAM-50",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 21,
+      "sku": "BEAUTY-MAC-RUBY-3",
+      "title": "M.A.C Retro Matte Lipstick - Ruby Woo",
+      "brand": "M.A.C",
+      "category": "Lipsticks",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "3 g",
+      "formulation": "Bullet Lipstick",
+      "concentration": [],
+      "shade": "Ruby Woo (Vivid Blue-Red)",
+      "qty_value": 3.0,
+      "qty_unit": "g",
+      "specs_keys": [
+        "Brand Tier",
+        "Finish",
+        "Intended Use",
+        "Net Quantity",
+        "Product Type",
+        "Shade"
+      ],
+      "offers_count": 3,
+      "demo_offers_count": 3,
+      "offers": [
+        {
+          "store": "Tira (Demo)",
+          "price": 2185.0,
+          "original_price": 2300.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://tirabeauty.com/product/BEAUTY-MAC-RUBY-3",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Nykaa (Demo)",
+          "price": 2300.0,
+          "original_price": 2300.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-MAC-RUBY-3",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Myntra (Demo)",
+          "price": 2300.0,
+          "original_price": 2300.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://myntra.com/product/BEAUTY-MAC-RUBY-3",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 22,
+      "sku": "BEAUTY-KAY-MATTE-3",
+      "title": "Kay Beauty Matteinee Matte Lipstick - Reconstruct",
+      "brand": "Kay Beauty",
+      "category": "Lipsticks",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "3.5 g",
+      "formulation": "Bullet Lipstick",
+      "concentration": [],
+      "shade": "Reconstruct (Deep True Red)",
+      "qty_value": 3.5,
+      "qty_unit": "g",
+      "specs_keys": [
+        "Brand Tier",
+        "Finish",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Shade"
+      ],
+      "offers_count": 2,
+      "demo_offers_count": 2,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 799.0,
+          "original_price": 899.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-KAY-MATTE-3",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Amazon India (Demo)",
+          "price": 849.0,
+          "original_price": 899.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://amazon.in/product/BEAUTY-KAY-MATTE-3",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 23,
+      "sku": "BEAUTY-MAYB-FITME-30",
+      "title": "Maybelline Fit Me Matte + Poreless Liquid Foundation - 128 Warm Nude",
+      "brand": "Maybelline",
+      "category": "Foundations",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "30 ml",
+      "formulation": "Liquid Foundation",
+      "concentration": [],
+      "shade": "128 Warm Nude",
+      "qty_value": 30.0,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Brand Tier",
+        "Finish",
+        "Intended Use",
+        "Net Quantity",
+        "Product Type",
+        "Shade",
+        "Skin Type"
+      ],
+      "offers_count": 4,
+      "demo_offers_count": 4,
+      "offers": [
+        {
+          "store": "Amazon India (Demo)",
+          "price": 535.0,
+          "original_price": 699.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://amazon.in/product/BEAUTY-MAYB-FITME-30",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Nykaa (Demo)",
+          "price": 549.0,
+          "original_price": 699.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-MAYB-FITME-30",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Purplle (Demo)",
+          "price": 579.0,
+          "original_price": 699.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://purplle.com/product/BEAUTY-MAYB-FITME-30",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Myntra (Demo)",
+          "price": 599.0,
+          "original_price": 699.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://myntra.com/product/BEAUTY-MAYB-FITME-30",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 24,
+      "sku": "BEAUTY-RARE-BLUSH-7",
+      "title": "Rare Beauty Soft Pinch Liquid Blush - Encourage",
+      "brand": "Rare Beauty",
+      "category": "Blushes",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "7.5 ml",
+      "formulation": "Liquid Blush",
+      "concentration": [],
+      "shade": "Encourage (Soft Neutral Pink)",
+      "qty_value": 7.5,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Brand Tier",
+        "Finish",
+        "Intended Use",
+        "Net Quantity",
+        "Product Type",
+        "Shade",
+        "Skin Type"
+      ],
+      "offers_count": 2,
+      "demo_offers_count": 2,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 2400.0,
+          "original_price": 2400.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-RARE-BLUSH-7",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Tira (Demo)",
+          "price": 2400.0,
+          "original_price": 2400.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://tirabeauty.com/product/BEAUTY-RARE-BLUSH-7",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 25,
+      "sku": "BEAUTY-KAY-CREME-BLUSH-4",
+      "title": "Kay Beauty Creme Blush - Sweetheart Pink",
+      "brand": "Kay Beauty",
+      "category": "Blushes",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "4 g",
+      "formulation": "Cream Blush",
+      "concentration": [],
+      "shade": "Sweetheart Pink",
+      "qty_value": 4.0,
+      "qty_unit": "g",
+      "specs_keys": [
+        "Brand Tier",
+        "Finish",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Shade"
+      ],
+      "offers_count": 2,
+      "demo_offers_count": 2,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 799.0,
+          "original_price": 899.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-KAY-CREME-BLUSH-4",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Amazon India (Demo)",
+          "price": 820.0,
+          "original_price": 899.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://amazon.in/product/BEAUTY-KAY-CREME-BLUSH-4",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 26,
+      "sku": "BEAUTY-MAYB-SKYHIGH-7",
+      "title": "Maybelline Lash Sensational Sky High Waterproof Mascara",
+      "brand": "Maybelline",
+      "category": "Mascaras",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "7.2 ml",
+      "formulation": "Waterproof Mascara",
+      "concentration": [],
+      "shade": "Very Black",
+      "qty_value": 7.2,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Shade"
+      ],
+      "offers_count": 3,
+      "demo_offers_count": 3,
+      "offers": [
+        {
+          "store": "Amazon India (Demo)",
+          "price": 749.0,
+          "original_price": 899.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://amazon.in/product/BEAUTY-MAYB-SKYHIGH-7",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Nykaa (Demo)",
+          "price": 799.0,
+          "original_price": 899.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-MAYB-SKYHIGH-7",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Purplle (Demo)",
+          "price": 820.0,
+          "original_price": 899.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://purplle.com/product/BEAUTY-MAYB-SKYHIGH-7",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 27,
+      "sku": "BEAUTY-KAY-KAJAL-03",
+      "title": "Kay Beauty 24HR Waterproof Metallic Gel Kajal Eyeliner",
+      "brand": "Kay Beauty",
+      "category": "Eyeliners",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "0.35 g",
+      "formulation": "Gel Kajal Eyeliner",
+      "concentration": [],
+      "shade": "Midnight Black",
+      "qty_value": 0.35,
+      "qty_unit": "g",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Shade"
+      ],
+      "offers_count": 2,
+      "demo_offers_count": 2,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 299.0,
+          "original_price": 349.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-KAY-KAJAL-03",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Purplle (Demo)",
+          "price": 320.0,
+          "original_price": 349.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://purplle.com/product/BEAUTY-KAY-KAJAL-03",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 28,
+      "sku": "BEAUTY-LANEIGE-LIP-20",
+      "title": "Laneige Lip Sleeping Mask Berry",
+      "brand": "Laneige",
+      "category": "Lip care",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "20 g",
+      "formulation": "Lip Sleeping Mask",
+      "concentration": [],
+      "shade": null,
+      "qty_value": 20.0,
+      "qty_unit": "g",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type"
+      ],
+      "offers_count": 3,
+      "demo_offers_count": 3,
+      "offers": [
+        {
+          "store": "Tira (Demo)",
+          "price": 570.0,
+          "original_price": 600.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://tirabeauty.com/product/BEAUTY-LANEIGE-LIP-20",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Myntra (Demo)",
+          "price": 585.0,
+          "original_price": 600.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://myntra.com/product/BEAUTY-LANEIGE-LIP-20",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Nykaa (Demo)",
+          "price": 600.0,
+          "original_price": 600.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-LANEIGE-LIP-20",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 29,
+      "sku": "BEAUTY-DOTKEY-LIP-12",
+      "title": "Dot & Key Vitamin C + E Lip Sleeping Mask",
+      "brand": "Dot & Key",
+      "category": "Lip care",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "12 g",
+      "formulation": "Lip Sleeping Mask",
+      "concentration": [],
+      "shade": null,
+      "qty_value": 12.0,
+      "qty_unit": "g",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type"
+      ],
+      "offers_count": 2,
+      "demo_offers_count": 2,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 275.0,
+          "original_price": 325.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-DOTKEY-LIP-12",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Amazon India (Demo)",
+          "price": 290.0,
+          "original_price": 325.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://amazon.in/product/BEAUTY-DOTKEY-LIP-12",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 30,
+      "sku": "BEAUTY-SIMPLE-MICELLAR-200",
+      "title": "Simple Kind to Skin Micellar Cleansing Water",
+      "brand": "Simple",
+      "category": "Makeup removers",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "200 ml",
+      "formulation": "Micellar Makeup Remover",
+      "concentration": [],
+      "shade": null,
+      "qty_value": 200.0,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Routine",
+        "Skin Type"
+      ],
+      "offers_count": 3,
+      "demo_offers_count": 3,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 385.0,
+          "original_price": 450.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-SIMPLE-MICELLAR-200",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Amazon India (Demo)",
+          "price": 399.0,
+          "original_price": 450.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://amazon.in/product/BEAUTY-SIMPLE-MICELLAR-200",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Purplle (Demo)",
+          "price": 410.0,
+          "original_price": 450.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://purplle.com/product/BEAUTY-SIMPLE-MICELLAR-200",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 31,
+      "sku": "BEAUTY-MIN-MALEIC-50",
+      "title": "Minimalist Maleic Bond Repair Complex 5% Hair Serum",
+      "brand": "Minimalist",
+      "category": "Haircare",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "50 ml",
+      "formulation": "Bond Repair Hair Treatment",
+      "concentration": [
+        "5%"
+      ],
+      "shade": null,
+      "qty_value": 50.0,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Brand Tier",
+        "Hair Type",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Routine"
+      ],
+      "offers_count": 3,
+      "demo_offers_count": 3,
+      "offers": [
+        {
+          "store": "Amazon India (Demo)",
+          "price": 569.0,
+          "original_price": 599.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://amazon.in/product/BEAUTY-MIN-MALEIC-50",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Nykaa (Demo)",
+          "price": 599.0,
+          "original_price": 599.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-MIN-MALEIC-50",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Purplle (Demo)",
+          "price": 599.0,
+          "original_price": 599.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://purplle.com/product/BEAUTY-MIN-MALEIC-50",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 32,
+      "sku": "BEAUTY-CAP-BODYWASH-250",
+      "title": "Chemist at Play Exfoliating Lactic Acid Body Wash",
+      "brand": "Chemist at Play",
+      "category": "Body care",
+      "data_status": "pending_review",
+      "source_type": "demo",
+      "net_quantity": "250 ml",
+      "formulation": "Exfoliating Body Wash",
+      "concentration": [],
+      "shade": null,
+      "qty_value": 250.0,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Brand Tier",
+        "Intended Use",
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Routine",
+        "Skin Type"
+      ],
+      "offers_count": 3,
+      "demo_offers_count": 3,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 399.0,
+          "original_price": 499.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/BEAUTY-CAP-BODYWASH-250",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Amazon India (Demo)",
+          "price": 419.0,
+          "original_price": 499.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://amazon.in/product/BEAUTY-CAP-BODYWASH-250",
+          "last_checked": "2026-11-11 11:27:14"
+        },
+        {
+          "store": "Purplle (Demo)",
+          "price": 429.0,
+          "original_price": 499.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://purplle.com/product/BEAUTY-CAP-BODYWASH-250",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "DEMO_ONLY"
+    },
+    {
+      "id": 33,
+      "sku": "OBF-SUN-PREP-30",
+      "title": "Pharmacis Sunscreen SPF 50+ Gel Cream",
+      "brand": "Pharmacis",
+      "category": "Sunscreens",
+      "data_status": "catalog_verified",
+      "source_type": "catalog_verified",
+      "net_quantity": "30 ml",
+      "formulation": "Gel Cream Sunscreen",
+      "concentration": [],
+      "shade": null,
+      "qty_value": 30.0,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "SPF",
+        "Skin Type"
+      ],
+      "offers_count": 1,
+      "demo_offers_count": 1,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 899.0,
+          "original_price": 1199.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/obf-sun-prep-30",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "CATALOG_VERIFIED_ONLY"
+    },
+    {
+      "id": 34,
+      "sku": "OBF-SER-MIN-30",
+      "title": "Minimalist 10% Niacinamide Serum",
+      "brand": "Minimalist",
+      "category": "Serums",
+      "data_status": "catalog_verified",
+      "source_type": "catalog_verified",
+      "net_quantity": "30 ml",
+      "formulation": "Face Serum",
+      "concentration": [
+        "10%"
+      ],
+      "shade": null,
+      "qty_value": 30.0,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Skin Type"
+      ],
+      "offers_count": 1,
+      "demo_offers_count": 1,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 899.0,
+          "original_price": 1199.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/obf-ser-min-30",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "CATALOG_VERIFIED_ONLY"
+    },
+    {
+      "id": 35,
+      "sku": "OBF-LIP-KAY-35",
+      "title": "Kay Beauty Matte Lipstick - Reconstruct",
+      "brand": "Kay Beauty",
+      "category": "Lipsticks",
+      "data_status": "catalog_verified",
+      "source_type": "catalog_verified",
+      "net_quantity": "3.5 g",
+      "formulation": "Bullet Lipstick",
+      "concentration": [],
+      "shade": "Reconstruct",
+      "qty_value": 3.5,
+      "qty_unit": "g",
+      "specs_keys": [
+        "Finish",
+        "Net Quantity",
+        "Product Type",
+        "Shade"
+      ],
+      "offers_count": 1,
+      "demo_offers_count": 1,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 899.0,
+          "original_price": 1199.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/obf-lip-kay-35",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "CATALOG_VERIFIED_ONLY"
+    },
+    {
+      "id": 36,
+      "sku": "OBF-FND-MAY-30",
+      "title": "Maybelline Fit Me Matte Liquid Foundation - 128 Warm Nude",
+      "brand": "Maybelline",
+      "category": "Foundations",
+      "data_status": "catalog_verified",
+      "source_type": "catalog_verified",
+      "net_quantity": "30 ml",
+      "formulation": "Liquid Foundation",
+      "concentration": [],
+      "shade": "128 Warm Nude",
+      "qty_value": 30.0,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Finish",
+        "Net Quantity",
+        "Product Type",
+        "Shade"
+      ],
+      "offers_count": 1,
+      "demo_offers_count": 1,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 899.0,
+          "original_price": 1199.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/obf-fnd-may-30",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "CATALOG_VERIFIED_ONLY"
+    },
+    {
+      "id": 37,
+      "sku": "OBF-MAS-COVER-7",
+      "title": "Maybelline Lash Sensational Sky High Mascara - Very Black",
+      "brand": "Maybelline",
+      "category": "Mascaras",
+      "data_status": "catalog_verified",
+      "source_type": "catalog_verified",
+      "net_quantity": "7.2 ml",
+      "formulation": "Waterproof Mascara",
+      "concentration": [],
+      "shade": "Very Black",
+      "qty_value": 7.2,
+      "qty_unit": "ml",
+      "specs_keys": [
+        "Key Ingredients",
+        "Net Quantity",
+        "Product Type",
+        "Shade"
+      ],
+      "offers_count": 1,
+      "demo_offers_count": 1,
+      "offers": [
+        {
+          "store": "Nykaa (Demo)",
+          "price": 899.0,
+          "original_price": 1199.0,
+          "currency": "INR",
+          "availability": "In Stock",
+          "offer_url": "https://nykaa.com/product/obf-mas-cover-7",
+          "last_checked": "2026-11-11 11:27:14"
+        }
+      ],
+      "observations_count": 0,
+      "live_provider_observations": 0,
+      "review_pending_observations": 0,
+      "manual_verified_observations": 0,
+      "observations": [],
+      "coverage_category": "CATALOG_VERIFIED_ONLY"
+    }
+  ]
+}

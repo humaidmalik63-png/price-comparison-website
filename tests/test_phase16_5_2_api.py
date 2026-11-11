@@ -20,6 +20,8 @@ from starlette.testclient import TestClient
 from src.api import main
 from src.adapters.mcp_adapters.base_mcp_adapter import McpCallResult
 from src.database.connection import get_connection
+from src.services import cheapest_offer_service as cos
+from src.services import match_review_service as mrs
 from src.services import price_intelligence as pi
 
 
@@ -32,6 +34,13 @@ def db(monkeypatch, fresh_seeded_db):
     )
     monkeypatch.setattr(
         pi, "get_connection", lambda *a, **k: get_connection(fresh_seeded_db)
+    )
+    # Phase 16.6 services consulted by the extended endpoints.
+    monkeypatch.setattr(
+        cos, "get_connection", lambda *a, **k: get_connection(fresh_seeded_db)
+    )
+    monkeypatch.setattr(
+        mrs, "get_connection", lambda *a, **k: get_connection(fresh_seeded_db)
     )
     return fresh_seeded_db
 

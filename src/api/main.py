@@ -4,8 +4,10 @@ Exposes REST endpoints for the React frontend while reusing existing
 database models and service layers. Keeps Streamlit fully operational.
 """
 
+import json
 import logging
 import os
+from pathlib import Path
 from typing import Any, Optional
 from fastapi import FastAPI, HTTPException, Query, Depends, Response, status, Body
 from pydantic import BaseModel
@@ -952,6 +954,43 @@ from src.adapters.mcp_adapters.priceinindia_adapter import PriceInIndiaAdapter
 from src.adapters.mcp_adapters.open_beauty_facts_adapter import OpenBeautyFactsAdapter
 from src.services.product_matching_service import evaluate_product_match, admin_correct_match, MatchClassification
 
+# ── Phase 16.6 Stage 7: live price coverage, freshness & review APIs ────────
+from src.services.cheapest_offer_service import (
+    get_catalog_cheapest_eligible,
+    get_cheapest_eligible,
+    get_eligible_offers,
+    get_excluded_offers,
+)
+from src.services.freshness_service import (
+    FreshnessPolicy,
+    classify_freshness,
+    freshness_distribution,
+    observation_age_hours,
+)
+from src.services.match_review_service import list_pending_matches, resolve_pending_match
+from src.services.price_intelligence import (
+    get_full_price_history,
+    get_last_collection_time,
+    get_latest_observation_per_retailer,
+    get_price_history_summary,
+)
+from src.scripts.collect_pi_observations import DEFAULT_STATS_PATH as _DISCOVERY_STATS_PATH
+
+
+def require_admin(current_user: User = Depends(get_current_user)) -> User:
+    """Admin gate for Phase 16.6 admin endpoints.
+
+    Preserves the exact auth behaviour of the existing admin endpoints
+    (authenticated session required via get_current_user). No new or
+    weaker mechanism is introduced.
+    """
+    return current_user
+
+
+# Artifacts consulted by the collection-status endpoint. Monkeypatchable in
+# tests; the endpoint reports honestly when no artifact exists.
+COLLECTION_STATS_PATHS: list[Any] = [_DISCOVERY_STATS_PATH]
+
 
 class ManualPriceEntryRequest(BaseModel):
     """Request schema for manual price entry."""
@@ -1067,27 +1106,78 @@ def manual_price_entry(
 
 @app.get("/api/products/{product_id}/offers")
 def get_product_offers(product_id: int):
-    """Return verified offers for a product with unit prices and discounts."""
+    """Return verified offers for a product with unit prices and discounts.
+
+    Phase 16.6 Stage 7: additionally exposes the live-price section —
+    eligible provider-observed offers and the transparent exclusion
+    breakdown from the eligibility service (demo prices, unverified
+    matches, stale or foreign-currency rows are excluded there, never
+    here silently).
+    """
     offers = get_verified_offers(product_id)
-    if not offers:
+    eligible = get_eligible_offers(product_id)
+    if not offers and not eligible:
         raise HTTPException(status_code=404, detail="No offers found for this product")
-    return {"product_id": product_id, "offers": offers}
+    excluded = get_excluded_offers(product_id)
+    return {
+        "product_id": product_id,
+        "offers": offers,
+        "live": {
+            "eligible_offers": eligible,
+            "excluded_offers": excluded,
+            "assumptions": _eligibility_assumptions(),
+        },
+    }
+
+
+def _eligibility_assumptions() -> list[str]:
+    """Disclosed input assumptions of the live eligibility engine."""
+    from src.services.cheapest_offer_service import ASSUMPTIONS
+
+    return list(ASSUMPTIONS)
 
 
 @app.get("/api/products/{product_id}/cheapest")
 def get_product_cheapest(product_id: int):
-    """Return the single cheapest verified offer for a product."""
+    """Return the single cheapest verified offer for a product.
+
+    Phase 16.6 Stage 7: additionally exposes ``live_cheapest`` — the
+    cheapest eligibility-gated provider-observed offer with its freshness,
+    match basis and disclosed assumptions (or ``null`` honestly, when no
+    eligible live offer exists).
+    """
     offer = get_cheapest_verified(product_id)
-    if not offer:
+    live_cheapest = get_cheapest_eligible(product_id)
+    if not offer and not live_cheapest:
         raise HTTPException(status_code=404, detail="No verified offers available")
-    return {"product_id": product_id, "cheapest": offer}
+    return {
+        "product_id": product_id,
+        "cheapest": offer,
+        "live_cheapest": live_cheapest,
+    }
 
 
 @app.get("/api/catalog/cheapest-offers")
 def list_catalog_cheapest_offers(limit: int = Query(200, ge=1, le=500)):
-    """Return cheapest verified offer across all active products."""
+    """Return cheapest verified offer across all active products.
+
+    Phase 16.6 Stage 7: additionally exposes the paginated live section —
+    cheapest eligibility-gated offer per product. Products without any
+    eligible live offer are honestly absent from ``live`` (never
+    demo-filled).
+    """
     results = list_cheapest_per_catalog(limit=limit)
-    return {"count": len(results), "offers": results}
+    live = get_catalog_cheapest_eligible(limit=limit)
+    return {
+        "count": len(results),
+        "offers": results,
+        "live": {
+            "items": live["items"],
+            "total_products": live["total_products"],
+            "products_with_eligible_offers": live["products_with_eligible_offers"],
+            "assumptions": live["assumptions"],
+        },
+    }
 
 
 @app.post("/api/admin/price-observations/expire-stale")
@@ -1099,32 +1189,214 @@ def expire_stale_endpoint(max_age_hours: int = Query(72, ge=1, le=720)):
 
 @app.get("/api/products/{product_id}/price-history")
 def get_product_price_history(product_id: int, limit: int = Query(30, ge=1, le=100)):
-    """Return price history for a product (excludes superseded)."""
+    """Return price history for a product (excludes superseded).
+
+    Phase 16.6 Stage 7: additionally returns ``full_history`` (including
+    superseded observations — history is retained, never deleted), the
+    per-point ``price_change``, the latest observation per retailer with
+    freshness annotation, and a summary over real observations only
+    (lowest / highest / average / trend — no synthetic points).
+    """
     history = get_observation_price_history(product_id, limit=limit)
+    full_history = get_full_price_history(product_id, limit=limit)
+    per_retailer = get_latest_observation_per_retailer(product_id)
+    summary = get_price_history_summary(product_id)
+
+    def _point(p) -> dict:
+        return {
+            "id": p.id,
+            "retailer": p.retailer,
+            "observed_price": p.observed_price,
+            "observed_mrp": p.observed_mrp,
+            "observation_type": p.observation_type,
+            "observation_status": p.observation_status,
+            "created_at": p.created_at,
+            "unit_price": p.unit_price,
+            "evidence_notes": p.evidence_notes,
+            "price_change": p.price_change,
+        }
+
     return {
         "product_id": product_id,
-        "history_points": [
+        "history_points": [_point(p) for p in history],
+        "full_history": [_point(p) for p in full_history],
+        "latest_per_retailer": [
             {
-                "id": p.id,
-                "retailer": p.retailer,
-                "observed_price": p.observed_price,
-                "observed_mrp": p.observed_mrp,
-                "observation_type": p.observation_type,
-                "observation_status": p.observation_status,
-                "created_at": p.created_at,
-                "unit_price": p.unit_price,
-                "evidence_notes": p.evidence_notes,
+                "id": r["id"],
+                "retailer": r["retailer"],
+                "observed_price": r["observed_price"],
+                "currency": r.get("currency"),
+                "provider_name": r.get("provider_name"),
+                "observation_status": r["observation_status"],
+                "verification_status": r["verification_status"],
+                "created_at": r["created_at"],
+                "observed_age_hours": r["observed_age_hours"],
+                "freshness": r["freshness"],
             }
-            for p in history
+            for r in per_retailer
         ],
+        "summary": summary,
     }
+
+
+def _collection_job_status() -> dict[str, Any]:
+    """Read the most recent discovery-run statistics artifact.
+
+    Honest reporting: when no artifact exists the job is reported as
+    never_run — no invented progress or synthetic success.
+    """
+    for path in COLLECTION_STATS_PATHS:
+        candidate = Path(path)
+        if candidate.exists():
+            try:
+                stats = json.loads(candidate.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                return {"status": "unreadable", "artifact": str(candidate)}
+            return {
+                "status": "completed" if stats.get("finished_at") else "running",
+                "artifact": str(candidate),
+                "started_at": stats.get("started_at"),
+                "finished_at": stats.get("finished_at"),
+                "dry_run": stats.get("dry_run"),
+                "totals": stats.get("totals"),
+                "error_counts": stats.get("error_counts"),
+                "duration_seconds": stats.get("duration_seconds"),
+            }
+    return {"status": "never_run", "artifact": None}
 
 
 @app.get("/api/admin/health-stats")
 def admin_health_stats():
-    """Get overall data-quality health stats for the admin dashboard."""
+    """Get overall data-quality health stats for the admin dashboard.
+
+    Phase 16.6 Stage 7 additions:
+    - ``freshness``: distribution of live observations over the configured
+      freshness policy (fresh / aging / stale / unknown)
+    - ``match_review_queue``: how many uncertain matches await human review
+    - ``collection``: status of the latest controlled discovery run
+      (from the run-stats artifact; ``never_run`` when absent)
+    """
     stats = get_price_health_stats()
+
+    # Freshness distribution over current live observations.
+    with get_connection() as conn:
+        rows = [
+            dict(r)
+            for r in conn.execute(
+                "SELECT created_at FROM retail_price_observation "
+                "WHERE observation_status = 'live'"
+            ).fetchall()
+        ]
+    stats["freshness"] = freshness_distribution(rows)
+
+    # Uncertain matches awaiting human review.
+    try:
+        queue = list_pending_matches(limit=1, offset=0)
+        stats["match_review_queue"] = {"pending": queue["total"]}
+    except Exception:
+        # Health stats must not fail because of queue storage issues; the
+        # failure is reported, never hidden as zero.
+        stats["match_review_queue"] = {"pending": None, "error": "unavailable"}
+
+    # Latest controlled discovery run.
+    stats["collection"] = _collection_job_status()
+    stats["last_collection_time"] = get_last_collection_time()
     return stats
+
+
+# ============================================================================
+# Phase 16.6 Stage 7: Match Review Queue + Collection Job Status (admin)
+# ============================================================================
+
+class MatchReviewDecisionRequest(BaseModel):
+    """Admin decision on an uncertain PriceInIndia match."""
+    decision: str  # 'approve' | 'reject'
+    note: Optional[str] = None
+
+
+def _admin_user_id_for_decision(db_path: str | None, admin: User) -> Optional[int]:
+    """Resolve the admin's user id when the account exists in the DB.
+
+    The seeded test/dev databases may contain no users table rows while an
+    authenticated session is still valid. In that case the decision is
+    recorded without an FK reference and the session context is written to
+    the verification notes instead — never silently.
+    """
+    try:
+        with get_connection(db_path) as conn:
+            row = conn.execute(
+                "SELECT id FROM users WHERE id = ?", (admin.id,)
+            ).fetchone()
+        return row["id"] if row else None
+    except Exception:
+        return None
+
+
+@app.get("/api/admin/match-review-queue")
+def admin_match_review_queue(
+    limit: int = Query(50, ge=1, le=200),
+    offset: int = Query(0, ge=0),
+    admin: User = Depends(require_admin),
+):
+    """List uncertain matches that await human review (admin, paginated).
+
+    Every PriceInIndia candidate that is not a verified match lands here.
+    Unreviewed possible matches are never eligible as cheapest offers
+    (Stage 3 rule 8) — only an explicit admin decision promotes them.
+    """
+    try:
+        queue = list_pending_matches(limit=limit, offset=offset)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+    return queue
+
+
+@app.post("/api/admin/match-review/{observation_id}/resolve")
+def admin_resolve_match_review(
+    observation_id: int,
+    req: MatchReviewDecisionRequest,
+    admin: User = Depends(require_admin),
+):
+    """Apply an admin decision to a pending match observation.
+
+    - approve: the observation becomes a verified, live observation and
+      may participate in cheapest-offer eligibility.
+    - reject: the observation is flagged and excluded from eligibility.
+      History is retained — nothing is ever deleted.
+    """
+    admin_user_id = _admin_user_id_for_decision(None, admin)
+    try:
+        updated = resolve_pending_match(
+            observation_id,
+            decision=req.decision,
+            admin_user_id=admin_user_id,
+            note=req.note or "",
+            db_path=None,
+        )
+    except LookupError:
+        raise HTTPException(status_code=404, detail="Observation not found")
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+
+    if admin_user_id is None:
+        # Honest disclosure: the decision was applied by an authenticated
+        # session whose user record is absent from this database.
+        updated["admin_reference"] = f"session:{admin.id} ({admin.email})"
+    return {"resolved": True, "observation": updated}
+
+
+@app.get("/api/admin/price-collection/status")
+def admin_price_collection_status(admin: User = Depends(require_admin)):
+    """Status of the latest controlled discovery run (admin).
+
+    Reads the run-statistics artifact written by
+    ``src.scripts.collect_pi_observations``; reports ``never_run`` honestly
+    when no artifact exists. Also reports the last observation timestamp
+    recorded in the database.
+    """
+    status = _collection_job_status()
+    status["last_collection_time"] = get_last_collection_time()
+    return status
 
 
 @app.get("/api/connectors/priceinindia/health")

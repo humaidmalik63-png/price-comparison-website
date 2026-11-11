@@ -8,6 +8,11 @@ interface PriceHistoryChartProps {
   originalPrice?: number;
   targetPrice?: number;
   productName: string;
+  // Phase 16.6 Stage 8: provenance of the plotted points.
+  // 'demo' (default) keeps the historic demo-dataset presentation;
+  // 'provider_observed' renders real live observations honestly — the badge
+  // and copy must never claim DEMO for real data, nor LIVE for demo data.
+  dataSource?: 'demo' | 'provider_observed';
 }
 
 type TimeRange = '7d' | '30d' | '90d' | 'all';
@@ -17,7 +22,9 @@ export const PriceHistoryChart: React.FC<PriceHistoryChartProps> = ({
   currentPrice,
   targetPrice,
   productName,
+  dataSource = 'demo',
 }) => {
+  const isProviderObserved = dataSource === 'provider_observed';
   const [selectedRange, setSelectedRange] = useState<TimeRange>('90d');
 
   // Filter observations by selected range
@@ -34,11 +41,13 @@ export const PriceHistoryChart: React.FC<PriceHistoryChartProps> = ({
     if (selectedRange === 'all') return sorted;
 
     const days = selectedRange === '7d' ? 7 : selectedRange === '30d' ? 30 : 90;
-    const now = new Date('2026-11-01'); // Fixed benchmark date for demo stability
+    // Fixed benchmark date only for the demo dataset (stability); real
+    // provider-observed observations are filtered against the current time.
+    const now = isProviderObserved ? new Date() : new Date('2026-11-01');
     const cutoff = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
 
     return sorted.filter((p) => new Date(p.date) >= cutoff);
-  }, [priceHistory, selectedRange]);
+  }, [priceHistory, selectedRange, isProviderObserved]);
 
   // Sufficient history threshold is >= 2 distinct observations
   const hasSufficientData = filteredPoints.length >= 2;
@@ -100,12 +109,20 @@ export const PriceHistoryChart: React.FC<PriceHistoryChartProps> = ({
             <h4 className="font-editorial text-lg font-bold text-espresso-900">
               Recorded Price Volatility & History
             </h4>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-champagne-100 text-espresso-800 border border-champagne-300">
-              DEMO DATASET
-            </span>
+            {isProviderObserved ? (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-300">
+                PROVIDER OBSERVED
+              </span>
+            ) : (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-champagne-100 text-espresso-800 border border-champagne-300">
+                DEMO DATASET
+              </span>
+            )}
           </div>
           <p className="text-xs text-espresso-500 mt-0.5">
-            Timestamped observations across Indian retail feeds. Never fabricated.
+            {isProviderObserved
+              ? 'Timestamped observations from live price collection. Includes superseded rows — history is never deleted. Observation age is shown with every value.'
+              : 'Timestamped observations across Indian retail feeds. Never fabricated.'}
           </p>
         </div>
 
@@ -134,7 +151,9 @@ export const PriceHistoryChart: React.FC<PriceHistoryChartProps> = ({
           <div className="bg-ivory-50 p-2.5 rounded-xl border border-rose-100/60">
             <span className="text-[10px] uppercase font-bold text-espresso-400 block">Current Best</span>
             <span className="text-base font-extrabold text-espresso-950">₹{currentPrice.toLocaleString('en-IN')}</span>
-            <span className="text-[10px] text-sage-600 block">Verified Active</span>
+            <span className="text-[10px] text-sage-600 block">
+              {isProviderObserved ? 'Latest observed' : 'Verified Active'}
+            </span>
           </div>
 
           <div className="bg-ivory-50 p-2.5 rounded-xl border border-rose-100/60">

@@ -291,7 +291,7 @@ export interface LiveRetailerOffer {
   matchClassification: 'verified_match' | 'possible_match' | 'incompatible_mismatch';
   isLowestListed: boolean;
   isLowestTotal: boolean;
-  sourceType: 'verified_live' | 'cached' | 'demo' | 'provider_observed' | 'unavailable';
+  sourceType: 'verified_live' | 'cached' | 'demo' | 'provider_observed' | 'catalog_verified' | 'partner_feed' | 'manually_curated' | 'unavailable';
   retrievedAt: string;
   validationNotes?: string | null;
 }
@@ -432,7 +432,9 @@ export async function getAutoLiveComparison(
           matchClassification: (o.match_classification as LiveRetailerOffer['matchClassification']) || 'verified_match',
           isLowestListed: o.is_lowest_listed,
           isLowestTotal: o.is_lowest_total,
-          sourceType: (o.source_type as LiveRetailerOffer['sourceType']) || 'verified_live',
+          // Honest provenance: never default a missing source to 'verified_live'.
+          // Unknown provenance falls back to 'demo' so it is flagged, not trusted.
+          sourceType: (o.source_type as LiveRetailerOffer['sourceType']) || 'demo',
           retrievedAt: o.retrieved_at,
           validationNotes: o.validation_notes,
         })),

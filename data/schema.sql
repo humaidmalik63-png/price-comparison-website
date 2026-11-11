@@ -78,9 +78,12 @@ CREATE TABLE IF NOT EXISTS retail_price_observation (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     product_id INTEGER NOT NULL,
     retailer TEXT NOT NULL,
+    retailer_domain TEXT,
     product_url TEXT NOT NULL,
     observed_price REAL NOT NULL CHECK(observed_price > 0),
     observed_mrp REAL,
+    currency TEXT,
+    provider_name TEXT,
     size_volume TEXT,
     shade TEXT,
     formulation TEXT,
@@ -95,6 +98,7 @@ CREATE TABLE IF NOT EXISTS retail_price_observation (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     evidence_notes TEXT,
     evidence_reference TEXT,
+    match_result TEXT,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
     FOREIGN KEY (admin_user_id) REFERENCES users(id) ON DELETE SET NULL
 );

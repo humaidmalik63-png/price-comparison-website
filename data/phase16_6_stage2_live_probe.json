@@ -1,0 +1,140 @@
+{
+  "started_at": "2026-11-11T11:35:56.807293+00:00",
+  "dry_run": false,
+  "db_path": "C:\\Users\\humai\\AppData\\Local\\Temp\\pi16_6_live_bg8obqp3.db",
+  "config": {
+    "skip_recent_hours": 24,
+    "force": false,
+    "candidates_per_product": 3,
+    "pacing_seconds": 4.5,
+    "per_page": 5
+  },
+  "totals": {
+    "products_attempted": 3,
+    "products_searched": 2,
+    "products_skipped_recent": 0,
+    "products_with_results": 2,
+    "products_no_results": 1,
+    "products_accepted": 2,
+    "products_rejected": 0,
+    "products_provider_error": 0,
+    "provider_calls": 3,
+    "candidates_evaluated": 3,
+    "candidates_accepted": 3,
+    "candidates_rejected": 0,
+    "candidates_invalid": 0,
+    "observations_stored": 3,
+    "duplicate_candidates_skipped": 0
+  },
+  "error_counts": {},
+  "rejection_reason_counts": {},
+  "products": [
+    {
+      "product_id": 12,
+      "title": "Dot & Key Watermelon Cooling Sunscreen SPF 50+ PA++++",
+      "brand": "Dot & Key",
+      "query": "Dot & Key Watermelon Cooling Sunscreen SPF 50+ PA++++ 50 g",
+      "candidates": [
+        {
+          "retailer": "myntra.com",
+          "title": "Hyaluronic Sunscreen by DOT & KEY - Watermelon",
+          "price": 263.0,
+          "currency": "INR",
+          "url": "https://www.priceinindia.website/products/hyaluronic-sunscreen-by-dot-and-key-watermelon?utm_source=chatgpt-plugin&utm_medium=plugin&utm_content=page",
+          "flags": [],
+          "match_classification": "possible_match",
+          "confidence": 0.42,
+          "requires_human_review": true,
+          "storage": "stored"
+        }
+      ],
+      "outcome": "accepted"
+    },
+    {
+      "product_id": 13,
+      "title": "The Derma Co 1% Hyaluronic Sunscreen Aqua Gel SPF 50 PA++++",
+      "brand": "The Derma Co",
+      "query": "The Derma Co 1% Hyaluronic Sunscreen Aqua Gel SPF 50 PA++++ 50 g",
+      "candidates": [
+        {
+          "retailer": "tirabeauty.com",
+          "title": "Hyaluronic Sunscreen by The Derma Co - 1% SPF 50",
+          "price": 439.0,
+          "currency": "INR",
+          "url": "https://www.priceinindia.website/products/hyaluronic-sunscreen-by-the-derma-co-1-spf-50?utm_source=chatgpt-plugin&utm_medium=plugin&utm_content=page",
+          "flags": [],
+          "match_classification": "possible_match",
+          "confidence": 0.55,
+          "requires_human_review": true,
+          "storage": "stored"
+        },
+        {
+          "retailer": "flipkart.com",
+          "title": "Hyaluronic Sunscreen by The Derma Co - SPF 50",
+          "price": 267.0,
+          "currency": "INR",
+          "url": "https://www.priceinindia.website/products/hyaluronic-sunscreen-by-the-derma-co-spf-50?utm_source=chatgpt-plugin&utm_medium=plugin&utm_content=page",
+          "flags": [],
+          "match_classification": "possible_match",
+          "confidence": 0.55,
+          "requires_human_review": true,
+          "storage": "stored"
+        }
+      ],
+      "outcome": "accepted"
+    },
+    {
+      "product_id": 14,
+      "title": "Minimalist 10% Niacinamide Face Serum with Zinc PCA",
+      "brand": "Minimalist",
+      "query": "Minimalist 10% Niacinamide Face Serum with Zinc PCA 30 ml",
+      "outcome": "no_results"
+    }
+  ],
+  "observations": [
+    {
+      "product_id": 12,
+      "product_title": "Dot & Key Watermelon Cooling Sunscreen SPF 50+ PA++++",
+      "retailer": "myntra.com",
+      "price": 263.0,
+      "currency": "INR",
+      "url": "https://www.priceinindia.website/products/hyaluronic-sunscreen-by-dot-and-key-watermelon?utm_source=chatgpt-plugin&utm_medium=plugin&utm_content=page",
+      "match_classification": "possible_match",
+      "confidence": 0.42,
+      "requires_human_review": true
+    },
+    {
+      "product_id": 13,
+      "product_title": "The Derma Co 1% Hyaluronic Sunscreen Aqua Gel SPF 50 PA++++",
+      "retailer": "tirabeauty.com",
+      "price": 439.0,
+      "currency": "INR",
+      "url": "https://www.priceinindia.website/products/hyaluronic-sunscreen-by-the-derma-co-1-spf-50?utm_source=chatgpt-plugin&utm_medium=plugin&utm_content=page",
+      "match_classification": "possible_match",
+      "confidence": 0.55,
+      "requires_human_review": true
+    },
+    {
+      "product_id": 13,
+      "product_title": "The Derma Co 1% Hyaluronic Sunscreen Aqua Gel SPF 50 PA++++",
+      "retailer": "flipkart.com",
+      "price": 267.0,
+      "currency": "INR",
+      "url": "https://www.priceinindia.website/products/hyaluronic-sunscreen-by-the-derma-co-spf-50?utm_source=chatgpt-plugin&utm_medium=plugin&utm_content=page",
+      "match_classification": "possible_match",
+      "confidence": 0.55,
+      "requires_human_review": true
+    }
+  ],
+  "finished_at": "2026-11-11T11:36:12.891367+00:00",
+  "duration_seconds": 16.08,
+  "adapter_stats": {
+    "total_requests": 3,
+    "failed_requests": 0,
+    "avg_response_time_ms": 2358.4,
+    "is_healthy": true,
+    "last_error": null
+  },
+  "observations_before": 0,
+  "observations_after": 3
+}

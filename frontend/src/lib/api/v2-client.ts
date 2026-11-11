@@ -397,18 +397,44 @@ export async function adminCorrectMatch(request: AdminCorrectMatchRequest): Prom
 
 /**
  * Catalog - Get cheapest offers across all products
+ *
+ * Phase 16.6 Stage 8: additionally returns the `live` eligibility section
+ * (cheapest eligibility-gated provider-observed offer per product with
+ * disclosed assumptions). Unknown provenance falls back to 'demo' — never
+ * to a fabricated 'verified_live'.
  */
-export async function getCatalogCheapestOffers(limit = 200): Promise<{ count: number; offers: any[] }> {
+export async function getCatalogCheapestOffers(
+  limit = 200
+): Promise<{
+  count: number;
+  offers: any[];
+  live?: {
+    items: any[];
+    totalProducts: number;
+    productsWithEligibleOffers: number;
+    assumptions: string[];
+  } | null;
+}> {
   try {
     const url = `${API_BASE_URL}/api/catalog/cheapest-offers?limit=${limit}`;
     const res = await fetchWithTimeout(url);
     if (res.ok) {
-      const raw = await res.json() as { count: number; offers: any[] };
+      const raw = await res.json() as {
+        count: number;
+        offers: any[];
+        live?: {
+          items: any[];
+          total_products: number;
+          products_with_eligible_offers: number;
+          assumptions: string[];
+        };
+      };
       // Normalize field names from backend to match frontend expectations
       const normalizedOffers = raw.offers.map((offer) => ({
         ...offer,
-        // Map snake_case to camelCase for frontend compatibility
-        sourceType: offer.sourceType || offer.source_type || 'verified_live',
+        // Map snake_case to camelCase for frontend compatibility.
+        // Honest provenance: missing source is flagged as demo data.
+        sourceType: offer.sourceType || offer.source_type || 'demo',
         storeName: offer.storeName || offer.store,
         originalPrice: offer.originalPrice || offer.original_price,
         shippingFee: offer.shippingFee || offer.shipping_cost,
@@ -418,12 +444,20 @@ export async function getCatalogCheapestOffers(limit = 200): Promise<{ count: nu
         // Map source_type values if not already mapped
         isDemo: offer.isDemo !== undefined ? offer.isDemo : offer.is_demo || offer.source_type === 'demo',
       }));
-      return { count: raw.count, offers: normalizedOffers };
+      const live = raw.live
+        ? {
+            items: raw.live.items,
+            totalProducts: raw.live.total_products,
+            productsWithEligibleOffers: raw.live.products_with_eligible_offers,
+            assumptions: raw.live.assumptions || [],
+          }
+        : null;
+      return { count: raw.count, offers: normalizedOffers, live };
     }
   } catch {
     // Return empty catalog
   }
-  return { count: 0, offers: [] };
+  return { count: 0, offers: [], live: null };
 }
 
 /**
