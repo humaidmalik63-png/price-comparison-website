@@ -405,7 +405,7 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
                       <>
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-ivory-100 text-espresso-700 border border-rose-100 flex items-center space-x-1">
                           <ShieldCheck className="w-3 h-3 text-sage-600" />
-                          <span>{offer.sourceType === 'verified_live' ? 'Verified Live' : 'Feed Active'}</span>
+                          <span>{offer.sourceType === 'verified_live' ? 'Verified Live' : offer.sourceType === 'provider_observed' ? 'Live Price' : 'Feed Active'}</span>
                         </span>
                         {/* Match Classification Badge */}
                         {offer.matchClassification && offer.matchClassification !== 'verified_match' && (

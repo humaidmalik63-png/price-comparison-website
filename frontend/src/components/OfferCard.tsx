@@ -147,6 +147,11 @@ export const OfferCard: React.FC<OfferCardProps> = ({
   };
 
   const sourceBadge = getSourceTypeBadge(offer.sourceType || 'demo');
+  // Only genuine feed-backed sources are additionally described as
+  // "Provider Observed". Demo rows are explicitly demo data, and a live
+  // provider observation already carries the "Live Price" badge.
+  const isFeedBacked =
+    offer.sourceType === 'partner_feed' || offer.sourceType === 'cached';
 
   return (
     <article className="rounded-2xl border border-rose-200 bg-white shadow-soft-lift hover:shadow-luxury-card transition-all duration-300 p-5 space-y-4">
@@ -167,7 +172,7 @@ export const OfferCard: React.FC<OfferCardProps> = ({
                 {sourceBadge.icon}
                 <span className="ml-1">{sourceBadge.label}</span>
               </span>
-              {!isLiveVerified && offer.sourceType !== 'provider_observed' && (
+              {!isLiveVerified && isFeedBacked && (
                 <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-champagne-50 border border-champagne-300 text-champagne-800">
                   <AlertCircle className="w-3 h-3" />
                   <span>Provider Observed</span>

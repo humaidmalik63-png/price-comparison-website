@@ -147,10 +147,14 @@ def match_pi_result_to_product(pi_item: dict, catalog_product: dict) -> ProductM
         offer_specs=pi_item.get("specs", {}),
     )
 
-    # For brand-matched PI items, accept as comparable if:
-    # - Not an incompatible mismatch
-    # - Title similarity >= 40%
-    if result.title_similarity >= 0.4:
+    # For brand-matched PI items, relax to POSSIBLE_MATCH only when the
+    # underlying evaluation did not find a hard identity conflict. Shade,
+    # formulation, concentration, size and brand conflicts are never
+    # overridden — those are exactly the cases that must not be compared.
+    if (
+        result.match_classification != MatchClassification.INCOMPATIBLE_MISMATCH
+        and result.title_similarity >= 0.4
+    ):
         # Create a new result that overrides is_comparable
         # We use a dataclass replace pattern
         result_dict = {
@@ -161,6 +165,7 @@ def match_pi_result_to_product(pi_item: dict, catalog_product: dict) -> ProductM
             "size_match": result.size_match,
             "shade_match": result.shade_match,
             "formulation_match": result.formulation_match,
+            "concentration_match": result.concentration_match,
             "title_similarity": result.title_similarity,
             "reasons": result.reasons,
             "target_size": result.target_size,
@@ -216,10 +221,18 @@ def store_observation(
     if dry_run:
         return {"status": "dry_run", "observation": observation}
 
+    if observation["observed_price"] <= 0:
+        return {
+            "status": "rejected",
+            "reason": "observed_price must be positive",
+            "observation": observation,
+        }
+
     with get_connection() as conn:
         cursor = conn.cursor()
 
-        # Check for existing live observation for this retailer recently
+        # Supersede any existing live observation for the SAME product+retailer.
+        # Other retailers' observations remain independent and untouched.
         cursor.execute("""
             SELECT id FROM retail_price_observation
             WHERE product_id = ? AND retailer = ?
@@ -229,7 +242,11 @@ def store_observation(
         existing = cursor.fetchone()
 
         if existing:
-            observation["observation_status"] = "superseded"
+            cursor.execute(
+                "UPDATE retail_price_observation "
+                "SET observation_status = 'superseded', updated_at = ? WHERE id = ?",
+                (timestamp, existing["id"]),
+            )
 
         cursor.execute("""
             INSERT INTO retail_price_observation
@@ -266,8 +283,9 @@ def store_observation(
             SELECT id, name, domain FROM stores
             WHERE LOWER(name) = LOWER(?)
                OR LOWER(domain) = LOWER(?)
-               OR ? LIKE '%' || LOWER(name) || '%'
-        """, (retailer_name, retailer_name, retailer_name))
+               OR LOWER(name) LIKE LOWER(?) || '%'
+               OR ? LIKE '%' || LOWER(domain) || '%'
+        """, (retailer_name, retailer_name, retailer_name, retailer_name))
         store_row = cursor.fetchone()
 
         if store_row:
@@ -292,7 +310,7 @@ def store_observation(
                         original_price = ?,
                         shipping_cost = 0,
                         currency = 'INR',
-                        offer_url = ?,
+                        offer_url = COALESCE(NULLIF(?, ''), offer_url),
                         last_checked = ?
                     WHERE id = ?
                 """, (
@@ -316,7 +334,7 @@ def store_observation(
                     0,  # shipping_cost
                     "INR",
                     "In Stock",
-                    observation["product_url"],
+                    observation["product_url"] or None,
                     timestamp,
                 ))
 

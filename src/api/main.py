@@ -1397,19 +1397,38 @@ def collect_priceinindia_observations(
                 continue
 
             if match_result.is_comparable:
+                price_value = float(pi_item.get("price", 0) or 0)
+                if price_value <= 0:
+                    # Never persist fabricated/invalid prices.
+                    errors.append(
+                        f"Invalid price for product {product['id']}: {pi_item.get('price')!r}"
+                    )
+                    continue
+
+                retailer_name = pi_item.get("store", "unknown")
+                product_url = pi_item.get("productPageUrl", pi_item.get("productUrl", "")) or ""
+
                 # Store observation
                 with get_connection() as conn:
                     cursor = conn.cursor()
 
-                    # Check for existing recent observation
+                    # Supersede only the same retailer's live observation.
+                    # Other retailers must remain independent.
                     cursor.execute("""
                         SELECT id FROM retail_price_observation
-                        WHERE product_id = ? AND observation_type = 'live'
-                        AND created_at > datetime('now', '-7 days')
-                    """, (product["id"],))
+                        WHERE product_id = ? AND retailer = ?
+                          AND observation_status = 'live'
+                          AND created_at > datetime('now', '-7 days')
+                    """, (product["id"], retailer_name))
                     existing = cursor.fetchone()
 
-                    obs_status = "superseded" if existing else "live"
+                    if existing:
+                        cursor.execute(
+                            "UPDATE retail_price_observation "
+                            "SET observation_status = 'superseded', updated_at = ? "
+                            "WHERE id = ?",
+                            (timestamp, existing["id"]),
+                        )
 
                     cursor.execute("""
                         INSERT INTO retail_price_observation
@@ -1420,13 +1439,13 @@ def collect_priceinindia_observations(
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """, (
                         product["id"],
-                        pi_item.get("store", "unknown"),
-                        pi_item.get("productPageUrl", pi_item.get("productUrl", "")),
-                        float(pi_item.get("price", 0)),
+                        retailer_name,
+                        product_url,
+                        price_value,
                         None,
                         pi_item.get("size"),
                         "live",
-                        obs_status,
+                        "live",
                         0,
                         "provider_observed",
                         timestamp,
@@ -1447,9 +1466,9 @@ def collect_priceinindia_observations(
                     observations_collected.append({
                         "id": obs_id,
                         "product_id": product["id"],
-                        "retailer": pi_item.get("store"),
-                        "price": pi_item.get("price"),
-                        "url": pi_item.get("productPageUrl"),
+                        "retailer": retailer_name,
+                        "price": price_value,
+                        "url": product_url,
                         "match_classification": match_result.match_classification,
                     })
                     matched_count += 1

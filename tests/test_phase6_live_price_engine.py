@@ -187,6 +187,28 @@ class TestPhase6LivePriceEngine(unittest.TestCase):
         cls.registry = get_adapter_registry()
         cls.gemini = get_gemini_service()
 
+    @staticmethod
+    def _sample_fixtures():
+        return {
+            "nykaa": NYKAA_SAMPLE_HTML,
+            "myntra": MYNTRA_SAMPLE_HTML,
+            "purplle": PURPLLE_SAMPLE_HTML,
+            "tira": TIRA_SAMPLE_HTML,
+            "amazon": AMAZON_SAMPLE_HTML,
+        }
+
+    @staticmethod
+    def _sample_product_id():
+        """Resolve the seeded Dot & Key sunscreen matched by the HTML fixtures."""
+        with get_connection() as conn:
+            row = conn.execute(
+                "SELECT id FROM products "
+                "WHERE title LIKE '%Watermelon Cooling Sunscreen%' AND is_active = 1 "
+                "ORDER BY id LIMIT 1"
+            ).fetchone()
+        assert row is not None, "seeded database must contain the sunscreen product"
+        return row["id"]
+
     # -------------------------------------------------------------------------
     # 1. Gemini Identification & Query Generation
     # -------------------------------------------------------------------------
@@ -367,23 +389,16 @@ class TestPhase6LivePriceEngine(unittest.TestCase):
     # -------------------------------------------------------------------------
     def test_automatic_comparison_engine_with_fixtures(self):
         """Execute full engine comparison using mock HTML fixtures."""
-        fixtures = {
-            "nykaa": NYKAA_SAMPLE_HTML,
-            "myntra": MYNTRA_SAMPLE_HTML,
-            "purplle": PURPLLE_SAMPLE_HTML,
-            "tira": TIRA_SAMPLE_HTML,
-            "amazon": AMAZON_SAMPLE_HTML,
-        }
+        product_id = self._sample_product_id()
 
-        # Dot & Key Sunscreen in DB has id 76
         res = self.engine.execute_live_comparison(
-            product_id=76,
+            product_id=product_id,
             force_refresh=True,
-            mock_html_fixtures=fixtures,
+            mock_html_fixtures=self._sample_fixtures(),
         )
 
         self.assertIsNotNone(res)
-        self.assertEqual(res.product_id, 76)
+        self.assertEqual(res.product_id, product_id)
         self.assertGreater(len(res.offers), 0)
         self.assertFalse(res.is_cached)
 
@@ -392,9 +407,11 @@ class TestPhase6LivePriceEngine(unittest.TestCase):
         self.assertIsNotNone(res.summary.lowest_total_cost)
 
         # Second run without force_refresh should return cached result
-        cached_res = self.engine.execute_live_comparison(product_id=76, force_refresh=False)
+        cached_res = self.engine.execute_live_comparison(
+            product_id=product_id, force_refresh=False
+        )
         self.assertTrue(cached_res.is_cached)
-        self.assertEqual(cached_res.product_id, 76)
+        self.assertEqual(cached_res.product_id, product_id)
 
     # -------------------------------------------------------------------------
     # 7. Manual Retailer URL Checking
@@ -426,6 +443,14 @@ class TestPhase6LivePriceEngine(unittest.TestCase):
     # -------------------------------------------------------------------------
     def test_audit_logs_persisted(self):
         """Verify that price_check_logs table logs live runs."""
+        product_id = self._sample_product_id()
+        # Make the test self-contained rather than relying on audit rows left
+        # behind by earlier tests or a developer-local database.
+        self.engine.execute_live_comparison(
+            product_id=product_id,
+            force_refresh=True,
+            mock_html_fixtures=self._sample_fixtures(),
+        )
         with get_connection() as conn:
             cur = conn.cursor()
             cur.execute("SELECT count(*) FROM price_check_logs")

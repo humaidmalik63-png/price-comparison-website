@@ -159,7 +159,12 @@ def get_verified_offers(product_id: int) -> list[dict[str, Any]]:
                            created_at DESC) AS rn
                 FROM retail_price_observation
             ) ro ON ro.product_id = o.product_id
-                  AND (LOWER(ro.retailer) = LOWER(s.name) OR LOWER(ro.retailer) = LOWER(s.domain))
+                  AND (
+                      LOWER(ro.retailer) = LOWER(s.name)
+                      OR LOWER(ro.retailer) = LOWER(s.domain)
+                      OR LOWER(s.name) LIKE LOWER(ro.retailer) || '%'
+                      OR LOWER(s.domain) LIKE LOWER(ro.retailer) || '%'
+                  )
                   AND ro.rn = 1
             WHERE o.product_id = ? AND p.is_active = 1
             ORDER BY o.current_price ASC
@@ -188,44 +193,46 @@ def get_verified_offers(product_id: int) -> list[dict[str, Any]]:
             unit_price = round(d["current_price"] / qty_val, 4)
 
         # Determine if this is a PI-provider-observed price
-            is_provider_observed = False
-            verification_status = "provider_observed"
-            if d["latest_obs_status"] and d.get("latest_price"):
-                # Any observation with provider_observed verification shows as provider_observed
-                # This includes both live and superseded observations from PI
-                if d.get("obs_verification_status") == "provider_observed":
-                    is_provider_observed = True
-                    verification_status = "provider_observed"
-                elif d["latest_obs_status"] == "live":
-                    is_provider_observed = True
+        is_provider_observed = False
+        verification_status = d.get("obs_verification_status") or "unverified"
+        if d["latest_obs_status"] and d.get("latest_price"):
+            # Any observation with provider_observed verification shows as provider_observed
+            # This includes both live and superseded observations from PI
+            if d.get("obs_verification_status") == "provider_observed":
+                is_provider_observed = True
+                verification_status = "provider_observed"
+            elif d["latest_obs_status"] == "live":
+                is_provider_observed = True
 
-            results.append({
-                "offer_id": d["offer_id"],
-                "product_id": d["product_id"],
-                "store_name": d["store_name"],
-                "current_price": d["current_price"],
-                "original_price": original_price,
-                "shipping_cost": shipping,
-                "landing_cost": landing,
-                "currency": d["currency"],
-                "offer_url": d["offer_url"] or "",
-                "last_checked": d["last_checked"],
-                "variant_name": d["variant_name"] or "Standard",
-                "condition": d["condition"] or "Brand New",
-                "source_type": "provider_observed" if is_provider_observed else d["source_type"],
-                "data_status": "provider_observed" if is_provider_observed else d["data_status"],
-                "is_active": bool(d["is_active"]),
-                "latest_obs_status": d["latest_obs_status"],
-                "latest_obs_price": d["latest_price"],
-                "latest_mrp": d["latest_mrp"],
-                "latest_obs_at": d["latest_obs_at"],
-                "evidence_notes": d["evidence_notes"],
-                "discount_pct": discount_pct,
-                "unit_price": unit_price,
-                "is_demo": is_demo,
-                "verification_status": verification_status,
-                "observation_time": d["latest_obs_at"],
-            })
+        results.append({
+            "offer_id": d["offer_id"],
+            "product_id": d["product_id"],
+            "store_name": d["store_name"],
+            "current_price": d["current_price"],
+            "original_price": original_price,
+            "shipping_cost": shipping,
+            "landing_cost": landing,
+            "currency": d["currency"],
+            "offer_url": d["offer_url"] or "",
+            "last_checked": d["last_checked"],
+            "variant_name": d["variant_name"] or "Standard",
+            "condition": d["condition"] or "Brand New",
+            "source_type": "provider_observed" if is_provider_observed else d["source_type"],
+            "data_status": "provider_observed" if is_provider_observed else d["data_status"],
+            "is_active": bool(d["is_active"]),
+            "latest_obs_status": d["latest_obs_status"],
+            "latest_obs_price": d["latest_price"],
+            "latest_mrp": d["latest_mrp"],
+            "latest_obs_at": d["latest_obs_at"],
+            "evidence_notes": d["evidence_notes"],
+            "discount_pct": discount_pct,
+            "unit_price": unit_price,
+            # A live provider observation overrides the product's demo flag for
+            # this offer: the badge must read "Live Price", not "Demo Data".
+            "is_demo": (not is_provider_observed) and is_demo,
+            "verification_status": verification_status,
+            "observation_time": d["latest_obs_at"],
+        })
     return results
 
 
@@ -248,7 +255,7 @@ def list_cheapest_per_catalog(limit: int = 200) -> list[dict[str, Any]]:
                    o.id AS offer_id, o.current_price, o.original_price,
                    o.shipping_cost, o.currency, o.offer_url,
                    s.name AS store_name, o.last_checked,
-                   p.source_type, p.data_status
+                   p.source_type, p.data_status, p.specs_json
             FROM products p
             JOIN offers o ON o.product_id = p.id
             JOIN stores s ON s.id = o.store_id
@@ -264,6 +271,17 @@ def list_cheapest_per_catalog(limit: int = 200) -> list[dict[str, Any]]:
         pid = r["product_id"]
         by_product.setdefault(pid, []).append(dict(r))
 
+    # Map backend source_type to frontend expected format
+    source_type_map = {
+        "demo": "demo",
+        "verified_live": "verified_live",
+        "catalog_verified": "catalog_verified",
+        "partner_feed": "partner_feed",
+        "cached": "cached",
+        "manually_curated": "manually_curated",
+        "provider_observed": "provider_observed",
+    }
+
     results = []
     for pid, offers in by_product.items():
         non_demo = [o for o in offers if o["source_type"] != "demo"]
@@ -278,44 +296,38 @@ def list_cheapest_per_catalog(limit: int = 200) -> list[dict[str, Any]]:
                 qty_val, qty_unit = parse_quantity_volume(qty_text)
             except (json.JSONDecodeError, TypeError):
                 pass
-        unit_price = round(cheapest["current_price"] / qty_val, 4) if qty_val and cheapest["current_price"] else None
-        # Map backend source_type to frontend expected format
-    source_type_map = {
-        "demo": "demo",
-        "verified_live": "verified_live",
-        "catalog_verified": "catalog_verified",
-        "partner_feed": "partner_feed",
-        "cached": "cached",
-        "manually_curated": "manually_curated",
-        "provider_observed": "provider_observed",
-    }
-    backend_source_type = cheapest["source_type"]
+        unit_price = (
+            round(cheapest["current_price"] / qty_val, 4)
+            if qty_val and cheapest["current_price"]
+            else None
+        )
+        backend_source_type = cheapest["source_type"]
 
-    results.append({
-        "product_id": pid,
-        "sku": cheapest["sku"],
-        "title": cheapest["title"],
-        "brand": cheapest["brand"],
-        "store": cheapest["store_name"],
-        "storeName": cheapest["store_name"],  # Frontend expects camelCase
-        "price": cheapest["current_price"],
-        "originalPrice": cheapest["original_price"],  # Frontend expects camelCase
-        "shipping": cheapest["shipping_cost"],
-        "shippingFee": cheapest["shipping_cost"],  # Frontend expects camelCase
-        "landing_cost": round(cheapest["current_price"] + cheapest["shipping_cost"], 2),
-        "currency": cheapest["currency"],
-        "offer_url": cheapest["offer_url"],
-        "purchaseUrl": cheapest["offer_url"],  # Frontend expects camelCase
-        "lastChecked": cheapest["last_checked"],  # Frontend expects camelCase
-        "sourceType": source_type_map.get(backend_source_type, backend_source_type),  # Frontend expects camelCase
-        "source_type": backend_source_type,  # Keep snake_case for internal use
-        "unitPrice": unit_price,  # Frontend expects camelCase
-        "unit_price": unit_price,  # Keep snake_case for internal use
-        "is_demo": backend_source_type == "demo",
-        "deliveryDays": "2-3 business days",  # Default value
-        "inStock": True,  # Default value
-        "condition": "Brand New",  # Default value
-    })
+        results.append({
+            "product_id": pid,
+            "sku": cheapest["sku"],
+            "title": cheapest["title"],
+            "brand": cheapest["brand"],
+            "store": cheapest["store_name"],
+            "storeName": cheapest["store_name"],  # Frontend expects camelCase
+            "price": cheapest["current_price"],
+            "originalPrice": cheapest["original_price"],  # Frontend expects camelCase
+            "shipping": cheapest["shipping_cost"],
+            "shippingFee": cheapest["shipping_cost"],  # Frontend expects camelCase
+            "landing_cost": round(cheapest["current_price"] + cheapest["shipping_cost"], 2),
+            "currency": cheapest["currency"],
+            "offer_url": cheapest["offer_url"],
+            "purchaseUrl": cheapest["offer_url"],  # Frontend expects camelCase
+            "lastChecked": cheapest["last_checked"],  # Frontend expects camelCase
+            "sourceType": source_type_map.get(backend_source_type, backend_source_type),  # Frontend expects camelCase
+            "source_type": backend_source_type,  # Keep snake_case for internal use
+            "unitPrice": unit_price,  # Frontend expects camelCase
+            "unit_price": unit_price,  # Keep snake_case for internal use
+            "is_demo": backend_source_type == "demo",
+            "deliveryDays": "2-3 business days",  # Default value
+            "inStock": True,  # Default value
+            "condition": "Brand New",  # Default value
+        })
     return sorted(results, key=lambda r: r["price"])[:limit]
 
 

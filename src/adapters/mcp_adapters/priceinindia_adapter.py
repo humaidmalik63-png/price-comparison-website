@@ -189,7 +189,12 @@ class PriceInIndiaAdapter(BaseMcpAdapter):
                     price = float(item.get("price", 0))
                     mrp = float(item.get("mrp", 0) or 0)
                     store = str(item.get("store", ""))
-                    url = str(item.get("product_page_url") or item.get("productUrl", ""))
+                    url = str(
+                        item.get("product_page_url")
+                        or item.get("productPageUrl")
+                        or item.get("productUrl")
+                        or ""
+                    )
                     image = str(item.get("image_url", ""))
                     currency = str(item.get("currency", "INR"))
                     discount = float(item.get("discountPercent", 0) or 0)

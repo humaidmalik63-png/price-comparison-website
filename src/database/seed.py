@@ -610,8 +610,12 @@ def seed_database(custom_path: str | None = None, force: bool = False, seed_demo
             return
 
         if force:
+            # Delete children before parents so foreign keys stay valid even if
+            # observations / verification records exist from earlier runs.
             cursor.execute("DELETE FROM price_alerts")
             cursor.execute("DELETE FROM price_tracking")
+            cursor.execute("DELETE FROM obf_product_verification")
+            cursor.execute("DELETE FROM retail_price_observation")
             cursor.execute("DELETE FROM user_preferences")
             cursor.execute("DELETE FROM wishlist")
             cursor.execute("DELETE FROM users")
@@ -700,48 +704,56 @@ def seed_database(custom_path: str | None = None, force: bool = False, seed_demo
                         (offer_id, hist_price, currency, "demo_seed", "demo", recorded_at),
                     )
 
-    # 4. Seed OBF Products for Phase 16.2 Stage 2 testing
-    # OBF products have source_type='catalog_verified' and are for offline/black friday verification
-    for prod in DEMO_OBF_PRODUCTS:
-        cursor.execute("SELECT id FROM products WHERE sku = ?", (prod["sku"],))
-        existing = cursor.fetchone()
-        if existing:
-            # Update to correct OBF verified status
-            cursor.execute(
-                "UPDATE products SET source_type='catalog_verified', data_status='catalog_verified', is_active=1 WHERE id = ?",
-                (existing["id"],),
-            )
-        else:
-            specs = prod["specs"]
-            cursor.execute(
-                """
-                INSERT INTO products (sku, title, brand, category, description, specs_json, image_url, source_type, data_status, is_active)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'catalog_verified', 'catalog_verified', 1)
-                """,
-                (
-                    prod["sku"],
-                    prod["title"],
-                    prod["brand"],
-                    prod["category"],
-                    prod["description"],
-                    json.dumps(specs),
-                    prod["image_url"],
-                ),
-            )
+        # 4. Seed OBF Products for Phase 16.2 Stage 2 testing
+        # OBF products have source_type='catalog_verified' and are for offline/black friday verification
+        for prod in DEMO_OBF_PRODUCTS:
+            cursor.execute("SELECT id FROM products WHERE sku = ?", (prod["sku"],))
+            existing = cursor.fetchone()
+            if existing:
+                # Update to correct OBF verified status
+                cursor.execute(
+                    "UPDATE products SET source_type='catalog_verified', data_status='catalog_verified', is_active=1 WHERE id = ?",
+                    (existing["id"],),
+                )
+            else:
+                specs = prod["specs"]
+                cursor.execute(
+                    """
+                    INSERT INTO products (sku, title, brand, category, description, specs_json, image_url, source_type, data_status, is_active)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 'catalog_verified', 'catalog_verified', 1)
+                    """,
+                    (
+                        prod["sku"],
+                        prod["title"],
+                        prod["brand"],
+                        prod["category"],
+                        prod["description"],
+                        json.dumps(specs),
+                        prod["image_url"],
+                    ),
+                )
 
-    # Add offers for OBF products at Nykaa
-    cursor.execute("SELECT id, sku FROM products WHERE source_type='catalog_verified' AND data_status='catalog_verified' AND is_active=1")
-    for row in cursor.fetchall():
-        cursor.execute("SELECT id FROM offers WHERE product_id = ?", (row["id"],))
-        if not cursor.fetchone():
-            store_id = 6  # Nykaa store
-            cursor.execute(
-                """
-                INSERT INTO offers (product_id, store_id, current_price, original_price, shipping_cost, currency, availability, variant_name, condition, offer_url)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                (row["id"], store_id, 899.0, 1199.0, 0.0, "INR", "In Stock", "Standard", "Brand New", f"https://nykaa.com/product/{row['sku'].lower()}"),
-            )
+        # Add offers for OBF products at Nykaa
+        cursor.execute("SELECT id, sku FROM products WHERE source_type='catalog_verified' AND data_status='catalog_verified' AND is_active=1")
+        for row in cursor.fetchall():
+            cursor.execute("SELECT id FROM offers WHERE product_id = ?", (row["id"],))
+            if not cursor.fetchone():
+                # Resolve by name instead of a hard-coded id: a forced reseed
+                # recreates stores with new AUTOINCREMENT ids. Demo store names
+                # are suffixed with " (Demo)".
+                store_id = next(
+                    (sid for name, sid in store_ids.items() if name.startswith("Nykaa")),
+                    None,
+                )
+                if store_id is None:
+                    continue
+                cursor.execute(
+                    """
+                    INSERT INTO offers (product_id, store_id, current_price, original_price, shipping_cost, currency, availability, variant_name, condition, offer_url)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (row["id"], store_id, 899.0, 1199.0, 0.0, "INR", "In Stock", "Standard", "Brand New", f"https://nykaa.com/product/{row['sku'].lower()}"),
+                )
 
     # 5. Seed Demo Member Account for Academic Viva / Evaluation
     if seed_demo_user:

@@ -443,17 +443,52 @@ def migrate_db(custom_path: str | None = None) -> None:
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_obf_product ON obf_product_verification(product_id)")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_obf_admin ON obf_product_verification(admin_user_id)")
 
-        # 15. Phase 16: Add columns to products table if missing
+        # 15. Phase 16: Add columns to products table if missing.
+        #     migrate_db() may be called on a brand-new/empty database before
+        #     init_db() (e.g. by read-only helpers), so guard every products
+        #     operation on the table actually existing.
         cursor.execute("PRAGMA table_info(products)")
         product_cols = {row["name"] for row in cursor.fetchall()}
-        if "data_status" not in product_cols:
+        products_table_exists = bool(product_cols)
+        if products_table_exists and "data_status" not in product_cols:
             cursor.execute("ALTER TABLE products ADD COLUMN data_status TEXT DEFAULT 'pending_review'")
-        if "source_type" not in product_cols:
+        if products_table_exists and "source_type" not in product_cols:
             cursor.execute("ALTER TABLE products ADD COLUMN source_type TEXT DEFAULT 'demo'")
-        if "is_active" not in product_cols:
+        if products_table_exists and "is_active" not in product_cols:
             cursor.execute("ALTER TABLE products ADD COLUMN is_active INTEGER DEFAULT 1")
-        if "updated_at" not in product_cols:
-            cursor.execute("ALTER TABLE products ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+        if products_table_exists and "updated_at" not in product_cols:
+            # SQLite rejects ALTER TABLE ADD COLUMN with a non-constant default
+            # (CURRENT_TIMESTAMP). Add the column first, then backfill only the
+            # rows that are missing a value. Existing timestamps are untouched.
+            cursor.execute("ALTER TABLE products ADD COLUMN updated_at TIMESTAMP")
+            cursor.execute(
+                "UPDATE products SET updated_at = CURRENT_TIMESTAMP WHERE updated_at IS NULL"
+            )
+        # Ensure timestamp triggers exist for both legacy (column just added) and
+        # fresh databases. CREATE TRIGGER IF NOT EXISTS keeps this idempotent.
+        # The insert trigger only fills genuinely NULL values; the update trigger
+        # only fires when an UPDATE did not itself change updated_at.
+        if products_table_exists:
+            cursor.execute(
+                """
+                CREATE TRIGGER IF NOT EXISTS trg_products_updated_at_insert
+                AFTER INSERT ON products
+                FOR EACH ROW WHEN NEW.updated_at IS NULL
+                BEGIN
+                    UPDATE products SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+                END
+                """
+            )
+            cursor.execute(
+                """
+                CREATE TRIGGER IF NOT EXISTS trg_products_updated_at_update
+                AFTER UPDATE ON products
+                FOR EACH ROW WHEN NEW.updated_at IS OLD.updated_at
+                BEGIN
+                    UPDATE products SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+                END
+                """
+            )
 
         # 16. Phase 16: Evidence columns for retail_price_observation (idempotent migration)
         cursor.execute("PRAGMA table_info(retail_price_observation)")
@@ -473,7 +508,18 @@ def migrate_db(custom_path: str | None = None) -> None:
             "SELECT name FROM sqlite_master WHERE type='index' AND tbl_name='retail_price_observation'"
         )
         existing_indexes = {row["name"] for row in cursor.fetchall()}
-        needs_rebuild = any(idx.startswith("sqlite_autoindex_") for idx in existing_indexes)
+        table_row = cursor.execute(
+            "SELECT sql FROM sqlite_master WHERE type='table' AND name='retail_price_observation'"
+        ).fetchone()
+        table_sql = (table_row["sql"] or "") if table_row else ""
+        # Rebuild when either the legacy UNIQUE(product_id, retailer) autoindex is
+        # present, or the verification_status CHECK predates 'provider_observed'
+        # (Phase 16.5 live observations would otherwise be rejected on a fresh
+        # checkout, where schema.sql created the restrictive constraint first).
+        needs_rebuild = (
+            any(idx.startswith("sqlite_autoindex_") for idx in existing_indexes)
+            or ("provider_observed" not in table_sql and "verification_status" in table_sql)
+        )
         if needs_rebuild:
             rows_data = cursor.execute("SELECT * FROM retail_price_observation").fetchall()
             col_desc = cursor.description

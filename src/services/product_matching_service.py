@@ -62,6 +62,7 @@ class ProductMatchResult:
     offer_size: Optional[str] = None
     target_shade: Optional[str] = None
     offer_shade: Optional[str] = None
+    concentration_match: bool = True
     # --- Stage 4 extras ---
     evidence_tier: str = MatchEvidenceTier.NONE
     barcode_match: bool = False
@@ -254,6 +255,26 @@ def parse_shade(text: str, specs: Optional[dict[str, Any]] = None) -> Optional[s
     return None
 
 
+# Formulation keywords that must never be merged with one another.
+# Ordered longest-first so e.g. "waterproof" is not shadowed by a shorter token.
+_FORMULATION_KEYWORDS = (
+    "waterproof",
+    "washable",
+    "solution",
+    "lotion",
+    "powder",
+    "stick",
+    "cream",
+    "serum",
+    "mask",
+    "foam",
+    "balm",
+    "gel",
+)
+
+_PERCENT_RE = re.compile(r"(\d+(?:\.\d+)?)\s*%")
+
+
 def parse_formulation(text: str, specs: Optional[dict[str, Any]] = None) -> Optional[str]:
     """Extract formulation keywords (waterproof, washable, gel, cream, serum, etc.)."""
     if specs:
@@ -272,7 +293,41 @@ def parse_formulation(text: str, specs: Optional[dict[str, Any]] = None) -> Opti
         return "Cream"
     if "serum" in combined:
         return "Serum"
+    if "mask" in combined:
+        return "Mask"
+    if "solution" in combined:
+        return "Solution"
     return None
+
+
+def normalise_formulation(value: str) -> str:
+    """Reduce a formulation string to its canonical keyword so that
+    'Gel Sunscreen' and 'Gel' compare equal, while 'Gel' and 'Cream' do not."""
+    lowered = (value or "").lower()
+    for keyword in _FORMULATION_KEYWORDS:
+        if keyword in lowered:
+            return keyword
+    return lowered.strip()
+
+
+def parse_concentration(text: str, specs: Optional[dict[str, Any]] = None) -> Optional[frozenset[str]]:
+    """Extract stated active-ingredient percentages (e.g. '10% Niacinamide').
+
+    Returns a frozenset of normalised percentage tokens, or None when no
+    concentration is stated anywhere. Two products with different stated
+    concentrations must never be merged into a verified match.
+    """
+    values: set[str] = set()
+    if text:
+        for match in _PERCENT_RE.finditer(str(text)):
+            values.add(f"{match.group(1)}%")
+    if specs:
+        for key in ("Concentration", "Strength"):
+            raw = specs.get(key)
+            if raw:
+                for match in _PERCENT_RE.finditer(str(raw)):
+                    values.add(f"{match.group(1)}%")
+    return frozenset(values) if values else None
 
 
 def evaluate_product_match(
@@ -373,13 +428,24 @@ def evaluate_product_match(
     o_form = parse_formulation(f"{offer_variant} {offer_title}", o_specs)
     formulation_match = True
     if t_form and o_form:
-        t_f_lower, o_f_lower = t_form.lower(), o_form.lower()
-        if "waterproof" in t_f_lower and "washable" in o_f_lower:
+        t_f_norm = normalise_formulation(t_form)
+        o_f_norm = normalise_formulation(o_form)
+        if t_f_norm and o_f_norm and t_f_norm != o_f_norm:
             formulation_match = False
-            reasons.append("Formulation mismatch: Target is Waterproof but offer is Washable")
-        elif "washable" in t_f_lower and "waterproof" in o_f_lower:
-            formulation_match = False
-            reasons.append("Formulation mismatch: Target is Washable but offer is Waterproof")
+            reasons.append(
+                f"Formulation mismatch: Target is '{t_form}' but offer is '{o_form}'"
+            )
+
+    # ── 4b. Concentration / Strength Check ─────────────────────────────────────
+    t_conc = parse_concentration(target_title, t_specs)
+    o_conc = parse_concentration(f"{offer_variant} {offer_title}", o_specs)
+    concentration_match = True
+    if t_conc and o_conc and t_conc != o_conc:
+        concentration_match = False
+        reasons.append(
+            "Concentration mismatch: target states "
+            f"{sorted(t_conc)} but offer states {sorted(o_conc)}"
+        )
 
     # ── 5. Title Similarity Score ──────────────────────────────────────────────
     t_clean = re.sub(r"[^a-z0-9 ]", "", target_title.lower()).strip()
@@ -398,7 +464,13 @@ def evaluate_product_match(
     confidence = 1.0
 
     # Incompatible mismatch if critical variant attributes contradict
-    if not brand_match or not size_match or not shade_match or not formulation_match:
+    if (
+        not brand_match
+        or not size_match
+        or not shade_match
+        or not formulation_match
+        or not concentration_match
+    ):
         confidence = 0.2
         return ProductMatchResult(
             match_classification=MatchClassification.INCOMPATIBLE_MISMATCH,
@@ -414,6 +486,7 @@ def evaluate_product_match(
             offer_size=offer_size_str,
             target_shade=t_shade,
             offer_shade=o_shade,
+            concentration_match=concentration_match,
             evidence_tier=evidence_tier,
             barcode_match=barcode_matched,
             gtin_matched=gtin_matched,
@@ -442,6 +515,7 @@ def evaluate_product_match(
             offer_size=offer_size_str,
             target_shade=t_shade,
             offer_shade=o_shade,
+            concentration_match=concentration_match,
             evidence_tier=evidence_tier,
             barcode_match=False,
             gtin_matched=False,
@@ -459,9 +533,9 @@ def evaluate_product_match(
         quality_issues.append("Net quantity missing on one or both sides")
     if t_shade and not o_shade:
         quality_issues.append(f"Target shade '{t_shade}' not found in offer text")
-    # Unit price absence only downgrades if no strong barcode evidence exists
-    if (unit_price_target is None or unit_price_offer is None) and not gtin_matched:
-        quality_issues.append("Unit price unavailable for comparison")
+    # NOTE: missing unit price is an analytics limitation, not identity evidence.
+    # It must never downgrade an otherwise exact identity match; unit-price values
+    # are still computed and returned for display/comparison purposes.
 
     if quality_issues and not gtin_matched:
         # Decide: POSSIBLE_MATCH or AMBIGUOUS_MATCH
@@ -496,6 +570,7 @@ def evaluate_product_match(
             offer_size=offer_size_str,
             target_shade=t_shade,
             offer_shade=o_shade,
+            concentration_match=concentration_match,
             evidence_tier=evidence_tier,
             barcode_match=barcode_matched,
             gtin_matched=gtin_matched,
@@ -506,7 +581,9 @@ def evaluate_product_match(
         )
 
     # ── Verified Match ─────────────────────────────────────────────────────────
-    match_reasons = ["Exact variant match confirmed across brand, volume, shade, and formulation."]
+    match_reasons = [
+        "Exact variant match confirmed across brand, volume, shade, formulation, and concentration."
+    ]
     if gtin_matched:
         match_reasons.append(f"GTIN verified: {nb}")
     if unit_price_target is not None and unit_price_offer is not None:
@@ -533,6 +610,7 @@ def evaluate_product_match(
         offer_size=offer_size_str,
         target_shade=t_shade,
         offer_shade=o_shade,
+        concentration_match=concentration_match,
         evidence_tier=evidence_tier,
         barcode_match=barcode_matched,
         gtin_matched=gtin_matched,
@@ -588,6 +666,7 @@ def admin_correct_match(
         offer_size=result.offer_size,
         target_shade=result.target_shade,
         offer_shade=result.offer_shade,
+        concentration_match=getattr(result, "concentration_match", True),
         evidence_tier=result.evidence_tier,
         barcode_match=result.barcode_match,
         gtin_matched=result.gtin_matched,

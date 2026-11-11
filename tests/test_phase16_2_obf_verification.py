@@ -79,8 +79,9 @@ def db():
                     ),
                 )
 
-        # Ensure Nykaa store exists and get its id
-        cursor.execute("SELECT id FROM stores WHERE name='Nykaa' LIMIT 1")
+        # Ensure a Nykaa store exists and get its id. Seeded demo stores are
+        # named "Nykaa (Demo)", so reuse those instead of inserting a duplicate.
+        cursor.execute("SELECT id FROM stores WHERE name LIKE 'Nykaa%' LIMIT 1")
         nykaa_row = cursor.fetchone()
         if nykaa_row:
             store_id = nykaa_row["id"]
@@ -113,14 +114,18 @@ def db():
 
 @pytest.fixture(scope="module")
 def demo_user_id(db):
-    """Get the demo admin user ID from the database."""
+    """Get (or create) the demo admin user ID from the database."""
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM users WHERE email = 'demo@pricewise.ai' LIMIT 1")
         row = cursor.fetchone()
         if row:
             return row["id"]
-    return 1  # fallback
+        cursor.execute(
+            "INSERT INTO users (display_name, email, password_hash) VALUES (?, ?, ?)",
+            ("Alex Demo", "demo@pricewise.ai", "dummy_hash"),
+        )
+        return cursor.lastrowid
 
 
 def make_admin_user(demo_user_id):

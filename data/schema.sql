@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS retail_price_observation (
     verified_by_admin INTEGER DEFAULT 0 CHECK(verified_by_admin IN (0, 1)),
     verified_price REAL,
     verification_notes TEXT,
-    verification_status TEXT DEFAULT 'pending' CHECK(verification_status IN ('pending', 'review_required', 'verified')),
+    verification_status TEXT DEFAULT 'pending' CHECK(verification_status IN ('pending', 'review_required', 'verified', 'provider_observed')),
     admin_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

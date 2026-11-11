@@ -197,7 +197,7 @@ class BaseMcpAdapter(ABC):
             pass
 
         # Parse SSE stream: each event is "data: {...}\n\n"
-        items = []
+        events: list[dict[str, Any]] = []
         for line in text.splitlines():
             line = line.strip()
             if not line.startswith("data:"):
@@ -207,14 +207,56 @@ class BaseMcpAdapter(ABC):
                 continue
             try:
                 obj = json.loads(payload_str)
-                items.append(obj)
             except json.JSONDecodeError:
                 continue
+            if isinstance(obj, dict):
+                events.append(obj)
+
+        if not events:
+            return McpCallResult(
+                success=False,
+                tool_name="",
+                error_message="Unparseable MCP response",
+                response_time_ms=elapsed_ms,
+            )
+
+        # JSON-RPC envelopes must be unwrapped exactly like a direct JSON
+        # response; otherwise the raw envelope is mistaken for a product row.
+        extracted_items: list[dict[str, Any]] = []
+        data_payloads: list[Any] = []
+        saw_jsonrpc = False
+        for obj in events:
+            if "jsonrpc" in obj or isinstance(obj.get("result"), dict):
+                saw_jsonrpc = True
+                sub = self._extract_from_json(obj, elapsed_ms)
+                if sub.items:
+                    extracted_items.extend(sub.items)
+                elif sub.data:
+                    data_payloads.append(sub.data)
+            else:
+                # Legacy/raw event shape: keep the event as a result item.
+                extracted_items.append(obj)
+
+        if not saw_jsonrpc:
+            return McpCallResult(
+                success=True,
+                tool_name="",
+                items=extracted_items,
+                response_time_ms=elapsed_ms,
+            )
+
+        if len(data_payloads) == 1:
+            data: Optional[dict[str, Any]] = data_payloads[0]
+        elif data_payloads:
+            data = {"responses": data_payloads}
+        else:
+            data = None
 
         return McpCallResult(
-            success=len(items) > 0,
+            success=bool(extracted_items or data),
             tool_name="",
-            items=items,
+            data=data,
+            items=extracted_items,
             response_time_ms=elapsed_ms,
         )
 

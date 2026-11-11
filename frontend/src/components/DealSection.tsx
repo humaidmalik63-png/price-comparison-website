@@ -303,6 +303,11 @@ export const DealSection: React.FC<DealSectionProps> = ({
                             Demo Data
                           </span>
                         )}
+                        {isBackendOffer && (deal.sourceType === 'provider_observed' || deal.source_type === 'provider_observed') && (
+                          <span className="text-[10px] text-emerald-700 ml-2 bg-emerald-100 px-2 py-0.5 rounded-full font-medium">
+                            Live Price
+                          </span>
+                        )}
                       </h3>
 
                       <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
@@ -335,6 +340,7 @@ export const DealSection: React.FC<DealSectionProps> = ({
                         {storeOffers.map((offer: RetailerOffer) => {
                           const isVerified = offer.sourceType === 'verified_live' || offer.sourceType === 'manually_curated';
                           const isProviderObserved = offer.sourceType === 'partner_feed' || offer.sourceType === 'cached';
+                          const isLivePrice = offer.sourceType === 'provider_observed';
                           const isDemo = offer.sourceType === 'demo' || offer.sourceType === 'unavailable';
 
                           return (
@@ -367,6 +373,11 @@ export const DealSection: React.FC<DealSectionProps> = ({
                                 {isProviderObserved && (
                                   <span className="text-[9px] bg-champagne-50 text-champagne-800 px-1.5 py-0.5 rounded font-medium border border-champagne-200">
                                     Provider Observed
+                                  </span>
+                                )}
+                                {isLivePrice && (
+                                  <span className="text-[9px] bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded font-medium border border-emerald-200">
+                                    Live Price
                                   </span>
                                 )}
                                 {isDemo && (

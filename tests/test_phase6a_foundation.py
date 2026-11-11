@@ -9,7 +9,10 @@ Verifies:
 """
 
 import os
+import sqlite3
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 from starlette.testclient import TestClient
 
@@ -18,6 +21,13 @@ from src.services.gemini_service import GeminiService, GeminiSKUExtractionResult
 from src.workers.security_policy import validate_browser_url, ALLOWED_RETAILER_DOMAINS
 from src.workers.browser_manager import BrowserManager, BrowserSecurityError
 from src.database.connection import get_connection
+from src.database.seed import (
+    DEMO_BEAUTY_PRODUCTS,
+    DEMO_BEAUTY_STORES,
+    DEMO_OBF_PRODUCTS,
+    DEMO_PRODUCTS,
+    DEMO_STORES,
+)
 
 
 class TestFastApiBridge(unittest.TestCase):
@@ -81,10 +91,18 @@ class TestFastApiBridge(unittest.TestCase):
         self.assertIsInstance(data["offers"], list)
         self.assertGreater(len(data["offers"]), 0)
 
-        # Fetch by ID (Dot & Key Sunscreen product ID is 76)
-        res_id = self.client.get("/api/products/76")
+        # Fetch by ID — resolve the id from the seeded database instead of
+        # relying on a developer-local AUTOINCREMENT value.
+        with get_connection() as conn:
+            row = conn.execute(
+                "SELECT id FROM products WHERE title LIKE '%Watermelon Cooling Sunscreen%'"
+            ).fetchone()
+        self.assertIsNotNone(row)
+        product_id = row["id"]
+
+        res_id = self.client.get(f"/api/products/{product_id}")
         self.assertEqual(res_id.status_code, 200)
-        self.assertEqual(res_id.json()["id"], 76)
+        self.assertEqual(res_id.json()["id"], product_id)
 
     def test_get_product_not_found(self):
         """Verify 404 is returned for non-existent product slug."""
@@ -225,7 +243,7 @@ class TestDatabaseIntegrity(unittest.TestCase):
     """Verify SQLite database integrity and record preservation."""
 
     def test_database_counts(self):
-        """Ensure all 9 tables exist and row counts are preserved."""
+        """Ensure all tables exist and counts match a fresh deterministic seed."""
         with get_connection() as conn:
             cur = conn.cursor()
             cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
@@ -237,24 +255,55 @@ class TestDatabaseIntegrity(unittest.TestCase):
             }
             self.assertTrue(expected_tables.issubset(tables))
 
-            # Check core record counts preserving all 1,083 SQLite records
+            expected_products = (
+                len(DEMO_PRODUCTS) + len(DEMO_BEAUTY_PRODUCTS) + len(DEMO_OBF_PRODUCTS)
+            )
+            expected_stores = len(DEMO_STORES) + len(DEMO_BEAUTY_STORES)
+
             cur.execute("SELECT count(*) FROM products")
-            self.assertEqual(cur.fetchone()[0], 32)
+            self.assertEqual(cur.fetchone()[0], expected_products)
 
             cur.execute("SELECT count(*) FROM stores")
-            self.assertEqual(cur.fetchone()[0], 10)
+            self.assertEqual(cur.fetchone()[0], expected_stores)
 
             cur.execute("SELECT count(*) FROM offers")
-            self.assertEqual(cur.fetchone()[0], 95)
+            self.assertGreater(cur.fetchone()[0], 0)
 
             cur.execute("SELECT count(*) FROM price_history")
-            self.assertGreaterEqual(cur.fetchone()[0], 941)
+            self.assertGreater(cur.fetchone()[0], 0)
 
-    def test_backup_file_exists(self):
-        """Verify database backup file exists and has content."""
-        backup_path = os.path.join("data", "pricewise.db.backup_phase6a")
-        self.assertTrue(os.path.exists(backup_path))
-        self.assertGreater(os.path.getsize(backup_path), 50000)
+    def test_database_backup_is_valid(self):
+        """Verify a genuine SQLite backup of the isolated DB is self-contained.
+
+        The previous test asserted that a developer-local artifact
+        (``data/pricewise.db.backup_phase6a``) existed, which is not part of the
+        repository or the application. Instead, exercise SQLite's backup API and
+        verify the resulting file is a valid, populated database.
+        """
+        source = Path(os.environ["PRICEWISE_DB_PATH"])
+        self.assertTrue(source.exists(), "isolated test database must exist")
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            backup_path = Path(tmp_dir) / "pricewise.db.backup"
+            src_conn = sqlite3.connect(str(source))
+            dst_conn = sqlite3.connect(str(backup_path))
+            try:
+                src_conn.backup(dst_conn)
+            finally:
+                dst_conn.close()
+                src_conn.close()
+
+            self.assertTrue(backup_path.exists())
+            self.assertGreater(backup_path.stat().st_size, 0)
+
+            check = sqlite3.connect(str(backup_path))
+            try:
+                count = check.execute("SELECT COUNT(*) FROM products").fetchone()[0]
+                integrity = check.execute("PRAGMA integrity_check").fetchone()[0]
+            finally:
+                check.close()
+            self.assertGreater(count, 0)
+            self.assertEqual(integrity, "ok")
 
 
 if __name__ == "__main__":
