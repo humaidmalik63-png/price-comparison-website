@@ -27,6 +27,7 @@ import { WatchlistPage } from './pages/WatchlistPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { RoutinesPage } from './pages/RoutinesPage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { AdminDashboard } from './components/admin/AdminDashboard';
 
 export const AppContent: React.FC = () => {
   // Navigation & Filter State
@@ -97,6 +98,7 @@ export const AppContent: React.FC = () => {
 
           <Route path="/routines" element={<RoutinesPage />} />
 
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>

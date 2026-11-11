@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS retail_price_observation (
     size_volume TEXT,
     shade TEXT,
     formulation TEXT,
-    observation_type TEXT NOT NULL CHECK(observation_type IN ('scheduled', 'manual', 'user_report')),
+    observation_type TEXT NOT NULL DEFAULT 'live' CHECK(observation_type IN ('scheduled', 'manual', 'user_report', 'live', 'historical')),
     observation_status TEXT NOT NULL DEFAULT 'live' CHECK(observation_status IN ('live', 'expired', 'superseded', 'flagged')),
     verified_by_admin INTEGER DEFAULT 0 CHECK(verified_by_admin IN (0, 1)),
     verified_price REAL,

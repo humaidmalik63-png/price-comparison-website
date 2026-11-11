@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   Heart,
@@ -9,6 +9,8 @@ import {
   Sparkles,
   Star,
   AlertTriangle,
+  ShieldCheck,
+  TrendingUp,
 } from 'lucide-react';
 
 import { PRODUCTS_DATA } from '../data/products';
@@ -21,6 +23,7 @@ import { ReviewIntelligenceHub } from '../components/ReviewIntelligenceHub';
 import { LiveRetailerPriceComparison } from '../components/LiveRetailerPriceComparison';
 import { useWishlist } from '../hooks/useWishlist';
 import { usePriceTracker } from '../hooks/usePriceTracker';
+import { useBackendProducts } from '../hooks/useBackendProducts';
 
 export const ProductDetailPage: React.FC = () => {
   const { slugOrId } = useParams<{ slugOrId: string }>();
@@ -30,14 +33,82 @@ export const ProductDetailPage: React.FC = () => {
   const { isWishlisted, toggleWishlist } = useWishlist();
   const { isTracking, getTrackedRecord, startTracking, stopTracking } = usePriceTracker();
 
+  // Backend Products Hook for Phase 16.2 integration
+  const {
+    products: backendProducts,
+    isLoading: isBackendLoading,
+    error: backendError,
+    isBackendAvailable,
+    selectProduct: fetchBackendProduct,
+    backendFreshness,
+    refreshProductOffers,
+  } = useBackendProducts();
+
+  // Track backend data freshness for stale price warnings
+  const [productFreshness, setProductFreshness] = useState<number | null>(null);
+
   // Modal State
   const [isTrackerModalOpen, setIsTrackerModalOpen] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState(false);
 
-  // Lookup product
+  // Lookup product (try backend first, then static data)
   const product = useMemo(() => {
+    // First try to find in backend products
+    const backendMatch = backendProducts.find((p) => p.slug === slugOrId || p.id === slugOrId);
+    if (backendMatch) return backendMatch;
+    // Fall back to static products data
     return findProductBySlugOrId(PRODUCTS_DATA, slugOrId || '');
-  }, [slugOrId]);
+  }, [slugOrId, backendProducts]);
+
+  // Fetch fresh product data from backend when page loads or slug changes
+  useEffect(() => {
+    if (slugOrId) {
+      fetchBackendProduct(slugOrId);
+    }
+  }, [slugOrId, fetchBackendProduct]);
+
+  // Track backend freshness
+  useEffect(() => {
+    if (backendFreshness !== null) {
+      setProductFreshness(backendFreshness);
+    }
+  }, [backendFreshness]);
+
+  // Also update freshness when we manually refresh
+  const handleRefreshBackend = useCallback(async () => {
+    if (slugOrId) {
+      await refreshProductOffers(slugOrId);
+      // The hook will update backendFreshness
+    }
+  }, [slugOrId, refreshProductOffers]);
+
+  // Refresh product data from backend when page mounts
+  // This must be BEFORE the early return for 404
+  useEffect(() => {
+    // Only refresh if we have a valid product that's not an API-only product
+    if (!slugOrId || !product) return;
+    if (product.id.startsWith('api-')) return;
+
+    // Fetch fresh offers from backend for existing static products
+    const refreshBackendData = async () => {
+      try {
+        // Import here to avoid circular dependencies
+        const { getProductOffers } = await import('../lib/api/v2-client');
+        // Try to parse numeric ID from product id or slug
+        const numericId = parseInt(slugOrId.replace('prod-', ''), 10);
+        if (!isNaN(numericId)) {
+          const result = await getProductOffers(numericId);
+          if (result.offers.length > 0) {
+            console.log('[ProductDetailPage] Fresh data loaded from backend');
+          }
+        }
+      } catch (err) {
+        console.log('[ProductDetailPage] Using fallback static data:', err);
+      }
+    };
+
+    refreshBackendData();
+  }, [slugOrId, product]);
 
   // Polished 404 Not Found State
   if (!product) {
@@ -195,6 +266,25 @@ export const ProductDetailPage: React.FC = () => {
               </span>
 
               <div className="flex items-baseline space-x-3">
+                {/* Show backend loading state */}
+                {isBackendLoading && (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" />
+                    <span className="text-xs text-rose-600">Loading from backend...</span>
+                  </div>
+                )}
+                {backendError && !isBackendAvailable && (
+                  <div className="flex items-center space-x-2">
+                    <ShieldCheck className="w-4 h-4 text-amber-600" />
+                    <span className="text-xs text-amber-700">Using cached data (backend unavailable)</span>
+                  </div>
+                )}
+                {isBackendAvailable && backendFreshness !== null && (
+                  <div className="flex items-center space-x-2">
+                    <TrendingUp className="w-4 h-4 text-sage-600" />
+                    <span className="text-xs text-sage-700">Live data available</span>
+                  </div>
+                )}
                 <span className="text-3xl sm:text-4xl font-sans font-extrabold text-espresso-950">
                   ₹{product.price.toLocaleString('en-IN')}
                 </span>
@@ -282,6 +372,9 @@ export const ProductDetailPage: React.FC = () => {
           brand={product.brand}
           targetVariant={product.quantity}
           fallbackOffers={product.storeOffers}
+          isBackendAvailable={isBackendAvailable}
+          backendFreshness={productFreshness || backendFreshness}
+          onRefreshBackend={handleRefreshBackend}
         />
 
         {/* Price History & Trends Section */}

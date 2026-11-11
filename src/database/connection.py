@@ -391,17 +391,18 @@ def migrate_db(custom_path: str | None = None) -> None:
                 size_volume TEXT,
                 shade TEXT,
                 formulation TEXT,
-                observation_type TEXT NOT NULL CHECK(observation_type IN ('scheduled', 'manual', 'user_report')),
+                observation_type TEXT NOT NULL DEFAULT 'live' CHECK(observation_type IN ('scheduled', 'manual', 'user_report', 'live', 'historical')),
                 observation_status TEXT NOT NULL DEFAULT 'live' CHECK(observation_status IN ('live', 'expired', 'superseded', 'flagged')),
                 verified_by_admin INTEGER DEFAULT 0 CHECK(verified_by_admin IN (0, 1)),
                 verified_price REAL,
                 verification_notes TEXT,
-                verification_status TEXT DEFAULT 'pending' CHECK(verification_status IN ('pending', 'review_required', 'verified')),
+                verification_status TEXT DEFAULT 'pending' CHECK(verification_status IN ('pending', 'review_required', 'verified', 'provider_observed')),
                 admin_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 evidence_notes TEXT,
                 evidence_reference TEXT,
+                match_result TEXT,
                 FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
                 FOREIGN KEY (admin_user_id) REFERENCES users(id) ON DELETE SET NULL
             )
@@ -461,8 +462,11 @@ def migrate_db(custom_path: str | None = None) -> None:
             cursor.execute("ALTER TABLE retail_price_observation ADD COLUMN evidence_notes TEXT")
         if "evidence_reference" not in observation_cols:
             cursor.execute("ALTER TABLE retail_price_observation ADD COLUMN evidence_reference TEXT")
+        if "match_result" not in observation_cols:
+            cursor.execute("ALTER TABLE retail_price_observation ADD COLUMN match_result TEXT")
 
         # 17. Phase 16.2: Remove UNIQUE(product_id, retailer) constraint on retail_price_observation
+        # 18. Phase 16.5: Add 'live' and 'historical' to observation_type, add match_result
         #     SQLite cannot DROP a column-level UNIQUE constraint without recreating the table.
         #     Check whether the auto-index still exists; if so, rebuild without the constraint.
         cursor.execute(
@@ -486,17 +490,18 @@ def migrate_db(custom_path: str | None = None) -> None:
                     "size_volume TEXT",
                     "shade TEXT",
                     "formulation TEXT",
-                    "observation_type TEXT NOT NULL CHECK(observation_type IN ('scheduled', 'manual', 'user_report'))",
+                    "observation_type TEXT NOT NULL CHECK(observation_type IN ('scheduled', 'manual', 'user_report', 'live', 'historical'))",
                     "observation_status TEXT NOT NULL DEFAULT 'live' CHECK(observation_status IN ('live', 'expired', 'superseded', 'flagged'))",
                     "verified_by_admin INTEGER DEFAULT 0 CHECK(verified_by_admin IN (0, 1))",
                     "verified_price REAL",
                     "verification_notes TEXT",
-                    "verification_status TEXT DEFAULT 'pending' CHECK(verification_status IN ('pending', 'review_required', 'verified'))",
+                    "verification_status TEXT DEFAULT 'pending' CHECK(verification_status IN ('pending', 'review_required', 'verified', 'provider_observed'))",
                     "admin_user_id INTEGER REFERENCES users(id) ON DELETE SET NULL",
                     "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
                     "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
                     "evidence_notes TEXT",
                     "evidence_reference TEXT",
+                    "match_result TEXT",
                     "FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE",
                     "FOREIGN KEY (admin_user_id) REFERENCES users(id) ON DELETE SET NULL",
                 ]

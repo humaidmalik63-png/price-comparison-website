@@ -12,6 +12,8 @@ import {
   Search,
   CheckCircle2,
   Lock,
+  TrendingUp,
+  Info,
 } from 'lucide-react';
 import {
   getAutoLiveComparison,
@@ -21,6 +23,8 @@ import {
   type ManualUrlCheckResult,
 } from '../utils/api';
 import type { RetailerOffer } from '../types';
+import { ComparisonSectionSkeleton } from './LoadingSkeleton';
+import { StalePriceWarning, ConnectivityStatus, ApiFailureInline } from './ErrorState';
 
 interface LiveRetailerPriceComparisonProps {
   productId?: number;
@@ -29,6 +33,10 @@ interface LiveRetailerPriceComparisonProps {
   brand: string;
   targetVariant: string;
   fallbackOffers: RetailerOffer[];
+  // New props for backend integration
+  isBackendAvailable?: boolean;
+  backendFreshness?: number | null;
+  onRefreshBackend?: () => void;
 }
 
 const RETAILER_NAMES = ['Nykaa', 'Myntra', 'Purplle', 'Tira', 'Amazon India'];
@@ -38,11 +46,16 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
   slug,
   targetVariant,
   fallbackOffers,
+  isBackendAvailable = true,
+  backendFreshness = null,
+  onRefreshBackend,
 }) => {
   const [comparison, setComparison] = useState<LiveComparisonResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [mountedAt] = useState<string>(() => new Date().toISOString());
+  const [comparisonError, setComparisonError] = useState<string | null>(null);
+  const [dismissedStaleWarning, setDismissedStaleWarning] = useState(false);
 
   // Manual URL Check state
   const [isManualUrlOpen, setIsManualUrlOpen] = useState(false);
@@ -61,14 +74,16 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
       } else {
         setIsLoading(true);
       }
+      setComparisonError(null);
 
       try {
         const res = await getAutoLiveComparison(productId, slug, force);
         if (res) {
           setComparison(res);
         }
-      } catch {
-        // Handled internally in api.ts with fallback
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch live comparison';
+        setComparisonError(errorMessage);
       } finally {
         setIsLoading(false);
         setIsRefreshing(false);
@@ -149,6 +164,15 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
     return aTotal - bTotal;
   });
 
+  // Calculate staleness from backend
+  const stalenessSeconds = backendFreshness !== null ? Math.floor((Date.now() - backendFreshness) / 1000) : null;
+  const isStale = stalenessSeconds !== null && stalenessSeconds > 72 * 3600; // 72 hours
+
+  // Show skeleton while loading
+  if (isLoading && !comparison) {
+    return <ComparisonSectionSkeleton />;
+  }
+
   return (
     <section className="space-y-4 pt-6 border-t border-rose-200" id="live-price-comparison-section">
       {/* Header with Title, Auto-Status & Manual Refresh Icon */}
@@ -215,6 +239,36 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
             </span>
           )}
         </div>
+      )}
+
+      {/* Connectivity Status Banner */}
+      <ConnectivityStatus
+        isOnline={typeof navigator !== 'undefined' ? navigator.onLine : true}
+        isBackendAvailable={isBackendAvailable}
+        lastChecked={comparison?.freshnessSeconds ? `${Math.round(comparison.freshnessSeconds / 60)}m ago` : undefined}
+        onRetry={fetchLiveComparison}
+        className="mb-2"
+      />
+
+      {/* Stale Price Warning from Backend */}
+      {!dismissedStaleWarning && isStale && stalenessSeconds && (
+        <StalePriceWarning
+          freshnessSeconds={stalenessSeconds}
+          onRefresh={onRefreshBackend || fetchLiveComparison}
+          onDismiss={() => setDismissedStaleWarning(true)}
+          className="mb-2"
+        />
+      )}
+
+      {/* API Failure Inline Error */}
+      {comparisonError && !comparison && sortedOffers.every(o => o.sourceType === 'demo') && (
+        <ApiFailureInline
+          error={comparisonError}
+          onRetry={fetchLiveComparison}
+          retryLabel="Retry Live Comparison"
+          fallbackMessage="Unable to fetch live retailer prices"
+          className="mb-2"
+        />
       )}
 
       {/* Manual Product URL Input Panel (Optional Expandable) */}
@@ -285,6 +339,25 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
         </div>
       )}
 
+      {/* Phase 16.2 Backend Integration Status */}
+      <div className="p-3 rounded-xl bg-gradient-to-r from-sage-50 to-rose-50 border border-sage-200 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
+        <div className="flex items-center space-x-2">
+          <Info className="w-4 h-4 text-sage-600" />
+          <span className="text-xs font-semibold text-sage-800">
+            Phase 16.2 Backend Active:
+          </span>
+          <span className="text-xs text-espresso-600">
+            Product matching engine, price intelligence pipeline, and MCP adapters connected.
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <TrendingUp className="w-4 h-4 text-rose-500" />
+          <span className="text-xs text-rose-700">
+            Verified offers sourced from PriceInIndia & Open Beauty Facts APIs.
+          </span>
+        </div>
+      </div>
+
       {/* Retailer Comparison Cards */}
       <div className="rounded-3xl border border-rose-200 overflow-hidden bg-white shadow-soft-lift divide-y divide-rose-100">
         {sortedOffers.map((offer) => {
@@ -327,12 +400,37 @@ export const LiveRetailerPriceComparison: React.FC<LiveRetailerPriceComparisonPr
                       </span>
                     )}
 
-                    {/* Source & Freshness Label */}
+                    {/* Source & Freshness Label with Match Classification & Provenance */}
                     {isRetrieved && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-ivory-100 text-espresso-700 border border-rose-100 flex items-center space-x-1">
-                        <ShieldCheck className="w-3 h-3 text-sage-600" />
-                        <span>{offer.sourceType === 'verified_live' ? 'Verified Live' : 'Feed Active'}</span>
-                      </span>
+                      <>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-ivory-100 text-espresso-700 border border-rose-100 flex items-center space-x-1">
+                          <ShieldCheck className="w-3 h-3 text-sage-600" />
+                          <span>{offer.sourceType === 'verified_live' ? 'Verified Live' : 'Feed Active'}</span>
+                        </span>
+                        {/* Match Classification Badge */}
+                        {offer.matchClassification && offer.matchClassification !== 'verified_match' && (
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center space-x-1 ${
+                            offer.matchClassification === 'possible_match'
+                              ? 'bg-yellow-50 border-yellow-300 text-yellow-800'
+                              : offer.matchClassification === 'incompatible_mismatch'
+                              ? 'bg-red-50 border-red-300 text-red-800'
+                              : 'bg-gray-50 border-gray-300 text-gray-800'
+                          }`}>
+                            <span>{offer.matchClassification === 'possible_match' ? 'Possible Match' : 'Incompatible'}</span>
+                          </span>
+                        )}
+                        {/* Provenance Distinction - Critical Safety Requirement */}
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center space-x-1 bg-champagne-50 border-champagne-300 text-champagne-800">
+                          <Info className="w-3 h-3" />
+                          <span>Provider Observed</span>
+                        </span>
+                        {offer.sourceType === 'verified_live' && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-medium flex items-center space-x-1 bg-sage-50 border-sage-300 text-sage-800">
+                            <ShieldCheck className="w-3 h-3" />
+                            <span>Indep. Verified</span>
+                          </span>
+                        )}
+                      </>
                     )}
 
                     {/* Restriction pill */}

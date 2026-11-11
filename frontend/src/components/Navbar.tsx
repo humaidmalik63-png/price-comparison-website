@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Sparkles, Heart, Search, Menu, X, Bell, User as UserIcon, LogOut } from 'lucide-react';
+import { Sparkles, Heart, Search, Menu, X, Bell, User as UserIcon, LogOut, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 
@@ -254,6 +254,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                           <Bell className="w-3.5 h-3.5" />
                           <span>Watchlist</span>
                         </Link>
+                        <Link
+                          to="/admin"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center space-x-2 px-4 py-2 text-xs text-espresso-700 hover:bg-rose-50 hover:text-rose-600 transition-colors"
+                        >
+                          <Settings className="w-3.5 h-3.5" />
+                          <span>Admin Dashboard</span>
+                        </Link>
                         <div className="border-t border-rose-100/60 mt-1 pt-1">
                           <button
                             onClick={() => {
@@ -346,6 +354,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {unreadAlertCount}
                   </span>
                 )}
+              </Link>
+              <Link
+                to="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-left font-medium text-espresso-800 hover:text-rose-600 py-1 flex items-center justify-between"
+              >
+                <span>Admin Dashboard</span>
               </Link>
 
               <div className="border-t border-rose-100 pt-3">

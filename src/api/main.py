@@ -1247,7 +1247,7 @@ def match_product_endpoint(req: dict = Body(...)):
         "shade_match": result.shade_match,
         "formulation_match": result.formulation_match,
         "title_similarity": result.title_similarity,
-        "evidence_tier": result.evidence_tier.value if result.evidence_tier else None,
+        "evidence_tier": result.evidence_tier,
         "barcode_match": result.barcode_match,
         "gtin_matched": result.gtin_matched,
         "unit_price_target": result.unit_price_target,
@@ -1275,3 +1275,198 @@ def admin_correct_match_endpoint(req: dict = Body(...)):
         "admin_corrections_applied": result.admin_corrections_applied,
         "reasons": result.reasons,
     }
+
+
+# ============================================================================
+# Phase 16.5: PriceInIndia Live Observation Collection Endpoint
+# ============================================================================
+
+class PriceInIndiaCollectRequest(BaseModel):
+    """Request for collecting PI observations for catalog products."""
+    product_ids: Optional[list[int]] = None
+    brands: Optional[list[str]] = None
+    limit: int = Query(20, ge=1, le=100, description="Max products to process")
+    store: Optional[str] = Query(None, description="Filter for specific retailer")
+
+
+class PriceInIndiaCollectResponse(BaseModel):
+    """Response from PI observation collection."""
+    total_products: int
+    successful: int
+    failed: int
+    matches: int
+    observations: list[dict]
+    adapter_stats: dict
+    errors: list[str]
+
+
+@app.post("/api/collect/priceinindia", response_model=PriceInIndiaCollectResponse)
+def collect_priceinindia_observations(
+    req: PriceInIndiaCollectRequest,
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Collect live PriceInIndia price observations for catalog products.
+
+    This endpoint runs the MCP-to-database pipeline:
+    1. Load specified products from catalog
+    2. Search PriceInIndia for each product
+    3. Match results using product matching service
+    4. Store observations in retail_price_observation table
+
+    Only accessible to authenticated admins.
+    """
+    from datetime import datetime, timezone
+    import json
+
+    adapter = PriceInIndiaAdapter()
+    errors = []
+    observations_collected = []
+
+    # Load products based on filters
+    with get_connection() as conn:
+        cursor = conn.cursor()
+
+        if req.product_ids:
+            placeholders = ",".join(["?" for _ in req.product_ids])
+            cursor.execute(f"""
+                SELECT id, sku, title, brand, category, specs_json
+                FROM products
+                WHERE id IN ({placeholders}) AND is_active = 1
+                ORDER BY id
+                LIMIT ?
+            """, (*req.product_ids, req.limit))
+        else:
+            cursor.execute("""
+                SELECT id, sku, title, brand, category, specs_json
+                FROM products
+                WHERE is_active = 1
+                ORDER BY id
+                LIMIT ?
+            """, (req.limit,))
+
+        rows = cursor.fetchall()
+
+    products = []
+    for r in rows:
+        specs = json.loads(r["specs_json"]) if r["specs_json"] else {}
+        products.append({
+            "id": r["id"],
+            "sku": r["sku"],
+            "title": r["title"],
+            "brand": r["brand"],
+            "category": r["category"],
+            "specs": specs,
+        })
+
+    logger.info(f"Collecting PI observations for {len(products)} products")
+
+    for product in products:
+        # Filter by brand if specified
+        if req.brands and product["brand"].lower() not in [b.lower() for b in req.brands]:
+            continue
+
+        timestamp = datetime.now(timezone.utc).isoformat()
+
+        # Search PriceInIndia
+        query = f"{product['brand']} {product['title']}"
+        pi_result = adapter.search_products(query=query, page=1, per_page=5)
+
+        if not pi_result.success or not pi_result.items:
+            errors.append(f"No PI results for product {product['id']}: {query}")
+            continue
+
+        # Evaluate matches and store
+        matched_count = 0
+        for pi_item in pi_result.items[:3]:
+            # Build match request
+            from src.services.product_matching_service import ProductMatchResult
+
+            request = {
+                "target_brand": product["brand"],
+                "target_title": product["title"],
+                "target_specs": product.get("specs", {}),
+                "offer_brand": pi_item.get("brand", ""),
+                "offer_title": pi_item.get("title", ""),
+            }
+
+            match_result = evaluate_product_match(**request)
+
+            # Filter by store if specified
+            if req.store and pi_item.get("store", "").lower() != req.store.lower():
+                continue
+
+            if match_result.is_comparable:
+                # Store observation
+                with get_connection() as conn:
+                    cursor = conn.cursor()
+
+                    # Check for existing recent observation
+                    cursor.execute("""
+                        SELECT id FROM retail_price_observation
+                        WHERE product_id = ? AND observation_type = 'live'
+                        AND created_at > datetime('now', '-7 days')
+                    """, (product["id"],))
+                    existing = cursor.fetchone()
+
+                    obs_status = "superseded" if existing else "live"
+
+                    cursor.execute("""
+                        INSERT INTO retail_price_observation
+                        (product_id, retailer, product_url, observed_price, observed_mrp,
+                         size_volume, observation_type, observation_status, verified_by_admin,
+                         verification_status, created_at, updated_at, evidence_notes,
+                         evidence_reference, match_result)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """, (
+                        product["id"],
+                        pi_item.get("store", "unknown"),
+                        pi_item.get("productPageUrl", pi_item.get("productUrl", "")),
+                        float(pi_item.get("price", 0)),
+                        None,
+                        pi_item.get("size"),
+                        "live",
+                        obs_status,
+                        0,
+                        "provider_observed",
+                        timestamp,
+                        timestamp,
+                        f"PI match: {match_result.match_classification}, evidence: {match_result.evidence_tier}",
+                        f"priceinindia_search:{pi_item.get('id')}",
+                        json.dumps({
+                            "classification": match_result.match_classification,
+                            "confidence": match_result.confidence_score,
+                            "evidence_tier": match_result.evidence_tier,
+                            "reasons": match_result.reasons,
+                        }),
+                    ))
+
+                    conn.commit()
+
+                    obs_id = cursor.lastrowid
+                    observations_collected.append({
+                        "id": obs_id,
+                        "product_id": product["id"],
+                        "retailer": pi_item.get("store"),
+                        "price": pi_item.get("price"),
+                        "url": pi_item.get("productPageUrl"),
+                        "match_classification": match_result.match_classification,
+                    })
+                    matched_count += 1
+
+        logger.info(f"  {product['brand'][:20]}: {matched_count} matches")
+
+    # Return results
+    return PriceInIndiaCollectResponse(
+        total_products=len(products),
+        successful=len(products) - len(errors),
+        failed=len(errors),
+        matches=len(observations_collected),
+        observations=observations_collected,
+        adapter_stats={
+            "total_requests": adapter.health.total_requests,
+            "failed_requests": adapter.health.failed_requests,
+            "is_healthy": adapter.health.is_healthy,
+        },
+        errors=errors[:10],  # Limit errors in response
+    )

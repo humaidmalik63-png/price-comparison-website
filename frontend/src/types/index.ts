@@ -43,7 +43,7 @@ export interface RetailerOffer {
   purchaseUrl: string;
   isLowestPrice?: boolean;
   lastUpdated?: string;
-  sourceType?: 'verified_live' | 'partner_feed' | 'cached' | 'manually_curated' | 'demo' | 'unavailable';
+  sourceType?: 'verified_live' | 'partner_feed' | 'cached' | 'manually_curated' | 'demo' | 'provider_observed' | 'unavailable';
   dealExpiresAt?: string; // ISO date string or human readable
   matchClassification?: 'verified_match' | 'possible_match' | 'incompatible_mismatch';
 }

@@ -291,7 +291,7 @@ export interface LiveRetailerOffer {
   matchClassification: 'verified_match' | 'possible_match' | 'incompatible_mismatch';
   isLowestListed: boolean;
   isLowestTotal: boolean;
-  sourceType: 'verified_live' | 'cached' | 'demo' | 'unavailable';
+  sourceType: 'verified_live' | 'cached' | 'demo' | 'provider_observed' | 'unavailable';
   retrievedAt: string;
   validationNotes?: string | null;
 }

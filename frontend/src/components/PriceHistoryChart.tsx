@@ -92,7 +92,7 @@ export const PriceHistoryChart: React.FC<PriceHistoryChartProps> = ({
   }, [filteredPoints, hasSufficientData, targetPrice]);
 
   return (
-    <div className="rounded-2xl bg-white border border-rose-100 p-5 shadow-soft-lift space-y-4">
+    <div className="relative rounded-2xl bg-white border border-rose-100 p-5 shadow-soft-lift space-y-4">
       {/* Top Header & Range Switcher */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-rose-100/70 pb-3">
         <div>
