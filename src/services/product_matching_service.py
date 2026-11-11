@@ -42,6 +42,84 @@ class MatchEvidenceTier:
     NONE               = "none"                      # fallback
 
 
+class MatchStrength:
+    """Phase 16.7 explainable match-strength overlay.
+
+    This is an EVIDENCE-STRENGTH overlay derived deterministically from the
+    canonical MatchClassification + MatchEvidenceTier + audit flags.  It does
+    NOT replace or conflict with the canonical classification strings
+    (verified_match / possible_match / ambiguous_match / incompatible_mismatch)
+    which remain the stored API values everywhere in the project.
+
+    Mapping (deterministic, never threshold-only):
+      verified_match  + barcode/GTIN evidence + no tolerance flags -> exact
+      verified_match  + anything else                              -> strong
+      possible_match                                               -> possible
+      ambiguous_match                                              -> needs_manual_review
+      incompatible_mismatch                                        -> rejected
+    """
+    EXACT               = "exact"
+    STRONG              = "strong"
+    POSSIBLE            = "possible"
+    REJECTED            = "rejected"
+    NEEDS_MANUAL_REVIEW = "needs_manual_review"
+
+
+# Flag-marker prefixes embedded in flagged_reasons / reasons strings so the
+# strength derivation (and admin review UI) can detect these conditions from
+# any construction site without changing existing call signatures.
+_UNIT_TOLERANCE_FLAG = "unit-label-conflict:"
+_BRAND_ALIAS_FLAG = "brand-alias:"
+
+
+# ============================================================================
+# Brand alias registry (Phase 16.7 Stage 1)
+# ============================================================================
+# Only aliases backed by recorded evidence may be registered here.  Each alias
+# maps a normalised brand key (letters/digits only, lower case) to a small dict
+# of {alias_normalised_key, evidence} where evidence cites the source of the
+# equivalence.  A brand match established *only* through an alias can never
+# reach the EXACT strength tier and is always flagged for transparency.
+
+BRAND_ALIAS_REGISTRY: dict[str, list[dict[str, str]]] = {
+    # Evidence: Phase 16.7 browser investigation (2026-11-11) — Myntra lists the
+    # brand as "DOT & KEY" (normalises to "dotkey") while the Purplle product
+    # URL slug and catalogue use "dot-and-key" / "Dot and Key" (normalises to
+    # "dotandkey").  Same brand, both written forms observed in the wild.
+    "dotkey": [
+        {
+            "alias": "dotandkey",
+            "evidence": "Myntra listing renders brand as 'DOT & KEY'; Purplle product URL slug uses 'dot-and-key' (Phase 16.7 browser investigation, 2026-11-11)",
+        },
+    ],
+    "dotandkey": [
+        {
+            "alias": "dotkey",
+            "evidence": "Myntra listing renders brand as 'DOT & KEY'; Purplle product URL slug uses 'dot-and-key' (Phase 16.7 browser investigation, 2026-11-11)",
+        },
+    ],
+}
+
+
+def apply_brand_alias(target_norm: str, offer_norm: str) -> tuple[bool, str]:
+    """Attempt to reconcile two normalised brand keys via the alias registry.
+
+    Returns (matched, note).  The note is empty when no alias applies.
+    Only exact registry entries are honoured — no fuzzy brand guessing.
+    """
+    t, o = target_norm, offer_norm
+    for lookup in (t, o):
+        for entry in BRAND_ALIAS_REGISTRY.get(lookup, []):
+            other = o if lookup == t else t
+            if entry["alias"] == other and other != lookup:
+                note = (
+                    f"{_BRAND_ALIAS_FLAG} applied: '{lookup}' ≡ '{other}' "
+                    f"(evidence: {entry['evidence']})"
+                )
+                return True, note
+    return False, ""
+
+
 # ============================================================================
 # New result dataclass (extends old ProductMatchResult with extra fields)
 # ============================================================================
@@ -72,6 +150,89 @@ class ProductMatchResult:
     requires_human_review: bool = False
     admin_corrections_applied: bool = False
     flagged_reasons: list[str] = field(default_factory=list)  # for ambiguous matches
+    # --- Phase 16.7 Stage 1: explainable strength overlay ---
+    match_strength: str = ""                     # derived if left empty (see __post_init__)
+    strength_reasons: list[str] = field(default_factory=list)
+    brand_alias_applied: bool = False
+    unit_label_tolerance: bool = False
+
+    def __post_init__(self) -> None:
+        """Deterministically derive the strength overlay when not supplied.
+
+        The canonical match_classification string is never modified.  The
+        strength overlay is computed from recorded evidence only — no arbitrary
+        confidence threshold can create an exact match.
+        """
+        # Detect audit flags from reason markers so every construction site
+        # (including existing ones) contributes to the strength derivation.
+        marker_pool = (*self.reasons, *self.flagged_reasons)
+        if not self.brand_alias_applied:
+            self.brand_alias_applied = any(_BRAND_ALIAS_FLAG in r for r in marker_pool)
+        if not self.unit_label_tolerance:
+            self.unit_label_tolerance = any(_UNIT_TOLERANCE_FLAG in r for r in marker_pool)
+        if self.match_strength:
+            return
+        reasons: list[str] = []
+        c = self.match_classification
+        if c == MatchClassification.INCOMPATIBLE_MISMATCH:
+            strength = MatchStrength.REJECTED
+            reasons.append("Rejected: a critical variant attribute (brand, size, shade, formulation or concentration) contradicts the catalogue product.")
+        elif c == MatchClassification.AMBIGUOUS_MATCH:
+            strength = MatchStrength.NEEDS_MANUAL_REVIEW
+            reasons.append("Needs manual review: evidence is too incomplete to accept or reject automatically.")
+        elif c == MatchClassification.POSSIBLE_MATCH:
+            strength = MatchStrength.POSSIBLE
+            reasons.append("Possible match: plausible but unconfirmed; never counted as a verified offer.")
+        elif c == MatchClassification.VERIFIED_MATCH:
+            if (
+                self.evidence_tier == MatchEvidenceTier.BARCODE_GTIN_EXACT
+                and not self.brand_alias_applied
+                and not self.unit_label_tolerance
+            ):
+                strength = MatchStrength.EXACT
+                reasons.append("Exact: verified match backed by barcode/GTIN evidence with no tolerance flags.")
+            else:
+                strength = MatchStrength.STRONG
+                if self.evidence_tier != MatchEvidenceTier.BARCODE_GTIN_EXACT:
+                    reasons.append(f"Strong (not exact): verified match but evidence tier is '{self.evidence_tier}', not barcode/GTIN-exact.")
+                if self.brand_alias_applied:
+                    reasons.append("Strong (not exact): brand identity was established through a registered brand alias, not the brand string itself.")
+                if self.unit_label_tolerance:
+                    reasons.append("Strong (not exact): a unit-label conflict (e.g. g vs ml) was tolerated on an equal quantity.")
+        else:
+            strength = MatchStrength.NEEDS_MANUAL_REVIEW
+            reasons.append(f"Unknown classification '{c}' treated as needing manual review.")
+        self.match_strength = strength
+        self.strength_reasons = reasons
+
+    def explain(self) -> dict[str, Any]:
+        """Return a human-readable, evidence-focused explanation dict (admin UI)."""
+        return {
+            "classification": self.match_classification,
+            "match_strength": self.match_strength,
+            "confidence_score": self.confidence_score,
+            "evidence_tier": self.evidence_tier,
+            "brand_match": self.brand_match,
+            "size_match": self.size_match,
+            "shade_match": self.shade_match,
+            "formulation_match": self.formulation_match,
+            "concentration_match": self.concentration_match,
+            "title_similarity": self.title_similarity,
+            "barcode_match": self.barcode_match,
+            "gtin_matched": self.gtin_matched,
+            "unit_price_target": self.unit_price_target,
+            "unit_price_offer": self.unit_price_offer,
+            "target_size": self.target_size,
+            "offer_size": self.offer_size,
+            "target_shade": self.target_shade,
+            "offer_shade": self.offer_shade,
+            "brand_alias_applied": self.brand_alias_applied,
+            "unit_label_tolerance": self.unit_label_tolerance,
+            "requires_human_review": self.requires_human_review,
+            "reasons": list(self.reasons),
+            "flagged_reasons": list(self.flagged_reasons),
+            "strength_reasons": list(self.strength_reasons),
+        }
 
 
     @property
@@ -386,8 +547,18 @@ def evaluate_product_match(
     brand_match = True
     if norm_t_brand and norm_o_brand:
         if norm_t_brand not in norm_o_brand and norm_o_brand not in norm_t_brand:
-            brand_match = False
-            reasons.append(f"Brand mismatch: '{target_brand}' vs '{offer_brand}'")
+            # Phase 16.7: fall back to the evidence-backed alias registry before
+            # declaring a brand mismatch.  An alias-based match is always
+            # flagged and can never yield the EXACT strength tier.
+            alias_ok, alias_note = apply_brand_alias(norm_t_brand, norm_o_brand)
+            if alias_ok:
+                flagged_reasons.append(alias_note)
+                reasons.append(
+                    f"Brand matched via registered alias: '{target_brand}' ≡ '{offer_brand}' (flagged, evidence-cited)"
+                )
+            else:
+                brand_match = False
+                reasons.append(f"Brand mismatch: '{target_brand}' vs '{offer_brand}'")
 
     # ── 2. Net Quantity / Volume Check ────────────────────────────────────────
     target_qty_text = str(t_specs.get("Net Quantity") or t_specs.get("Size") or target_title)
@@ -406,8 +577,21 @@ def evaluate_product_match(
                 f"Size mismatch: Target is {t_val}{t_unit} but offer is {o_val}{o_unit}. 30ml cannot be compared with 50ml."
             )
         elif t_unit != o_unit:
-            size_match = False
-            reasons.append(f"Unit mismatch: Target is in {t_unit} while offer is in {o_unit}")
+            if {t_unit, o_unit} == {"g", "ml"} and abs(t_val - o_val) <= 0.01:
+                # Phase 16.7 browser evidence (2026-11-11): the same Dot & Key
+                # Watermelon sunscreen SKU is labelled "50ml" on Nykaa but
+                # "50g" on Myntra, Purplle and Amazon.  Equal quantity with a
+                # differing unit label is therefore tolerated as the same-size
+                # SKU — but always flagged, and it can never produce the EXACT
+                # strength tier (density-dependent products are not blindly
+                # interchangeable across g/ml).
+                flagged_reasons.append(
+                    f"{_UNIT_TOLERANCE_FLAG} target {t_val}{t_unit} vs offer {o_val}{o_unit} "
+                    f"— equal quantity with differing retailer unit label, tolerated (observed retailer labelling inconsistency)"
+                )
+            else:
+                size_match = False
+                reasons.append(f"Unit mismatch: Target is in {t_unit} while offer is in {o_unit}")
     elif t_val is None or o_val is None:
         flagged_reasons.append("Quantity not detected on one side — unit price unavailable")
 

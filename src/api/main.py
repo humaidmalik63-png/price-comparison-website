@@ -966,8 +966,14 @@ from src.services.freshness_service import (
     classify_freshness,
     freshness_distribution,
     observation_age_hours,
+    provider_freshness,
 )
-from src.services.match_review_service import list_pending_matches, resolve_pending_match
+from src.services.url_policy import strip_tracking_params
+from src.services.match_review_service import (
+    get_match_review_context,
+    list_pending_matches,
+    resolve_pending_match,
+)
 from src.services.price_intelligence import (
     get_full_price_history,
     get_last_collection_time,
@@ -1351,6 +1357,24 @@ def admin_match_review_queue(
     return queue
 
 
+@app.get("/api/admin/match-review/{observation_id}/context")
+def admin_match_review_context(
+    observation_id: int,
+    admin: User = Depends(require_admin),
+):
+    """Phase 16.7 Stage 4: full side-by-side review context for one observation.
+
+    Returns the catalogue product, the provider listing (title/brand/price/MRP/
+    URL), the stored match evidence with its explainable strength overlay, a
+    field-by-field comparison, the audit trail and the decision contract.
+    Read-only: no decision is implied or applied.
+    """
+    try:
+        return get_match_review_context(observation_id)
+    except LookupError:
+        raise HTTPException(status_code=404, detail="Observation not found")
+
+
 @app.post("/api/admin/match-review/{observation_id}/resolve")
 def admin_resolve_match_review(
     observation_id: int,
@@ -1678,7 +1702,29 @@ def collect_priceinindia_observations(
                     continue
 
                 retailer_name = pi_item.get("store", "unknown")
-                product_url = pi_item.get("productPageUrl", pi_item.get("productUrl", "")) or ""
+                # Phase 16.7E: tracking parameters are stripped before
+                # storage; provenance classification is unaffected.
+                product_url = strip_tracking_params(
+                    str(pi_item.get("productPageUrl") or pi_item.get("productUrl") or "").strip()
+                ) or ""
+                provider_page_url = strip_tracking_params(
+                    str(pi_item.get("productPageUrl") or "").strip()
+                ) or None
+                affiliate_redirect_url = strip_tracking_params(
+                    str(pi_item.get("productUrl") or "").strip()
+                ) or None
+                retailer_product_url = strip_tracking_params(
+                    str(pi_item.get("retailerUrl") or "").strip()
+                ) or None
+                if product_url and retailer_product_url and product_url == retailer_product_url:
+                    url_kind = "retailer"
+                elif product_url and provider_page_url and product_url == provider_page_url:
+                    url_kind = "provider_page"
+                elif product_url and affiliate_redirect_url and product_url == affiliate_redirect_url:
+                    url_kind = "provider_affiliate_redirect"
+                else:
+                    url_kind = None
+                provider_freshness_evidence = provider_freshness(pi_item.get("lastUpdated"))
 
                 # Store observation
                 with get_connection() as conn:
@@ -1722,13 +1768,22 @@ def collect_priceinindia_observations(
                         "provider_observed",
                         timestamp,
                         timestamp,
-                        f"PI match: {match_result.match_classification}, evidence: {match_result.evidence_tier}",
+                        f"PI match: {match_result.match_classification}, evidence: {match_result.evidence_tier}"
+                        + (" | url_is_provider_page" if url_kind == "provider_page" else ""),
                         f"priceinindia_search:{pi_item.get('id')}",
                         json.dumps({
                             "classification": match_result.match_classification,
                             "confidence": match_result.confidence_score,
                             "evidence_tier": match_result.evidence_tier,
                             "reasons": match_result.reasons,
+                            # Phase 16.7C: URL provenance, raw price precision
+                            # and provider freshness evidence.
+                            "url_kind": url_kind,
+                            "provider_page_url": provider_page_url,
+                            "affiliate_redirect_url": affiliate_redirect_url,
+                            "retailer_product_url": retailer_product_url,
+                            "provider_price_raw": pi_item.get("price"),
+                            **provider_freshness_evidence,
                         }),
                     ))
 

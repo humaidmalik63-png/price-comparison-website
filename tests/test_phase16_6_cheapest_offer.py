@@ -252,7 +252,17 @@ def test_unit_price_absent_without_quantity(svc_db):
 
 
 def test_incompatible_units_not_compared(svc_db):
-    """ml and g rows keep their own unit prices; ranking never mixes them."""
+    """ml and g rows keep their own unit prices; ranking never mixes them.
+
+    Phase 16.7 Stage 5 tightened this rule further: offers for *different
+    quantities* are no longer ranked together by absolute price at all —
+    the incompatible-quantity offer is excluded from the cheapest ranking
+    and disclosed in ``comparison_scope.excluded_by_quantity`` (an
+    admin-approved possible match with a missing quantity could previously
+    let a different quantity win on absolute price). This test's assertion
+    was updated for that Phase 16.7 change; unit-price disclosure per row
+    is unchanged.
+    """
     product_id = _pid(svc_db)
     _insert_obs(svc_db, product_id, retailer="Nykaa", price=500.0, size="50 ml",
                 match_classification="verified_match")
@@ -262,8 +272,14 @@ def test_incompatible_units_not_compared(svc_db):
     by_retailer = {o["retailer"]: o for o in offers}
     assert by_retailer["Nykaa"]["unit_price"] == 10.0 and by_retailer["Nykaa"]["unit"] == "ml"
     assert by_retailer["Tira"]["unit_price"] == 4.0 and by_retailer["Tira"]["unit"] == "g"
-    # cheapest is by absolute price with unit disclosure, not a mixed-unit race
-    assert get_cheapest_eligible(product_id)["retailer"] == "Tira"
+    # Phase 16.7: 50 ml vs 100 g are different quantities — the cheaper 100 g
+    # offer is NOT allowed to win an absolute-price race against 50 ml; it is
+    # disclosed as excluded instead.
+    cheapest = get_cheapest_eligible(product_id)
+    assert cheapest["retailer"] == "Nykaa"
+    scope = cheapest["comparison_scope"]
+    assert scope["retailers_excluded_by_quantity"] == 1
+    assert scope["excluded_by_quantity"][0]["retailer"] == "Tira"
 
 
 # ── Discounts ────────────────────────────────────────────────────────────────

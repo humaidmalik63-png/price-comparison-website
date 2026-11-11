@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from typing import Any, Optional
 
 from src.adapters.mcp_adapters.base_mcp_adapter import BaseMcpAdapter, McpCallResult
@@ -21,6 +22,20 @@ from src.services.product_matching_service import evaluate_product_match, MatchC
 logger = logging.getLogger("pricewise.adapters.priceinindia")
 
 MCP_ENDPOINT = "https://mcp.priceinindia.website/mcp"
+
+
+def normalize_search_query(query: str) -> str:
+    """Normalise a search query before it reaches the provider (Phase 16.7 Stage 2).
+
+    Collapses internal whitespace and strips stray separators so equivalent
+    catalogue titles produce identical provider queries (improves
+    restartability and cross-run deduplication). Never alters brand wording.
+    """
+    text = re.sub(r"\s+", " ", str(query or "")).strip()
+    # Collapse separator runs like " & ", " and " spacing artefacts around
+    # punctuation that providers treat inconsistently.
+    text = re.sub(r"\s*([|/\\,;]+)\s*", " ", text)
+    return text.strip()
 
 
 class PriceInIndiaAdapter(BaseMcpAdapter):
@@ -56,7 +71,7 @@ class PriceInIndiaAdapter(BaseMcpAdapter):
         Returns products with fields: id, title, price, currency, store,
         product_url, product_page_url, mrp, discount_percent, image_url, brand.
         """
-        args: dict[str, Any] = {"query": query.strip(), "page": page, "per_page": per_page}
+        args: dict[str, Any] = {"query": normalize_search_query(query), "page": page, "per_page": per_page}
         if brand:
             args["brand"] = brand
         if store:
@@ -91,7 +106,7 @@ class PriceInIndiaAdapter(BaseMcpAdapter):
 
     def compare_prices(self, query: str, brand: Optional[str] = None) -> McpCallResult:
         """Compare prices across retailers for a product query."""
-        args: dict[str, Any] = {"query": query.strip()}
+        args: dict[str, Any] = {"query": normalize_search_query(query)}
         if brand:
             args["brand"] = brand
 

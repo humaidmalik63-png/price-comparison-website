@@ -10,12 +10,19 @@ import { ExternalLink, ShieldCheck, AlertCircle, CheckCircle2, Clock, Tag } from
 import type { RetailerOffer } from '../types';
 import { OfferCardSkeleton } from './LoadingSkeleton';
 import { ErrorState, StalePriceWarning } from './ErrorState';
+import { getTrustLabel, trustLabelToneClasses } from '../utils/trustLabels';
+import { formatINR } from '../utils/inrPrice';
+import { stripTrackingParams } from '../utils/urlPolicy';
 
 interface OfferCardProps {
   offer: RetailerOffer | null;
   matchClassification?: 'verified_match' | 'possible_match' | 'incompatible_mismatch';
   isLiveVerified?: boolean; // Manually determined, never auto-labeled from PriceInIndia
   sourceProvenanced?: boolean; // Distinguishes provider-observed vs indep. verified
+  /** Observation-level verification status from the backend (Phase 16.7 Stage 7) */
+  verificationStatus?: string | null;
+  /** Observation-level status: live / expired / superseded / flagged */
+  observationStatus?: string | null;
   isLoading?: boolean;
   error?: string | null;
   freshnessSeconds?: number | null;
@@ -28,6 +35,8 @@ export const OfferCard: React.FC<OfferCardProps> = ({
   matchClassification = 'verified_match',
   isLiveVerified = false,
   sourceProvenanced = false,
+  verificationStatus = null,
+  observationStatus = null,
   isLoading = false,
   error = null,
   freshnessSeconds = null,
@@ -159,6 +168,22 @@ export const OfferCard: React.FC<OfferCardProps> = ({
   const isFeedBacked =
     offer.sourceType === 'partner_feed' || offer.sourceType === 'cached';
 
+  // Phase 16.7 Stage 7: single honest trust label resolved from every piece
+  // of status evidence. Surfaced whenever it adds information beyond the
+  // plain source badge (i.e. expired, awaiting-verification or verified
+  // states that users must be able to distinguish).
+  const trustLabel = getTrustLabel({
+    sourceType: offer.sourceType,
+    verificationStatus,
+    observationStatus,
+    isLiveVerified,
+    freshnessSeconds,
+  });
+  const showTrustLabel =
+    observationStatus !== null ||
+    verificationStatus !== null ||
+    trustLabel.key === 'expired';
+
   return (
     <article className="rounded-2xl border border-rose-200 bg-white shadow-soft-lift hover:shadow-luxury-card transition-all duration-300 p-5 space-y-4">
       {/* Header with Retailer Info & Classification */}
@@ -178,6 +203,19 @@ export const OfferCard: React.FC<OfferCardProps> = ({
                 {sourceBadge.icon}
                 <span className="ml-1">{sourceBadge.label}</span>
               </span>
+              {showTrustLabel && (
+                <span
+                  className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${trustLabelToneClasses(trustLabel.tone)}`}
+                  title={trustLabel.description}
+                >
+                  {trustLabel.tone === 'positive' ? (
+                    <ShieldCheck className="w-3 h-3" />
+                  ) : (
+                    <AlertCircle className="w-3 h-3" />
+                  )}
+                  <span className="ml-1">{trustLabel.label}</span>
+                </span>
+              )}
               {!isLiveVerified && isFeedBacked && (
                 <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-champagne-50 border border-champagne-300 text-champagne-800">
                   <AlertCircle className="w-3 h-3" />
@@ -199,18 +237,18 @@ export const OfferCard: React.FC<OfferCardProps> = ({
           {offer.totalCost !== null && offer.totalCost !== undefined && (
             <div>
               <span className="text-xs text-espresso-400 block">Total Cost</span>
-              <span className="text-lg font-bold text-espresso-900">₹{offer.totalCost.toLocaleString('en-IN')}</span>
+              <span className="text-lg font-bold text-espresso-900">{formatINR(offer.totalCost)}</span>
             </div>
           )}
           {offer.totalCost === null && offer.price !== undefined && (
             <div>
               <span className="text-xs text-espresso-400 block">Base Price</span>
-              <span className="text-lg font-bold text-espresso-900">₹{offer.price.toLocaleString('en-IN')}</span>
+              <span className="text-lg font-bold text-espresso-900">{formatINR(offer.price)}</span>
             </div>
           )}
           {offer.originalPrice && offer.originalPrice > (offer.totalCost || offer.price || 0) && (
             <div>
-              <span className="text-xs text-espresso-400 block line-through">₹{offer.originalPrice.toLocaleString('en-IN')}</span>
+              <span className="text-xs text-espresso-400 block line-through">{formatINR(offer.originalPrice)}</span>
               <span className="text-xs font-semibold text-rose-600">
                 {offer.totalCost !== null && offer.totalCost !== undefined
                   ? Math.round(((offer.totalCost - (offer.originalPrice || 0)) / (offer.originalPrice || 0)) * 100) + '%'
@@ -246,7 +284,7 @@ export const OfferCard: React.FC<OfferCardProps> = ({
         {offer.couponCode && (
           <div className="flex items-center space-x-1 text-rose-600 font-medium">
             <Tag className="w-3 h-3" />
-            <span>{offer.couponCode} (-₹{offer.couponDiscount})</span>
+            <span>{offer.couponCode} (-{formatINR(offer.couponDiscount)})</span>
           </div>
         )}
         {offer.lastUpdated && (
@@ -293,7 +331,7 @@ export const OfferCard: React.FC<OfferCardProps> = ({
       {/* Action Button */}
       {offer.inStock && offer.purchaseUrl && (
         <a
-          href={offer.purchaseUrl}
+          href={stripTrackingParams(offer.purchaseUrl) ?? offer.purchaseUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="w-full py-2.5 px-4 rounded-xl bg-espresso-800 hover:bg-espresso-950 text-ivory text-xs font-bold tracking-wide transition-all shadow-xs flex items-center justify-center space-x-1.5"

@@ -167,3 +167,115 @@ def resolve_pending_match(
         ).fetchone()
 
     return dict(updated)
+
+
+def get_match_review_context(
+    observation_id: int,
+    db_path: str | None = None,
+) -> dict[str, Any]:
+    """Phase 16.7 Stage 4: full side-by-side context for one match review.
+
+    Returns the catalogue product, the observation/listing, the stored match
+    evidence (including the explainable strength overlay when present), a
+    field-by-field comparison and the audit trail — so an administrator can
+    decide with the evidence in view instead of trusting a confidence number.
+
+    Approval semantics are unchanged: this function only READS context. A
+    match approval still never converts an unsupported price into a verified
+    observation by itself (resolve_pending_match only sets verification
+    flags; eligibility gating is unchanged).
+    """
+    from src.services.product_matching_service import parse_quantity_volume  # local import: display helper
+
+    with get_connection(db_path) as conn:
+        obs = conn.execute(
+            """
+            SELECT ro.id, ro.product_id, ro.retailer, ro.retailer_domain,
+                   ro.product_url, ro.observed_price, ro.observed_mrp,
+                   ro.currency, ro.provider_name, ro.size_volume,
+                   ro.observation_status, ro.verification_status,
+                   ro.verified_by_admin, ro.admin_user_id,
+                   ro.created_at, ro.updated_at, ro.evidence_notes,
+                   ro.evidence_reference, ro.verification_notes, ro.match_result,
+                   p.id AS product_id, p.sku AS product_sku, p.title AS product_title,
+                   p.brand AS product_brand, p.category AS product_category,
+                   p.specs_json AS product_specs_json
+            FROM retail_price_observation ro
+            JOIN products p ON p.id = ro.product_id
+            WHERE ro.id = ?
+            """,
+            (observation_id,),
+        ).fetchone()
+    if not obs:
+        raise LookupError(f"observation {observation_id} not found")
+
+    row = dict(obs)
+    specs = json.loads(row.pop("product_specs_json") or "{}") if row.get("product_specs_json") else {}
+    evidence = _parse_match_result(row.pop("match_result"))
+
+    catalogue_size = (
+        str(specs.get("Net Quantity") or specs.get("Size") or "") or None
+    )
+    cat_val, cat_unit = parse_quantity_volume(catalogue_size or "")
+    listing_size = row.get("size_volume")
+    list_val, list_unit = parse_quantity_volume(listing_size or "")
+
+    def _qty(val, unit) -> str | None:
+        return f"{val}{unit}" if val is not None else None
+
+    comparison = [
+        {"field": "brand", "catalogue": row.get("product_brand"), "listing": evidence.get("provider_brand"), "match_evidence": evidence.get("brand_match")},
+        {"field": "title", "catalogue": row.get("product_title"), "listing": evidence.get("provider_title"), "match_evidence": evidence.get("title_similarity")},
+        {"field": "size", "catalogue": catalogue_size or _qty(cat_val, cat_unit), "listing": listing_size, "match_evidence": evidence.get("size_match")},
+        {"field": "shade", "catalogue": None, "listing": evidence.get("offer_shade"), "match_evidence": evidence.get("shade_match"), "catalogue_parsed": evidence.get("target_shade")},
+        {"field": "formulation", "catalogue": None, "listing": None, "match_evidence": evidence.get("formulation_match")},
+        {"field": "price", "catalogue": None, "listing": row.get("observed_price"), "match_evidence": None, "unit": row.get("currency")},
+        {"field": "mrp", "catalogue": None, "listing": row.get("observed_mrp"), "match_evidence": None, "unit": row.get("currency")},
+        {"field": "retailer_url", "catalogue": None, "listing": row.get("product_url"), "match_evidence": None},
+    ]
+
+    return {
+        "observation": {
+            "id": row["id"],
+            "product_id": row["product_id"],
+            "retailer": row.get("retailer"),
+            "retailer_domain": row.get("retailer_domain"),
+            "provider_name": row.get("provider_name"),
+            "product_url": row.get("product_url"),
+            "observed_price": row.get("observed_price"),
+            "observed_mrp": row.get("observed_mrp"),
+            "currency": row.get("currency"),
+            "size_volume": row.get("size_volume"),
+            "observation_status": row.get("observation_status"),
+            "verification_status": row.get("verification_status"),
+            "verified_by_admin": bool(row.get("verified_by_admin")),
+            "admin_user_id": row.get("admin_user_id"),
+            "created_at": row.get("created_at"),
+            "updated_at": row.get("updated_at"),
+            "evidence_notes": row.get("evidence_notes"),
+            "evidence_reference": row.get("evidence_reference"),
+        },
+        "catalogue_product": {
+            "id": row["product_id"],
+            "sku": row["product_sku"],
+            "title": row["product_title"],
+            "brand": row["product_brand"],
+            "category": row["product_category"],
+            "net_quantity": catalogue_size,
+            "specs_keys": sorted(specs.keys()),
+        },
+        "match_evidence": evidence,
+        "comparison": comparison,
+        "audit_trail": {
+            "verification_notes": row.get("verification_notes"),
+            "verified_by_admin": bool(row.get("verified_by_admin")),
+            "admin_user_id": row.get("admin_user_id"),
+            "created_at": row.get("created_at"),
+            "updated_at": row.get("updated_at"),
+        },
+        "decision_contract": {
+            "approve_effect": "Marks the observation admin-verified; eligibility still requires freshness, valid price, INR currency and a usable retailer URL.",
+            "reject_effect": "Flags the observation; it is excluded from eligibility but retained in history.",
+            "approval_does_not": "Approval of a match never fabricates price evidence — the stored price remains a provider-observed value with its own provenance.",
+        },
+    }

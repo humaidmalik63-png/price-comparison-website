@@ -44,7 +44,10 @@ if str(REPO_ROOT) not in sys.path:
 from src.adapters.mcp_adapters.priceinindia_adapter import PriceInIndiaAdapter
 from src.database.connection import get_connection
 from src.database.seed import DEMO_PRODUCTS, seed_database
+from src.services import freshness_service as freshness_svc
+from src.services.cheapest_offer_service import evaluate_eligibility
 from src.services.product_matching_service import (
+    MatchClassification,
     parse_concentration,
     parse_formulation,
     parse_quantity_volume,
@@ -125,6 +128,18 @@ def _product_attributes(row) -> dict[str, Any]:
     }
 
 
+def _parse_stored_match(raw: Any) -> dict[str, Any]:
+    """Parse a stored match_result JSON blob; {} when absent/unparsable."""
+    if not raw:
+        return {}
+    try:
+        import json as _json
+        data = _json.loads(raw)
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
 def audit_database(db_path: str) -> dict[str, Any]:
     adapter = PriceInIndiaAdapter()
     with get_connection(db_path) as conn:
@@ -162,7 +177,8 @@ def audit_database(db_path: str) -> dict[str, Any]:
             """
             SELECT id, product_id, retailer, product_url, observed_price, observed_mrp,
                    observation_type, observation_status, verified_by_admin,
-                   verification_status, created_at, evidence_notes
+                   verification_status, created_at, evidence_notes, size_volume,
+                   match_result, currency
             FROM retail_price_observation ORDER BY product_id, created_at
             """
         ).fetchall()
@@ -174,13 +190,18 @@ def audit_database(db_path: str) -> dict[str, Any]:
                     "retailer": o["retailer"],
                     "product_url": o["product_url"],
                     "price": o["observed_price"],
-                    "mrp": o["observed_mrp"],
+                    # evaluate_eligibility expects the canonical column name
+                    "observed_price": o["observed_price"],
+                    "observed_mrp": o["observed_mrp"],
                     "observation_type": o["observation_type"],
                     "observation_status": o["observation_status"],
                     "verified_by_admin": o["verified_by_admin"],
                     "verification_status": o["verification_status"],
                     "created_at": o["created_at"],
                     "evidence_notes": o["evidence_notes"],
+                    "size_volume": o["size_volume"],
+                    "currency": o["currency"],
+                    "match_result": o["match_result"],
                 }
             )
 
@@ -205,6 +226,42 @@ def audit_database(db_path: str) -> dict[str, Any]:
         ]
         demo_offers = [o for o in offers if "demo" in (o["store"] or "").lower()]
 
+        # ── Phase 16.7 Stage 6: match-strength / freshness / eligibility detail ──
+        exact_matches = strong_matches = possible_matches = 0
+        rejected_matches = 0
+        fresh_obs = stale_obs = 0
+        verified_usable = 0
+        last_obs_at = None
+        for o in observations:
+            evidence = _parse_stored_match(o.get("match_result"))
+            cls = evidence.get("classification")
+            if cls == MatchClassification.VERIFIED_MATCH:
+                if evidence.get("match_strength") == "exact":
+                    exact_matches += 1
+                else:
+                    strong_matches += 1
+            elif cls == MatchClassification.POSSIBLE_MATCH:
+                possible_matches += 1
+            elif cls in (
+                MatchClassification.INCOMPATIBLE_MISMATCH,
+                MatchClassification.AMBIGUOUS_MATCH,
+            ):
+                rejected_matches += 1
+            age = freshness_svc.observation_age_hours(o.get("created_at"))
+            bucket = freshness_svc.classify_freshness(age)
+            if bucket in (freshness_svc.FRESH, freshness_svc.AGING):
+                fresh_obs += 1
+            elif bucket == freshness_svc.STALE:
+                stale_obs += 1
+            if o.get("created_at"):
+                current = str(o["created_at"])
+                if last_obs_at is None or current > last_obs_at:
+                    last_obs_at = current
+        for o in observations:
+            ok, _reasons = evaluate_eligibility(o)
+            if ok:
+                verified_usable += 1
+
         if live_provider:
             category = "PROVIDER_OBSERVED"
         elif review_pending and any(
@@ -221,6 +278,20 @@ def audit_database(db_path: str) -> dict[str, Any]:
         else:
             category = "NO_PRICE_AVAILABLE"
 
+        # Honest per-product reason why a verified usable live offer is absent.
+        coverage_unavailable_reason = None
+        if verified_usable == 0:
+            if not observations:
+                coverage_unavailable_reason = "no_observations"
+            elif stale_obs and not fresh_obs:
+                coverage_unavailable_reason = "stale_observations_only"
+            elif possible_matches and not rejected_matches:
+                coverage_unavailable_reason = "possible_matches_awaiting_review"
+            elif rejected_matches and not (exact_matches or strong_matches or possible_matches):
+                coverage_unavailable_reason = "all_matches_rejected"
+            else:
+                coverage_unavailable_reason = "observations_present_but_not_eligible"
+
         products_out.append(
             {
                 **p,
@@ -233,10 +304,92 @@ def audit_database(db_path: str) -> dict[str, Any]:
                 "manual_verified_observations": len(manual_verified),
                 "observations": observations,
                 "coverage_category": category,
+                # Phase 16.7 Stage 6 fields:
+                "exact_matches": exact_matches,
+                "strong_matches": strong_matches,
+                "possible_matches": possible_matches,
+                "rejected_matches": rejected_matches,
+                "fresh_observations": fresh_obs,
+                "stale_observations": stale_obs,
+                "verified_usable_offers": verified_usable,
+                "last_observation_at": last_obs_at,
+                "coverage_unavailable_reason": coverage_unavailable_reason,
             }
         )
 
     counts = Counter(p["coverage_category"] for p in products_out)
+
+    # ── Phase 16.7 Stage 6 aggregate metrics ─────────────────────────────────
+    total_evaluated = sum(
+        p["exact_matches"] + p["strong_matches"] + p["possible_matches"] + p["rejected_matches"]
+        for p in products_out
+    )
+    total_exact = sum(p["exact_matches"] for p in products_out)
+    total_strong = sum(p["strong_matches"] for p in products_out)
+    total_possible = sum(p["possible_matches"] for p in products_out)
+    total_rejected = sum(p["rejected_matches"] for p in products_out)
+    verified_rate = (
+        round((total_exact + total_strong) / total_evaluated, 4)
+        if total_evaluated else None
+    )
+    rejection_rate = (
+        round(total_rejected / total_evaluated, 4)
+        if total_evaluated else None
+    )
+
+    phase16_7_metrics = {
+        "products_with_verified_usable_offers": sum(
+            1 for p in products_out if p["verified_usable_offers"] > 0
+        ),
+        "products_with_possible_matches_only": sum(
+            1 for p in products_out
+            if p["observations_count"] > 0
+            and p["possible_matches"] > 0
+            and p["exact_matches"] == 0 and p["strong_matches"] == 0
+            and p["verified_usable_offers"] == 0
+        ),
+        "products_with_stale_observations_only": sum(
+            1 for p in products_out
+            if p["observations_count"] > 0
+            and p["stale_observations"] > 0
+            and p["fresh_observations"] == 0
+        ),
+        "products_without_observations": sum(
+            1 for p in products_out if p["observations_count"] == 0
+        ),
+        "products_with_verified_matches_only_pending": sum(
+            1 for p in products_out
+            if (p["exact_matches"] + p["strong_matches"]) > 0
+            and p["verified_usable_offers"] == 0
+        ),
+        "total_exact_matches": total_exact,
+        "total_strong_matches": total_strong,
+        "total_possible_matches": total_possible,
+        "total_rejected_matches": total_rejected,
+        "verified_match_rate": verified_rate,
+        "exact_match_rate": (
+            round(total_exact / total_evaluated, 4) if total_evaluated else None
+        ),
+        "rejection_rate": rejection_rate,
+        "total_fresh_observations": sum(p["fresh_observations"] for p in products_out),
+        "total_stale_observations": sum(p["stale_observations"] for p in products_out),
+        "total_verified_usable_offers": sum(p["verified_usable_offers"] for p in products_out),
+        # Honest placeholder: this audit performs no provider calls, so a real
+        # provider failure rate can only come from a collection stats artifact.
+        "provider_failure_rate": None,
+        "provider_failure_rate_note": (
+            "Not computable by this offline audit; derive from "
+            "phase16_6_collection_stats.json error_counts after a collection run."
+        ),
+        "policy_disclosure": {
+            "freshness": {
+                "fresh_hours": freshness_svc.DEFAULT_POLICY.fresh_hours,
+                "aging_hours": freshness_svc.DEFAULT_POLICY.aging_hours,
+                "note": "fresh counts include the aging bucket; stale counts are older than the aging threshold",
+            },
+            "possible_matches_are_not_verified_offers": True,
+        },
+    }
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -265,6 +418,7 @@ def audit_database(db_path: str) -> dict[str, Any]:
                 if p["coverage_category"] in ("DEMO_ONLY", "NO_PRICE_AVAILABLE")
             ),
         },
+        "phase16_7_metrics": phase16_7_metrics,
         "stores": list(stores.values()),
         "adapter_health": {
             "name": adapter.name,
@@ -320,6 +474,30 @@ def write_markdown(report: dict, path: Path) -> None:
     lines.append(f"| Products with rejected matches | {m['products_with_rejected_matches']} |")
     lines.append(f"| Products requiring manual review | {m['products_requiring_manual_review']} |")
     lines.append(f"| Products without any usable price | {m['products_without_any_usable_price']} |")
+    lines.append("")
+    lines.append("## Phase 16.7 coverage metrics")
+    lines.append("")
+    p7 = report.get("phase16_7_metrics", {})
+    lines.append("| Metric | Value |")
+    lines.append("|---|---|")
+    lines.append(f"| Products with verified usable live offers | {p7.get('products_with_verified_usable_offers', 0)} |")
+    lines.append(f"| Products with possible matches only | {p7.get('products_with_possible_matches_only', 0)} |")
+    lines.append(f"| Products with stale observations only | {p7.get('products_with_stale_observations_only', 0)} |")
+    lines.append(f"| Products without observations | {p7.get('products_without_observations', 0)} |")
+    lines.append(f"| Products with verified matches still not usable | {p7.get('products_with_verified_matches_only_pending', 0)} |")
+    lines.append(f"| Total exact matches | {p7.get('total_exact_matches', 0)} |")
+    lines.append(f"| Total strong matches | {p7.get('total_strong_matches', 0)} |")
+    lines.append(f"| Total possible matches | {p7.get('total_possible_matches', 0)} |")
+    lines.append(f"| Total rejected matches | {p7.get('total_rejected_matches', 0)} |")
+    lines.append(f"| Exact-match rate | {p7.get('exact_match_rate') if p7.get('exact_match_rate') is not None else 'n/a'} |")
+    lines.append(f"| Verified-match rate | {p7.get('verified_match_rate') if p7.get('verified_match_rate') is not None else 'n/a'} |")
+    lines.append(f"| Rejection rate | {p7.get('rejection_rate') if p7.get('rejection_rate') is not None else 'n/a'} |")
+    lines.append(f"| Fresh observations | {p7.get('total_fresh_observations', 0)} |")
+    lines.append(f"| Stale observations | {p7.get('total_stale_observations', 0)} |")
+    lines.append(f"| Verified usable offers | {p7.get('total_verified_usable_offers', 0)} |")
+    lines.append(f"| Provider failure rate | {p7.get('provider_failure_rate') if p7.get('provider_failure_rate') is not None else 'not computable offline'} |")
+    lines.append("")
+    lines.append("_Possible matches are never counted as verified offers. Rates are over evaluated matches only._")
     lines.append("")
     lines.append("## PriceInIndia adapter health (configuration snapshot)")
     lines.append("")

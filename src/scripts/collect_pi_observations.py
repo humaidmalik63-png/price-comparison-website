@@ -44,6 +44,7 @@ import re
 import sys
 import time
 from datetime import datetime, timedelta, timezone
+from dataclasses import replace as dataclasses_replace
 from pathlib import Path
 from typing import Any, Callable, Iterable, Optional
 
@@ -56,7 +57,13 @@ from src.adapters.mcp_adapters.base_mcp_adapter import McpCallResult
 from src.adapters.mcp_adapters.priceinindia_adapter import PriceInIndiaAdapter
 from src.database.connection import get_connection, migrate_db
 from src.database.seed import DEMO_PRODUCTS
-from src.services.product_matching_service import evaluate_product_match, ProductMatchResult
+from src.services.freshness_service import parse_epoch_seconds, provider_freshness
+from src.services.url_policy import strip_tracking_params
+from src.services.product_matching_service import (
+    MatchClassification,
+    evaluate_product_match,
+    ProductMatchResult,
+)
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("pi-collector")
@@ -146,6 +153,40 @@ def extract_size_from_specs(specs: dict) -> Optional[str]:
     return None
 
 
+def extract_size_from_title(title: str) -> Optional[str]:
+    """Extract the variant size/volume stated inside a provider product title.
+
+    Phase 16.7 Stage 2: PriceInIndia titles usually carry the size
+    ("… Watermelon Cooling Sunscreen 50 g") but do not always populate the
+    structured ``size`` field.  The size is only *extracted*, never invented:
+    when no quantity pattern is present the result is None and downstream
+    matching preserves the uncertainty (missing size lowers confidence rather
+    than being guessed).
+    """
+    if not title:
+        return None
+    # Prefer the LAST quantity token in the title: titles often mention
+    # pack configurations ("2 x 100 ml") where the shipped size is the
+    # rightmost statement.  This mirrors the retailer convention seen in the
+    # Phase 16.7 browser investigation (URL slugs end with the size).
+    tokens = list(
+        re.finditer(
+            r"(\d+(?:\.\d+)?)\s*(ml|gm|g|grams?|oz|kg|litres?|l)\b",
+            str(title).lower(),
+        )
+    )
+    if not tokens:
+        return None
+    last = tokens[-1]
+    value, unit = last.group(1), last.group(2)
+    if unit in ("gm", "grams", "gram"):
+        unit = "g"
+    elif unit in ("litres", "litre"):
+        unit = "l"
+    # Canonical display form: "50g", "50 ml" style kept minimal
+    return f"{value}{unit}"
+
+
 def match_pi_result_to_product(pi_item: dict, catalog_product: dict) -> ProductMatchResult:
     """Evaluate match between PriceInIndia result and catalog product.
 
@@ -228,6 +269,39 @@ def match_pi_result_to_product(pi_item: dict, catalog_product: dict) -> ProductM
         }
         return ProductMatchResult(**result_dict)
 
+    # Phase 16.7C: belt-and-braces identity guard — a provider item with no
+    # detectable size/quantity can never be a verified identity match.
+    # Missing size means missing SKU identity, so a verified evaluation is
+    # downgraded to POSSIBLE_MATCH with human review (currently unreachable
+    # for PriceInIndia results, which carry no barcodes; kept as a guard
+    # against future evidence paths).
+    return enforce_missing_size_identity_guard(result)
+
+
+def enforce_missing_size_identity_guard(result: ProductMatchResult) -> ProductMatchResult:
+    """Downgrade a VERIFIED_MATCH whose offer side has no detectable size.
+
+    Missing size means missing SKU identity: such a result can never stand as
+    a verified match. It is downgraded to POSSIBLE_MATCH with human review
+    required. Results of other classifications pass through unchanged.
+    """
+    if (
+        result.match_classification == MatchClassification.VERIFIED_MATCH
+        and result.offer_size is None
+    ):
+        return dataclasses_replace(
+            result,
+            match_classification=MatchClassification.POSSIBLE_MATCH,
+            match_strength="",
+            strength_reasons=[],
+            is_comparable=True,
+            confidence_score=min(result.confidence_score, 0.75),
+            requires_human_review=True,
+            reasons=[
+                *result.reasons,
+                "Missing size on provider item — SKU identity unconfirmed; downgraded to possible match",
+            ],
+        )
     return result
 
 
@@ -246,10 +320,37 @@ def store_observation(
     parsed_price = parse_price(pi_item.get("price"))
     parsed_mrp = parse_price(pi_item.get("mrp"))
     observation_retailer = str(pi_item.get("store") or "unknown")
-    observation_url = str(
-        pi_item.get("productPageUrl") or pi_item.get("productUrl") or ""
-    )
+    # Phase 16.7C: distinguish URL kinds. The stored product_url remains the
+    # citation link (best available), but the evidence record now states WHAT
+    # KIND of link it is. A retailer product URL is never invented: when only
+    # a PriceInIndia page or affiliate redirect exists, retailer_product_url
+    # is None and the evidence says so.
+    # Phase 16.7E: tracking parameters are stripped before storage; cleaning
+    # is provenance-preserving so url_kind classification is unaffected.
+    provider_page_url = strip_tracking_params(
+        str(pi_item.get("productPageUrl") or pi_item.get("product_page_url") or "").strip()
+    ) or None
+    affiliate_redirect_url = strip_tracking_params(
+        str(pi_item.get("productUrl") or "").strip()
+    ) or None
+    retailer_product_url = strip_tracking_params(
+        str(pi_item.get("retailerUrl") or pi_item.get("retailer_product_url") or "").strip()
+    ) or None
+    observation_url = strip_tracking_params(
+        str(pi_item.get("productPageUrl") or pi_item.get("productUrl") or "").strip()
+    ) or ""
+    if observation_url and retailer_product_url and observation_url == retailer_product_url:
+        url_kind = "retailer"
+    elif observation_url and provider_page_url and observation_url == provider_page_url:
+        url_kind = "provider_page"
+    elif observation_url and affiliate_redirect_url and observation_url == affiliate_redirect_url:
+        url_kind = "provider_affiliate_redirect"
+    else:
+        url_kind = None
     observation_currency = normalize_currency(pi_item.get("currency"))
+    # Phase 16.7C: provider freshness (lastUpdated, unix seconds) mapped into
+    # the observation freshness system alongside the observation's own time.
+    provider_freshness_evidence = provider_freshness(pi_item.get("lastUpdated"))
     # Stage 4: preserve the retailer domain the provider reported. Domain-like
     # strings ("myntra.com") are kept as-is; plain names ("Nykaa") get NULL —
     # never guessed.
@@ -264,6 +365,11 @@ def store_observation(
         # Stage 3 rule 7: a missing provider URL is flagged, never silently
         # confirmed. Eligibility may exclude URL-less observations.
         evidence_notes += " | provider_product_url_missing"
+    if url_kind == "provider_page":
+        # Phase 16.7C: the URL points at PriceInIndia, not at the retailer.
+        evidence_notes += " | url_is_provider_page"
+    elif url_kind == "provider_affiliate_redirect":
+        evidence_notes += " | url_is_affiliate_redirect"
 
     observation = {
         "product_id": product_id,
@@ -274,7 +380,11 @@ def store_observation(
         "product_url": observation_url,
         "observed_price": parsed_price if parsed_price is not None else 0.0,
         "observed_mrp": parsed_mrp if parsed_mrp is not None and parsed_mrp > 0 else None,
-        "size_volume": extract_size_from_specs({"Net Quantity": pi_item.get("size", "")}) or pi_item.get("size"),
+        "size_volume": (
+            extract_size_from_specs({"Net Quantity": pi_item.get("size", "")})
+            or pi_item.get("size")
+            or extract_size_from_title(str(pi_item.get("title") or pi_item.get("product_title") or ""))
+        ),
         "observation_type": "live",
         "observation_status": "live" if match_result.is_comparable else "flagged",
         "verified_by_admin": 0,
@@ -310,6 +420,28 @@ def store_observation(
             "retailer": observation_retailer,
             "provider_item_id": pi_item.get("id"),
             "provider_product_url_missing": not observation_url,
+            # Phase 16.7 Stage 4: the provider listing title is preserved so
+            # the admin review UI can display a true catalogue-vs-listing
+            # side-by-side without re-querying the provider.
+            "provider_title": str(pi_item.get("title") or pi_item.get("product_title") or "") or None,
+            "provider_brand": str(pi_item.get("brand") or "") or None,
+            # Phase 16.7 Stage 1: explainable strength overlay (derived
+            # deterministically from the classification + evidence tier).
+            "match_strength": match_result.match_strength,
+            "strength_reasons": match_result.strength_reasons,
+            # ── Phase 16.7C: URL provenance and price-precision evidence ──
+            # The citation URL's kind, the distinct provider/retailer URLs,
+            # the raw provider price (full precision kept auditable), and the
+            # provider's own freshness (lastUpdated) mapped into the same
+            # fresh/aging/stale/unknown buckets the application uses.
+            "url_kind": url_kind,
+            "provider_page_url": provider_page_url,
+            "affiliate_redirect_url": affiliate_redirect_url,
+            # Never invented: None unless the provider supplied an explicit
+            # retailer product URL.
+            "retailer_product_url": retailer_product_url,
+            "provider_price_raw": pi_item.get("price"),
+            **provider_freshness_evidence,
         }),
     }
 
@@ -422,7 +554,11 @@ def store_observation(
                 """, (
                     observation["observed_price"],
                     observation["observed_mrp"],
-                    observation["product_url"],
+                    # Phase 16.7C: only a genuine retailer product URL may be
+                    # written to offer_url. A provider page or affiliate
+                    # redirect is never presented as a retailer link — when
+                    # none exists the previous offer_url is preserved.
+                    retailer_product_url or "",
                     timestamp,
                     existing_offer["id"],
                 ))
@@ -440,7 +576,10 @@ def store_observation(
                     0,  # shipping_cost
                     "INR",
                     "In Stock",
-                    observation["product_url"] or None,
+                    # Phase 16.7C: offer_url is the retailer purchase link. A
+                    # PriceInIndia page URL is not a retailer URL and is never
+                    # substituted for one (left empty instead).
+                    retailer_product_url or None,
                     timestamp,
                 ))
 
@@ -536,15 +675,61 @@ def normalize_pi_item(item: dict) -> dict[str, Any]:
     brand = str(item.get("brand") or "").strip()
     price = parse_price(item.get("price"))
     currency = normalize_currency(item.get("currency"))
+    # Phase 16.7E: tracking parameters are stripped before classification or
+    # storage. Cleaning is provenance-preserving (see src/services/url_policy),
+    # so the url_kind classification below operates on the cleaned URLs.
+    provider_page_url = strip_tracking_params(
+        str(item.get("productPageUrl") or item.get("product_page_url") or "").strip()
+    ) or None
+    affiliate_redirect_url = strip_tracking_params(
+        str(item.get("productUrl") or "").strip()
+    ) or None
+    # Phase 16.7C: a retailer product URL is NEVER derived or invented. The
+    # provider's search results do not expose retailer URLs (their
+    # productPageUrl is a PriceInIndia page and productUrl is an affiliate
+    # redirect). A retailer URL is only ever taken from an explicit provider
+    # field, should the provider ever supply one.
+    retailer_product_url = strip_tracking_params(
+        str(item.get("retailerUrl") or item.get("retailer_product_url") or "").strip()
+    ) or None
     url = str(
-        item.get("productPageUrl")
-        or item.get("productUrl")
-        or item.get("product_page_url")
+        provider_page_url
+        or affiliate_redirect_url
+        or retailer_product_url
         or item.get("product_url")
         or ""
     ).strip()
+    # Phase 16.7C: classify what kind of URL the citation actually is, so
+    # downstream consumers can distinguish a provider page from a retailer
+    # product link and never present one as the other.
+    if url and retailer_product_url and url == retailer_product_url:
+        url_kind = "retailer"
+    elif url and provider_page_url and url == provider_page_url:
+        url_kind = "provider_page"
+    elif url and affiliate_redirect_url and url == affiliate_redirect_url:
+        url_kind = "provider_affiliate_redirect"
+    else:
+        url_kind = None
     mrp = parse_price(item.get("mrp"))
+    # Phase 16.7C: map the provider's lastUpdated (unix seconds) into the
+    # freshness system. Raw provider prices are preserved alongside parsed
+    # values so full precision stays auditable.
+    last_updated_dt = parse_epoch_seconds(item.get("lastUpdated"))
+    last_updated_epoch = (
+        last_updated_dt.timestamp() if last_updated_dt is not None else None
+    )
+    # Phase 16.7 Stage 2: variant/size extraction. Prefer the structured
+    # provider field; fall back to the size stated inside the title. When
+    # neither is present the size stays None (never guessed), and matching
+    # handles the missing quantity honestly.
     size = str(item.get("size") or "").strip() or None
+    size_source = "provider_field" if size else None
+    if size is None:
+        extracted = extract_size_from_title(title)
+        if extracted:
+            size = extracted
+            size_source = "title_extracted"
+            flags.append("size_from_title")
 
     rejection_reason: Optional[str] = None
     if not title:
@@ -561,6 +746,12 @@ def normalize_pi_item(item: dict) -> dict[str, Any]:
     if not url and rejection_reason is None:
         # Missing URLs are flagged, never silently confirmed (Stage 3 rule 7).
         flags.append("missing_product_url")
+    # Phase 16.7C: make the URL kind explicit so a provider page or affiliate
+    # redirect is never mistaken for a retailer product link.
+    if url_kind == "provider_page":
+        flags.append("url_is_provider_page")
+    elif url_kind == "provider_affiliate_redirect":
+        flags.append("url_is_affiliate_redirect")
     if mrp is not None and mrp > 0 and price is not None and price > mrp:
         flags.append("price_above_mrp")
 
@@ -575,10 +766,21 @@ def normalize_pi_item(item: dict) -> dict[str, Any]:
         "title": title,
         "brand": brand,
         "price": price,
+        # Phase 16.7C: raw provider price preserved alongside the parsed value
+        # so full provider precision stays auditable (display rounds, storage
+        # does not).
+        "price_raw": item.get("price"),
         "currency": currency,
         "url": url,
+        "url_kind": url_kind,
+        "provider_page_url": provider_page_url,
+        "affiliate_redirect_url": affiliate_redirect_url,
+        "retailer_product_url": retailer_product_url,
         "mrp": mrp,
         "size": size,
+        "size_source": size_source,
+        # Phase 16.7C: provider freshness mapping (unix-seconds lastUpdated).
+        "last_updated_epoch": last_updated_epoch,
         "dedupe_key": dedupe_key,
         "flags": flags,
         "rejection_reason": rejection_reason,
@@ -590,7 +792,7 @@ def classify_provider_error(result: McpCallResult) -> str:
     msg = (result.error_message or "").lower()
     if "rate limit" in msg or "rate_limited" in msg:
         return "rate_limit"
-    if "timeout" in msg:
+    if "timeout" in msg or "timed out" in msg:
         return "timeout"
     if msg.startswith("http "):
         return "http_error"
